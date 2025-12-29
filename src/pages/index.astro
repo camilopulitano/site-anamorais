@@ -1,0 +1,101 @@
+---
+// --- ARQUIVO: src/pages/index.astro ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Simulação das Obras (Depois podemos colocar em arquivos separados)
+const obras = [
+  { titulo: "Melancolia Azul", preco: "R$ 1.500", tecnica: "Óleo sobre tela", img: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=800&auto=format&fit=crop" },
+  { titulo: "O Amanhecer", preco: "R$ 800", tecnica: "Aquarela", img: "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?q=80&w=800&auto=format&fit=crop" },
+  { titulo: "Retrato Urbano", preco: "R$ 2.200", tecnica: "Carvão", img: "https://images.unsplash.com/photo-1515405295579-ba7b45490115?q=80&w=800&auto=format&fit=crop" },
+];
+---
+
+<BaseLayout 
+    titulo="Portfólio Oficial" 
+    descricao="Galeria de arte contemporânea e pinturas a óleo exclusivas de Ana Morais.">
+
+    <header class="hero">
+        <h1>Ana Morais</h1>
+        <p>A arte de eternizar sentimentos.</p>
+    </header>
+
+    <main class="galeria">
+        {obras.map((obra) => (
+            <div class="card-obra">
+                <div class="img-container">
+                    <img src={obra.img} alt={`Pintura ${obra.titulo}`} loading="lazy">
+                </div>
+                <div class="info">
+                    <h3>{obra.titulo}</h3>
+                    <p class="tecnica">{obra.tecnica}</p>
+                    <span class="preco">{obra.preco}</span>
+                    
+                    <button 
+                        class="btn-zap" 
+                        data-obra={obra.titulo} 
+                        data-preco={obra.preco}
+                        onclick="abrirWhatsapp(this)">
+                        Comprar Agora
+                    </button>
+                </div>
+            </div>
+        ))}
+    </main>
+
+    <script is:inline>
+        function abrirWhatsapp(elemento) {
+            // COLOQUE O NÚMERO DA ANA AQUI (Só números, com DDI 55)
+            const tel = "5511999999999"; 
+            
+            const obra = elemento.dataset.obra;
+            const preco = elemento.dataset.preco;
+            const msg = `Olá Ana! Amei a obra *${obra}* (${preco}). Ainda está disponível?`;
+            
+            window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+    </script>
+
+    <style>
+        .hero { text-align: center; padding: 80px 20px; background: white; }
+        .hero h1 { font-size: 3rem; margin-bottom: 10px; font-weight: normal; }
+        .hero p { color: #666; font-style: italic; letter-spacing: 1px; }
+
+        .galeria { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 40px; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+
+        .card-obra { 
+            background: white; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
+            transition: transform 0.3s ease;
+        }
+        .card-obra:hover { transform: translateY(-5px); }
+
+        .img-container { height: 350px; overflow: hidden; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .card-obra:hover img { transform: scale(1.05); }
+
+        .info { padding: 25px; text-align: center; }
+        .tecnica { color: #888; font-size: 0.9rem; margin-top: -10px; margin-bottom: 15px; }
+        .preco { display: block; font-size: 1.2rem; color: #D4AF37; font-weight: bold; margin-bottom: 15px; }
+
+        .btn-zap { 
+            background: #25D366; 
+            color: white; 
+            border: none; 
+            padding: 12px 25px; 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            width: 100%;
+            transition: 0.2s;
+        }
+        .btn-zap:hover { background: #1da851; }
+    </style>
+</BaseLayout>

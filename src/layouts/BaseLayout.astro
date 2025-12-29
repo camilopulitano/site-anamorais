@@ -1,0 +1,59 @@
+---
+// --- ARQUIVO: src/layouts/BaseLayout.astro ---
+const { titulo, descricao, frontmatter } = Astro.props;
+
+// Lógica Inteligente para SEO:
+// Se for página normal, usa 'titulo'. Se for Blog, usa o titulo do post.
+const tituloFinal = titulo || frontmatter?.titulo || "Ana Morais";
+const descricaoFinal = descricao || frontmatter?.descricao || "Portfólio de Arte";
+---
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <title>{tituloFinal} | Ana Morais Artista</title>
+    <meta name="description" content={descricaoFinal}>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    
+    <style is:global>
+        :root { 
+            --cor-ouro: #D4AF37; 
+            --cor-texto: #333; 
+            --cor-fundo: #fdfbf7;
+        }
+        body { 
+            font-family: 'Lato', sans-serif; 
+            margin: 0; 
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto); 
+        }
+        h1, h2, h3 { font-family: 'Cormorant Garamond', serif; }
+        
+        nav { padding: 20px; text-align: center; border-bottom: 1px solid #eee; background: white; }
+        nav a { margin: 0 15px; text-decoration: none; color: #333; font-weight: bold; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; }
+        nav a:hover { color: var(--cor-ouro); }
+
+        footer { text-align: center; padding: 40px; margin-top: 50px; font-size: 0.8rem; color: #888; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Portfólio</a>
+        <a href="/sobre">Sobre</a>
+        <a href="/blog">Blog</a>
+    </nav>
+
+    <slot />
+
+    <footer>
+        <p>© 2025 Ana Morais. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>

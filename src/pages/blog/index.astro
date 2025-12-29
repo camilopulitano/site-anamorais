@@ -1,0 +1,54 @@
+---
+// --- ARQUIVO: src/pages/blog/index.astro ---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// O Astro vai buscar todos os arquivos .md desta pasta automaticamente
+const posts = await Astro.glob('./*.md');
+---
+
+<BaseLayout titulo="Blog" descricao="Dicas de arte e processo criativo.">
+    <header class="hero-blog">
+        <h1>Diário do Ateliê</h1>
+        <p>Bastidores, técnicas e pensamentos.</p>
+    </header>
+
+    <main class="lista-posts">
+        {posts.map((post) => (
+            <article class="card-post">
+                <a href={post.url}>
+                    <div class="img-post">
+                        <img src={post.frontmatter.imagem} alt={post.frontmatter.titulo} />
+                    </div>
+                    <div class="texto-post">
+                        <h2>{post.frontmatter.titulo}</h2>
+                        <p>{post.frontmatter.descricao}</p>
+                        <span class="ler-mais">Ler artigo →</span>
+                    </div>
+                </a>
+            </article>
+        ))}
+    </main>
+
+    <style>
+        .hero-blog { text-align: center; padding: 60px 20px; background: #fff; border-bottom: 1px solid #eee; }
+        .hero-blog h1 { font-size: 2.5rem; color: #333; margin-bottom: 10px; }
+        
+        .lista-posts { max-width: 800px; margin: 50px auto; padding: 0 20px; display: flex; flex-direction: column; gap: 40px; }
+        
+        .card-post a { text-decoration: none; color: inherit; display: flex; gap: 20px; border: 1px solid #eee; background: white; transition: 0.3s; overflow: hidden; border-radius: 8px; }
+        .card-post a:hover { transform: translateX(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        .img-post { width: 250px; min-width: 250px; height: 200px; }
+        .img-post img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        
+        .texto-post { padding: 20px; display: flex; flex-direction: column; justify-content: center; }
+        .texto-post h2 { margin: 0 0 10px 0; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; }
+        .ler-mais { color: #D4AF37; font-weight: bold; margin-top: 15px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Ajuste para celular */
+        @media (max-width: 600px) {
+            .card-post a { flex-direction: column; }
+            .img-post { width: 100%; height: 200px; }
+        }
+    </style>
+</BaseLayout>
