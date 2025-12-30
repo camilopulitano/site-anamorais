@@ -90,11 +90,10 @@ const obras = [
     let indexAtual = 0;
     let panzoom = null;
 
-    // Torna as funções globais para o HTML conseguir chamar
+    // Funções Globais
     window.abrirModal = function(index) {
       indexAtual = index;
       modal.style.display = "flex";
-      // Pequeno delay para animação funcionar
       setTimeout(() => modal.classList.add("ativo"), 10);
       document.body.style.overflow = "hidden";
       atualizarImagem();
@@ -128,17 +127,19 @@ const obras = [
       if (panzoom) panzoom.dispose();
 
       img.onload = () => {
-        // Configuração simples e robusta
+        // --- AQUI ESTÁ A SUA CONFIGURAÇÃO ---
         panzoom = Panzoom(img, { 
-            maxScale: 4, 
-            minScale: 0.5,
-            contain: null 
+          maxScale: 4, 
+          minScale: 0.5,
+          contain: null,
+          transformOrigin: "center center" // O pulo do gato!
         });
+        
         img.parentElement.addEventListener("wheel", panzoom.zoomWithWheel);
       };
     }
 
-    // Fechar com ESC e Setas
+    // Navegação por teclado
     document.addEventListener("keydown", (e) => {
       if (modal.style.display === "flex") {
         if (e.key === "Escape") fecharModal();
@@ -205,7 +206,6 @@ const obras = [
       background: #f0f0f0;
     }
     
-    /* Overlay ao passar o mouse */
     .overlay-zoom {
       position: absolute;
       inset: 0;
