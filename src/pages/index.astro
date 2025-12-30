@@ -2,100 +2,315 @@
 // --- ARQUIVO: src/pages/index.astro ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// Simulação das Obras (Depois podemos colocar em arquivos separados)
+// LISTA DE OBRAS
 const obras = [
-  { titulo: "Melancolia Azul", preco: "R$ 1.500", tecnica: "Óleo sobre tela", img: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=800&auto=format&fit=crop" },
-  { titulo: "O Amanhecer", preco: "R$ 800", tecnica: "Aquarela", img: "https://images.unsplash.com/photo-1578301978693-85fa9c0320b9?q=80&w=800&auto=format&fit=crop" },
-  { titulo: "Retrato Urbano", preco: "R$ 2.200", tecnica: "Carvão", img: "https://images.unsplash.com/photo-1515405295579-ba7b45490115?q=80&w=800&auto=format&fit=crop" },
+  { titulo: "Retrato da Mulher", dimensoes: "50 x 70 cm", tecnica: "Óleo sobre tela", img: "/img/mulher.jpg" },
+  { titulo: "Vaso de Rosas", dimensoes: "40 x 50 cm", tecnica: "Óleo sobre tela", img: "/img/rosas.jpg" },
+  { titulo: "Araras Azuis", dimensoes: "90 x 70 cm", tecnica: "Óleo sobre tela", img: "/img/araras.jpg" },
+  { titulo: "Varanda Azul", dimensoes: "60 x 80 cm", tecnica: "Acrílica", img: "/img/varanda.jpg" },
+  { titulo: "Ruas de Paraty", dimensoes: "90 x 60 cm", tecnica: "Óleo sobre tela", img: "/img/paraty.jpg" },
+  { titulo: "Cataratas do Iguaçu", dimensoes: "100 x 80 cm", tecnica: "Óleo sobre tela", img: "/img/cataratas.jpg" },
+  { titulo: "Barco no Mar", dimensoes: "40 x 60 cm", tecnica: "Óleo sobre tela", img: "/img/barco.jpg" },
+  { titulo: "Araucárias", dimensoes: "70 x 90 cm", tecnica: "Óleo sobre tela", img: "/img/araucarias.jpg" },
+  { titulo: "Paisagem de Minas II", dimensoes: "50 x 70 cm", tecnica: "Óleo sobre tela", img: "/img/minas2.jpg" },
+  { titulo: "Caminho de Santiago", dimensoes: "100 x 80 cm", tecnica: "Óleo sobre tela", img: "/img/santiago.jpg" },
+  { titulo: "Vista da Toscana", dimensoes: "70 x 50 cm", tecnica: "Óleo sobre tela", img: "/img/toscana.jpg" },
+  { titulo: "Ladeira de Minas", dimensoes: "40 x 60 cm", tecnica: "Óleo sobre tela", img: "/img/minas.jpg" },
+  { titulo: "A Rena", dimensoes: "30 x 40 cm", tecnica: "Aquarela", img: "/img/rena.jpg" },
+  { titulo: "Igreja em Minas III", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre tela", img: "/img/minas3.jpg" },
+  { titulo: "O Gato na Janela", dimensoes: "40 x 50 cm", tecnica: "Acrílica", img: "/img/gato-na-janela.jpg" },
+  { titulo: "Campo de Lavandas Roxas", dimensoes: "80 x 60 cm", tecnica: "Óleo sobre tela", img: "/img/landas-roxas.jpg" },
+  { titulo: "Flor de Hibisco", dimensoes: "30 x 30 cm", tecnica: "Aquarela", img: "/img/hibisco.jpg" },
+  { titulo: "Colheita de Lavanda", dimensoes: "70 x 50 cm", tecnica: "Óleo sobre tela", img: "/img/lavandas.jpg" },
+  { titulo: "Cores da Favela", dimensoes: "90 x 70 cm", tecnica: "Acrílica", img: "/img/favela.jpg" },
+  { titulo: "Fruto Proibido", dimensoes: "40 x 50 cm", tecnica: "Óleo sobre painel", img: "/img/fruto.jpg" },
+  { titulo: "Mar Revolto", dimensoes: "100 x 70 cm", tecnica: "Óleo sobre tela", img: "/img/mar.jpg" },
+  { titulo: "Caminho dos Eucaliptos", dimensoes: "60 x 40 cm", tecnica: "Óleo sobre tela", img: "/img/eucalipto.jpg" },
+  { titulo: "Ipê Amarelo", dimensoes: "80 x 60 cm", tecnica: "Óleo sobre tela", img: "/img/ipe.jpg" }
 ];
 ---
 
-<BaseLayout 
-    titulo="Portfólio Oficial" 
-    descricao="Galeria de arte contemporânea e pinturas a óleo exclusivas de Ana Morais.">
+<BaseLayout
+  titulo="Ana Morais — Galeria Oficial"
+  descricao="Pinturas originais de Ana Morais."
+>
 
-    <header class="hero">
-        <h1>Ana Morais</h1>
-        <p>A arte de eternizar sentimentos.</p>
-    </header>
+  <script is:inline src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
 
-    <main class="galeria">
-        {obras.map((obra) => (
-            <div class="card-obra">
-                <div class="img-container">
-                    <img src={obra.img} alt={`Pintura ${obra.titulo}`} loading="lazy">
-                </div>
-                <div class="info">
-                    <h3>{obra.titulo}</h3>
-                    <p class="tecnica">{obra.tecnica}</p>
-                    <span class="preco">{obra.preco}</span>
-                    
-                    <button 
-                        class="btn-zap" 
-                        data-obra={obra.titulo} 
-                        data-preco={obra.preco}
-                        onclick="abrirWhatsapp(this)">
-                        Comprar Agora
-                    </button>
-                </div>
-            </div>
-        ))}
-    </main>
+  <header class="hero">
+    <h1>Ana Morais</h1>
+    <p>Galeria de Arte</p>
+  </header>
 
-    <script is:inline>
-        function abrirWhatsapp(elemento) {
-            // COLOQUE O NÚMERO DA ANA AQUI (Só números, com DDI 55)
-            const tel = "554598027599"; 
-            
-            const obra = elemento.dataset.obra;
-            const preco = elemento.dataset.preco;
-            const msg = `Olá Ana! Amei a obra *${obra}* (${preco}). Ainda está disponível?`;
-            
-            window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-    </script>
+  <main class="galeria">
+    {obras.map((obra, index) => (
+      <article class="card-obra">
+        <div class="img-container" onclick={`abrirModal(${index})`}>
+          <img 
+            src={obra.img} 
+            alt={obra.titulo} 
+            loading="lazy" 
+            style="width: 100%; height: 100%; object-fit: cover;"
+          />
+          <span class="overlay-zoom">Ampliar</span>
+        </div>
 
-    <style>
-        .hero { text-align: center; padding: 80px 20px; background: white; }
-        .hero h1 { font-size: 3rem; margin-bottom: 10px; font-weight: normal; }
-        .hero p { color: #666; font-style: italic; letter-spacing: 1px; }
+        <div class="info">
+          <h3>{obra.titulo}</h3>
+          <p class="tecnica">{obra.tecnica}</p>
+          <p class="dimensoes">{obra.dimensoes}</p>
+          
+          <button class="btn-zap" data-obra={obra.titulo} onclick="abrirWhatsapp(this)">
+            Consultar Valor
+          </button>
+        </div>
+      </article>
+    ))}
+  </main>
 
-        .galeria { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 40px; 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: 20px; 
-        }
+  <div id="modal" class="modal">
+    <button class="nav prev" onclick="navegar(-1)">&#10094;</button>
+    <button class="nav next" onclick="navegar(1)">&#10095;</button>
+    <button class="fechar" onclick="fecharModal()">&times;</button>
 
-        .card-obra { 
-            background: white; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
-            transition: transform 0.3s ease;
-        }
-        .card-obra:hover { transform: translateY(-5px); }
+    <div class="panzoom-container">
+      <img id="modal-img" />
+    </div>
 
-        .img-container { height: 350px; overflow: hidden; }
-        .img-container img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .card-obra:hover img { transform: scale(1.05); }
+    <div class="modal-footer">
+      <span id="contador"></span>
+    </div>
+  </div>
 
-        .info { padding: 25px; text-align: center; }
-        .tecnica { color: #888; font-size: 0.9rem; margin-top: -10px; margin-bottom: 15px; }
-        .preco { display: block; font-size: 1.2rem; color: #D4AF37; font-weight: bold; margin-bottom: 15px; }
+  <script define:vars={{ obras }}>
+    const modal = document.getElementById("modal");
+    const img = document.getElementById("modal-img");
+    const contador = document.getElementById("contador");
+    
+    let indexAtual = 0;
+    let panzoom = null;
 
-        .btn-zap { 
-            background: #25D366; 
-            color: white; 
-            border: none; 
-            padding: 12px 25px; 
-            cursor: pointer; 
-            font-size: 0.9rem; 
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            width: 100%;
-            transition: 0.2s;
-        }
-        .btn-zap:hover { background: #1da851; }
-    </style>
+    // Torna as funções globais para o HTML conseguir chamar
+    window.abrirModal = function(index) {
+      indexAtual = index;
+      modal.style.display = "flex";
+      // Pequeno delay para animação funcionar
+      setTimeout(() => modal.classList.add("ativo"), 10);
+      document.body.style.overflow = "hidden";
+      atualizarImagem();
+    };
+
+    window.fecharModal = function() {
+      modal.classList.remove("ativo");
+      setTimeout(() => {
+        modal.style.display = "none";
+        document.body.style.overflow = "auto";
+        if (panzoom) panzoom.dispose();
+      }, 300);
+    };
+
+    window.navegar = function(dir) {
+      indexAtual = (indexAtual + dir + obras.length) % obras.length;
+      atualizarImagem();
+    };
+
+    window.abrirWhatsapp = function(el) {
+      const tel = "5511999999999"; // <-- SEU NÚMERO
+      const nomeObra = el.dataset.obra;
+      const msg = `Olá Ana! Gostaria de saber o valor da obra "${nomeObra}".`;
+      window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, "_blank");
+    }
+
+    function atualizarImagem() {
+      img.src = obras[indexAtual].img;
+      contador.textContent = `${obras[indexAtual].titulo} (${indexAtual + 1} / ${obras.length})`;
+
+      if (panzoom) panzoom.dispose();
+
+      img.onload = () => {
+        // Configuração simples e robusta
+        panzoom = Panzoom(img, { 
+            maxScale: 4, 
+            minScale: 0.5,
+            contain: null 
+        });
+        img.parentElement.addEventListener("wheel", panzoom.zoomWithWheel);
+      };
+    }
+
+    // Fechar com ESC e Setas
+    document.addEventListener("keydown", (e) => {
+      if (modal.style.display === "flex") {
+        if (e.key === "Escape") fecharModal();
+        if (e.key === "ArrowRight") navegar(1);
+        if (e.key === "ArrowLeft") navegar(-1);
+      }
+    });
+  </script>
+
+  <style>
+    /* RESET BÁSICO */
+    * { box-sizing: border-box; }
+    
+    .hero { 
+      text-align: center; 
+      padding: 60px 20px; 
+      background-color: white;
+      border-bottom: 1px solid #eee;
+    }
+    .hero h1 { 
+      font-family: 'Times New Roman', serif; 
+      font-size: 3rem; 
+      margin: 0 0 10px 0; 
+      color: #333;
+    }
+    .hero p { 
+      color: #777; 
+      font-style: italic; 
+      margin: 0;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+
+    /* GRADE */
+    .galeria {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .card-obra {
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    .card-obra:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    /* IMAGEM */
+    .img-container {
+      height: 300px; /* Garante altura fixa */
+      width: 100%;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+    
+    /* Overlay ao passar o mouse */
+    .overlay-zoom {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      opacity: 0;
+      transition: 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .img-container:hover .overlay-zoom { opacity: 1; }
+    .img-container:hover img { transform: scale(1.05); filter: brightness(0.9); }
+    .img-container img { transition: 0.5s; }
+
+    /* INFO */
+    .info { padding: 20px; text-align: center; }
+    .info h3 { margin: 0 0 5px 0; font-size: 1.2rem; color: #222; font-family: 'Times New Roman', serif;}
+    .tecnica { color: #888; font-style: italic; font-size: 0.9rem; margin: 0 0 15px 0; }
+    .dimensoes { font-weight: bold; font-size: 0.85rem; color: #444; margin-bottom: 15px; display: block;}
+
+    .btn-zap {
+      background: #25D366;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      width: 100%;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      transition: 0.2s;
+    }
+    .btn-zap:hover { background: #1ebc57; }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 9999;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .modal.ativo { opacity: 1; }
+
+    .panzoom-container {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .modal img {
+      max-width: 90vw;
+      max-height: 80vh;
+      object-fit: contain;
+      cursor: grab;
+    }
+    .modal img:active { cursor: grabbing; }
+
+    /* BOTÕES MODAL */
+    .fechar {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+      z-index: 10000;
+    }
+    .nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 50px;
+      cursor: pointer;
+      padding: 20px;
+      z-index: 10000;
+      transition: 0.2s;
+    }
+    .nav:hover { color: white; transform: translateY(-50%) scale(1.1); }
+    .nav.prev { left: 10px; }
+    .nav.next { right: 10px; }
+
+    .modal-footer {
+      padding: 20px;
+      color: white;
+      font-family: 'Times New Roman', serif;
+      font-size: 1.2rem;
+    }
+  </style>
+
 </BaseLayout>
