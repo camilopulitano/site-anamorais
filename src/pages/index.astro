@@ -2,38 +2,46 @@
 // --- ARQUIVO: src/pages/index.astro ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// LISTA DE OBRAS
+// LISTA COMPLETA COM OBRAS VENDIDAS
 const obras = [
-  { titulo: "Retrato da Mulher", dimensoes: "50 x 70 cm", tecnica: "Óleo sobre tela", img: "/img/mulher.jpg" },
-  { titulo: "Vaso de Rosas", dimensoes: "40 x 50 cm", tecnica: "Óleo sobre tela", img: "/img/rosas.jpg" },
-  { titulo: "Araras Azuis", dimensoes: "90 x 70 cm", tecnica: "Óleo sobre tela", img: "/img/araras.jpg" },
-  { titulo: "Varanda Azul", dimensoes: "60 x 80 cm", tecnica: "Acrílica", img: "/img/varanda.jpg" },
-  { titulo: "Ruas de Paraty", dimensoes: "90 x 60 cm", tecnica: "Óleo sobre tela", img: "/img/paraty.jpg" },
-  { titulo: "Cataratas do Iguaçu", dimensoes: "100 x 80 cm", tecnica: "Óleo sobre tela", img: "/img/cataratas.jpg" },
-  { titulo: "Barco no Mar", dimensoes: "40 x 60 cm", tecnica: "Óleo sobre tela", img: "/img/barco.jpg" },
-  { titulo: "Araucárias", dimensoes: "70 x 90 cm", tecnica: "Óleo sobre tela", img: "/img/araucarias.jpg" },
-  { titulo: "Paisagem de Minas II", dimensoes: "50 x 70 cm", tecnica: "Óleo sobre tela", img: "/img/minas2.jpg" },
-  { titulo: "Caminho de Santiago", dimensoes: "100 x 80 cm", tecnica: "Óleo sobre tela", img: "/img/santiago.jpg" },
-  { titulo: "Vista da Toscana", dimensoes: "70 x 50 cm", tecnica: "Óleo sobre tela", img: "/img/toscana.jpg" },
-  { titulo: "Ladeira de Minas", dimensoes: "40 x 60 cm", tecnica: "Óleo sobre tela", img: "/img/minas.jpg" },
-  { titulo: "A Rena", dimensoes: "30 x 40 cm", tecnica: "Aquarela", img: "/img/rena.jpg" },
-  { titulo: "Igreja em Minas III", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre tela", img: "/img/minas3.jpg" },
-  { titulo: "O Gato na Janela", dimensoes: "40 x 50 cm", tecnica: "Acrílica", img: "/img/gato-na-janela.jpg" },
-  { titulo: "Campo de Lavandas Roxas", dimensoes: "80 x 60 cm", tecnica: "Óleo sobre tela", img: "/img/landas-roxas.jpg" },
-  { titulo: "Flor de Hibisco", dimensoes: "30 x 30 cm", tecnica: "Aquarela", img: "/img/hibisco.jpg" },
-  { titulo: "Colheita de Lavanda", dimensoes: "70 x 50 cm", tecnica: "Óleo sobre tela", img: "/img/lavandas.jpg" },
-  { titulo: "Cores da Favela", dimensoes: "90 x 70 cm", tecnica: "Acrílica", img: "/img/favela.jpg" },
-  { titulo: "Fruto Proibido", dimensoes: "40 x 50 cm", tecnica: "Óleo sobre painel", img: "/img/fruto.jpg" },
-  { titulo: "Mar Revolto", dimensoes: "100 x 70 cm", tecnica: "Óleo sobre tela", img: "/img/mar.jpg" },
-  { titulo: "Caminho dos Eucaliptos", dimensoes: "60 x 40 cm", tecnica: "Óleo sobre tela", img: "/img/eucalipto.jpg" },
-  { titulo: "Ipê Amarelo", dimensoes: "80 x 60 cm", tecnica: "Óleo sobre tela", img: "/img/ipe.jpg" }
+  { titulo: "Cataratas do Iguaçu", dimensoes: "130 x 80 cm", tecnica: "Óleo sobre Tela", preco: "R$ 2.000,00", img: "/img/cataratas.jpg" },
+  { titulo: "Araras Azuis", dimensoes: "90 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.800,00", img: "/img/araras.jpg" },
+  { titulo: "Araucárias", dimensoes: "70 x 70 cm", tecnica: "Óleo sobre Tela", preco: "R$ 1.400,00", img: "/img/araucarias.jpg" },
+  { titulo: "Fruto Proibido", dimensoes: "70 x 60 cm", tecnica: "Óleo sobre Tela", preco: "R$ 1.200,00", img: "/img/fruto.jpg" },
+  { titulo: "Ruas de Paraty", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre Tela", preco: "R$ 680,00", img: "/img/paraty.jpg" },
+  { titulo: "Minas Gerais", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre Tela", preco: "R$ 580,00", img: "/img/minas.jpg" },
+  { titulo: "Paisagem de Minas II", dimensoes: "40 x 50 cm", tecnica: "Óleo sobre Tela", preco: "R$ 450,00", img: "/img/minas2.jpg" },
+  
+  // --- OBRAS VENDIDAS ---
+  { titulo: "A Rena", dimensoes: "30 x 40 cm", tecnica: "Aquarela", preco: "R$ 800,00", img: "/img/rena.jpg", vendido: true },
+  { titulo: "O Gato na Janela", dimensoes: "40 x 50 cm", tecnica: "Acrílica", preco: "R$ 1.100,00", img: "/img/gato-na-janela.jpg", vendido: true },
+  { titulo: "Cores da Favela", dimensoes: "90 x 70 cm", tecnica: "Acrílica", preco: "R$ 2.000,00", img: "/img/favela.jpg", vendido: true },
+  // ----------------------
+
+  { titulo: "Retrato da Mulher", dimensoes: "50 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.800,00", img: "/img/mulher.jpg" },
+  { titulo: "Vaso de Rosas", dimensoes: "40 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 950,00", img: "/img/rosas.jpg" },
+  { titulo: "Varanda Azul", dimensoes: "60 x 80 cm", tecnica: "Acrílica", preco: "R$ 1.200,00", img: "/img/varanda.jpg" },
+  { titulo: "Barco no Mar", dimensoes: "40 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 900,00", img: "/img/barco.jpg" },
+  { titulo: "Caminho de Santiago", dimensoes: "100 x 80 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.600,00", img: "/img/santiago.jpg" },
+  { titulo: "Vista da Toscana", dimensoes: "70 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 2.200,00", img: "/img/toscana.jpg" },
+  { titulo: "Igreja em Minas III", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 580,00", img: "/img/minas3.jpg" },
+  { titulo: "Campo de Lavandas Roxas", dimensoes: "80 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.300,00", img: "/img/landas-roxas.jpg" },
+  { titulo: "Flor de Hibisco", dimensoes: "30 x 30 cm", tecnica: "Aquarela", preco: "R$ 700,00", img: "/img/hibisco.jpg" },
+  { titulo: "Colheita de Lavanda", dimensoes: "70 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.300,00", img: "/img/lavandas.jpg" },
+  { titulo: "Mar Revolto", dimensoes: "100 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.700,00", img: "/img/mar.jpg" },
+  { titulo: "Caminho dos Eucaliptos", dimensoes: "60 x 40 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.400,00", img: "/img/eucalipto.jpg" },
+  { titulo: "Ipê Amarelo", dimensoes: "80 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.600,00", img: "/img/ipe.jpg" }
 ];
 ---
 
 <BaseLayout
-  titulo="Ana Morais — Galeria Oficial"
-  descricao="Pinturas originais de Ana Morais."
+  titulo="Ana Morais — Galeria Oficial | Ana Morais Artista"
+  descricao="Galeria oficial de pinturas originais de Ana Morais. Obras únicas em óleo, acrílica e aquarela."
 >
+
+  <script type="application/json" id="dados-obras">
+    {JSON.stringify(obras)}
+  </script>
 
   <script is:inline src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
 
@@ -59,10 +67,19 @@ const obras = [
           <h3>{obra.titulo}</h3>
           <p class="tecnica">{obra.tecnica}</p>
           <p class="dimensoes">{obra.dimensoes}</p>
+          <p class="preco">{obra.preco}</p>
           
-          <button class="btn-zap" data-obra={obra.titulo} onclick="abrirWhatsapp(this)">
-            Consultar Valor
-          </button>
+          {/* LÓGICA PARA MOSTRAR BOTÃO VENDIDO OU COMPRAR */}
+          {obra.vendido ? (
+            <button class="btn-zap vendido" disabled>
+              Vendido
+            </button>
+          ) : (
+            <button class="btn-zap" data-obra={obra.titulo} onclick="abrirWhatsapp(this)">
+              Comprar Agora
+            </button>
+          )}
+
         </div>
       </article>
     ))}
@@ -82,15 +99,15 @@ const obras = [
     </div>
   </div>
 
-  <script define:vars={{ obras }}>
+  <script is:inline>
+    const obras = JSON.parse(document.getElementById('dados-obras').textContent);
+    
     const modal = document.getElementById("modal");
     const img = document.getElementById("modal-img");
     const contador = document.getElementById("contador");
-    
     let indexAtual = 0;
     let panzoom = null;
 
-    // Funções Globais
     window.abrirModal = function(index) {
       indexAtual = index;
       modal.style.display = "flex";
@@ -114,9 +131,9 @@ const obras = [
     };
 
     window.abrirWhatsapp = function(el) {
-      const tel = "5511999999999"; // <-- SEU NÚMERO
+      const tel = "5511999999999"; // <-- CONFIRA SEU NÚMERO
       const nomeObra = el.dataset.obra;
-      const msg = `Olá Ana! Gostaria de saber o valor da obra "${nomeObra}".`;
+      const msg = `Olá Ana! Quero comprar a obra "${nomeObra}". Qual a forma de pagamento?`;
       window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, "_blank");
     }
 
@@ -127,19 +144,17 @@ const obras = [
       if (panzoom) panzoom.dispose();
 
       img.onload = () => {
-        // --- AQUI ESTÁ A SUA CONFIGURAÇÃO ---
         panzoom = Panzoom(img, { 
-          maxScale: 4, 
-          minScale: 0.5,
-          contain: null,
-          transformOrigin: "center center" // O pulo do gato!
+            maxScale: 5, 
+            minScale: 0.5, 
+            startScale: 1,
+            contain: null,
+            transformOrigin: "center center"
         });
-        
         img.parentElement.addEventListener("wheel", panzoom.zoomWithWheel);
       };
     }
 
-    // Navegação por teclado
     document.addEventListener("keydown", (e) => {
       if (modal.style.display === "flex") {
         if (e.key === "Escape") fecharModal();
@@ -150,7 +165,7 @@ const obras = [
   </script>
 
   <style>
-    /* RESET BÁSICO */
+    /* ESTILOS GERAIS */
     * { box-sizing: border-box; }
     
     .hero { 
@@ -166,12 +181,8 @@ const obras = [
       color: #333;
     }
     .hero p { 
-      color: #777; 
-      font-style: italic; 
-      margin: 0;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      font-size: 0.9rem;
+      color: #777; font-style: italic; margin: 0; letter-spacing: 2px;
+      text-transform: uppercase; font-size: 0.9rem;
     }
 
     /* GRADE */
@@ -191,34 +202,16 @@ const obras = [
       overflow: hidden;
       transition: transform 0.2s;
     }
-    .card-obra:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
+    .card-obra:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 
     /* IMAGEM */
     .img-container {
-      height: 300px; /* Garante altura fixa */
-      width: 100%;
-      position: relative;
-      cursor: pointer;
-      overflow: hidden;
-      background: #f0f0f0;
+      height: 300px; width: 100%; position: relative; cursor: pointer; overflow: hidden; background: #f0f0f0;
     }
-    
     .overlay-zoom {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.3);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      opacity: 0;
-      transition: 0.3s;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      position: absolute; inset: 0; background: rgba(0,0,0,0.3); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; opacity: 0; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
     }
     .img-container:hover .overlay-zoom { opacity: 1; }
     .img-container:hover img { transform: scale(1.05); filter: brightness(0.9); }
@@ -227,89 +220,56 @@ const obras = [
     /* INFO */
     .info { padding: 20px; text-align: center; }
     .info h3 { margin: 0 0 5px 0; font-size: 1.2rem; color: #222; font-family: 'Times New Roman', serif;}
-    .tecnica { color: #888; font-style: italic; font-size: 0.9rem; margin: 0 0 15px 0; }
-    .dimensoes { font-weight: bold; font-size: 0.85rem; color: #444; margin-bottom: 15px; display: block;}
+    .tecnica { color: #888; font-style: italic; font-size: 0.9rem; margin: 0 0 5px 0; }
+    .dimensoes { font-size: 0.85rem; color: #666; margin-bottom: 10px; display: block;}
+    .preco { font-size: 1.2rem; color: #D4AF37; font-weight: bold; margin-bottom: 15px; display: block;}
 
+    /* BOTÃO COMPRAR */
     .btn-zap {
-      background: #25D366;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      width: 100%;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      transition: 0.2s;
+      background: #25D366; color: white; border: none; padding: 12px 20px; width: 100%;
+      border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase;
+      font-size: 0.9rem; transition: 0.2s;
     }
     .btn-zap:hover { background: #1ebc57; }
 
+    /* BOTÃO VENDIDO (NOVO ESTILO) */
+    .btn-zap.vendido {
+      background: #ccc; 
+      color: #666; 
+      cursor: default;
+    }
+    .btn-zap.vendido:hover { background: #ccc; }
+
     /* MODAL */
     .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.95);
-      z-index: 9999;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      transition: opacity 0.3s;
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+      z-index: 9999; flex-direction: column; justify-content: center; align-items: center;
+      opacity: 0; transition: opacity 0.3s;
     }
     .modal.ativo { opacity: 1; }
 
     .panzoom-container {
-      flex: 1;
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
+      flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden;
     }
     .modal img {
-      max-width: 90vw;
-      max-height: 80vh;
-      object-fit: contain;
-      cursor: grab;
+      max-width: 90vw; max-height: 80vh; object-fit: contain; cursor: grab;
     }
     .modal img:active { cursor: grabbing; }
 
-    /* BOTÕES MODAL */
     .fechar {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      background: none;
-      border: none;
-      color: white;
-      font-size: 40px;
-      cursor: pointer;
-      z-index: 10000;
+      position: absolute; top: 20px; right: 30px; background: none; border: none;
+      color: white; font-size: 40px; cursor: pointer; z-index: 10000;
     }
     .nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: rgba(255,255,255,0.5);
-      font-size: 50px;
-      cursor: pointer;
-      padding: 20px;
-      z-index: 10000;
-      transition: 0.2s;
+      position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none;
+      color: rgba(255,255,255,0.5); font-size: 50px; cursor: pointer; padding: 20px; z-index: 10000; transition: 0.2s;
     }
     .nav:hover { color: white; transform: translateY(-50%) scale(1.1); }
     .nav.prev { left: 10px; }
     .nav.next { right: 10px; }
 
     .modal-footer {
-      padding: 20px;
-      color: white;
-      font-family: 'Times New Roman', serif;
-      font-size: 1.2rem;
+      padding: 20px; color: white; font-family: 'Times New Roman', serif; font-size: 1.2rem;
     }
   </style>
 
