@@ -1,5 +1,4 @@
 ---
-// --- ARQUIVO: src/pages/index.astro ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 // CONFIGURAÇÃO DO WHATSAPP
@@ -8,28 +7,27 @@ const zapNumber = "554598027599";
 // LISTA DE OBRAS
 const obras = [
   // --- VENDIDAS ---
-  { titulo: "A Rena", dimensoes: "30 x 40 cm", tecnica: "Aquarela", preco: "R$ 800,00", img: "/img/rena.jpg", vendido: true },
+  { titulo: "A Rena", dimensoes: "30 x 40 cm", tecnica: "Acrílica", preco: "R$ 800,00", img: "/img/rena.jpg", vendido: true },
   { titulo: "O Gato na Janela", dimensoes: "40 x 50 cm", tecnica: "Acrílica", preco: "R$ 1.100,00", img: "/img/gatonajanela.jpg", vendido: true },
-  { titulo: "Cores da Favela", dimensoes: "90 x 70 cm", tecnica: "Acrílica", preco: "R$ 2.000,00", img: "/img/favela.jpg", vendido: true },
-  
+  { titulo: "Cores da Favela", dimensoes: "90 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 2.000,00", img: "/img/favela.jpg", vendido: true },
+
   // --- DISPONÍVEIS ---
-  { titulo: "Cataratas do Iguaçu", dimensoes: "130 x 80 cm", tecnica: "Óleo sobre Tela", preco: "R$ 2.000,00", img: "/img/cataratas.jpg" },
+  { titulo: "Cataratas do Iguaçu", dimensoes: "130 x 80 cm", tecnica: "Óleo sobre tela", preco: "R$ 2.000,00", img: "/img/cataratas.jpg" },
   { titulo: "Araras Azuis", dimensoes: "90 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.800,00", img: "/img/araras.jpg" },
-  { titulo: "Araucárias", dimensoes: "70 x 70 cm", tecnica: "Óleo sobre Tela", preco: "R$ 1.400,00", img: "/img/araucarias.jpg" },
-  { titulo: "Fruto", dimensoes: "70 x 60 cm", tecnica: "Óleo sobre Tela", preco: "R$ 1.200,00", img: "/img/fruto.jpg" },
-  { titulo: "Ruas de Paraty", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre Tela", preco: "R$ 680,00", img: "/img/paraty.jpg" },
-  { titulo: "Minas Gerais", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre Tela", preco: "R$ 580,00", img: "/img/minas.jpg" },
-  { titulo: "Paisagem de Minas", dimensoes: "40 x 50 cm", tecnica: "Óleo sobre Tela", preco: "R$ 450,00", img: "/img/minas2.jpg" },
-  
+  { titulo: "Araucárias", dimensoes: "70 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.400,00", img: "/img/araucarias.jpg" },
+  { titulo: "Fruto", dimensoes: "70 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.200,00", img: "/img/fruto.jpg" },
+  { titulo: "Ruas de Paraty", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 680,00", img: "/img/paraty.jpg" },
+  { titulo: "Minas Gerais", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 580,00", img: "/img/minas.jpg" },
+  { titulo: "Paisagem de Minas", dimensoes: "40 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 450,00", img: "/img/minas2.jpg" },
   { titulo: "Retrato da Mulher", dimensoes: "50 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.800,00", img: "/img/mulher.jpg" },
   { titulo: "Vaso de Rosas", dimensoes: "40 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 950,00", img: "/img/rosas.jpg" },
-  { titulo: "Varanda", dimensoes: "60 x 80 cm", tecnica: "Acrílica", preco: "R$ 1.200,00", img: "/img/varanda.jpg" },
+  { titulo: "Varanda", dimensoes: "60 x 80 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.200,00", img: "/img/varanda.jpg" },
   { titulo: "Barco", dimensoes: "40 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 900,00", img: "/img/barco.jpg" },
   { titulo: "Compostela", dimensoes: "100 x 80 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.600,00", img: "/img/santiago.jpg" },
   { titulo: "Vista da Toscana", dimensoes: "70 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 2.200,00", img: "/img/toscana.jpg" },
   { titulo: "Igreja em Minas", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 580,00", img: "/img/minas3.jpg" },
-  { titulo: "Campo de Lavandas Roxas", dimensoes: "80 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.300,00", img: "/img/landas roxas.jpg" },
-  { titulo: "Flor de Hibisco", dimensoes: "30 x 30 cm", tecnica: "Aquarela", preco: "R$ 700,00", img: "/img/hibisco.jpg" },
+  { titulo: "Campo de Lavandas Roxas", dimensoes: "80 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.300,00", img: "/img/lavandas-roxas.jpg" },
+  { titulo: "Flor de Hibisco", dimensoes: "30 x 30 cm", tecnica: "Óleo sobre tela", preco: "R$ 700,00", img: "/img/hibisco.jpg" },
   { titulo: "Colheita de Lavanda", dimensoes: "70 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.300,00", img: "/img/lavandas.jpg" },
   { titulo: "Mar Revolto", dimensoes: "100 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.700,00", img: "/img/mar.jpg" },
   { titulo: "Caminho dos Eucaliptos", dimensoes: "60 x 40 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.400,00", img: "/img/eucalipto.jpg" },
@@ -37,201 +35,456 @@ const obras = [
 ];
 ---
 
-<BaseLayout
-  titulo="Ana Morais — Galeria Oficial"
-  descricao="Pinturas originais de Ana Morais."
->
+<BaseLayout titulo="Ana Morais — Galeria Oficial" descricao="Pinturas originais de Ana Morais.">
 
-  <header class="hero">
-    <h1>Ana Morais</h1>
-    <p>Galeria de Arte</p>
-  </header>
+<!-- ✨ JSON-LD para SEO - Dados Estruturados -->
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ArtGallery",
+      "name": "Galeria Ana Morais",
+      "description": "Galeria oficial de pinturas originais de Ana Morais.",
+      "url": "https://www.anamorais.art",
+      "image": "https://www.anamorais.art/img/og-capa.jpg",
+      "telephone": "+55-45-98027599",
+      "artist": {
+        "@type": "Person",
+        "name": "Ana Morais",
+        "jobTitle": "Artista Plástica"
+      }
+    },
+    ...obras.map(obra => ({
+      "@type": "VisualArtwork",
+      "name": obra.titulo,
+      "artform": "Painting",
+      "artMedium": obra.tecnica,
+      "width": obra.dimensoes.split('x')[0].trim(),
+      "height": obra.dimensoes.split('x')[1]?.trim() || "",
+      "image": `https://www.anamorais.art${obra.img}`,
+      "creator": {
+        "@type": "Person",
+        "name": "Ana Morais"
+      },
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "BRL",
+        "price": obra.preco.replace(/[^\d,]/g, '').replace(',', '.'),
+        "availability": obra.vendido 
+          ? "https://schema.org/SoldOut" 
+          : "https://schema.org/InStock",
+        "url": `https://www.anamorais.art#${obra.titulo.toLowerCase().replace(/\s+/g, '-')}`
+      }
+    }))
+  ]
+})} />
 
-  <main class="galeria">
-    {obras.map((obra, index) => (
-      <article class="card-obra">
-        <div class="img-container" onclick={`window.abrirModal(${index})`}>
-          <img 
-            src={obra.img} 
-            alt={obra.titulo} 
-            loading="lazy" 
-          />
-          <span class="overlay-zoom">Ver Inteira</span>
-        </div>
+<header class="hero">
+  <h1>Ana Morais</h1>
+  <p>Galeria de Arte</p>
+</header>
 
-        <div class="info">
-          <h3>{obra.titulo}</h3>
-          <p class="tecnica">{obra.tecnica}</p>
-          <p class="dimensoes">{obra.dimensoes}</p>
-          <p class="preco">{obra.preco}</p>
-          
-          {obra.vendido ? (
-            <button class="btn-zap vendido" disabled>
-              Vendido
-            </button>
-          ) : (
-            <a 
-              href={`https://wa.me/${zapNumber}?text=${encodeURIComponent(`Olá Ana! Quero comprar a obra "${obra.titulo}". Qual a forma de pagamento?`)}`}
-              class="btn-zap"
-              target="_blank"
-            >
-              Comprar Agora
-            </a>
-          )}
-
-        </div>
-      </article>
-    ))}
-  </main>
-
-  <div id="modal" class="modal">
-    <button class="nav prev" onclick="window.navegar(-1)">&#10094;</button>
-    <button class="nav next" onclick="window.navegar(1)">&#10095;</button>
-    <button class="fechar" onclick="window.fecharModal()">&times;</button>
-
-    <div class="modal-conteudo">
-      <img id="modal-img" />
+<!-- ✨ SEÇÃO: SOBRE A ARTISTA -->
+<section class="sobre-artista">
+  <div class="container-sobre">
+    <div class="foto-artista-wrapper">
+      <img src="/img/ana-perfil.jpeg" alt="Ana Morais - Artista Plástica" class="foto-artista">
     </div>
-
-    <div class="modal-footer">
-      <span id="contador"></span>
+    <div class="bio">
+      <h2>Sobre a Artista</h2>
+      <p>Ana Morais é uma artista brasileira apaixonada por capturar a essência das paisagens naturais e urbanas do Brasil e do mundo. Com mais de 15 anos de experiência, cada pincelada conta uma história de cores vibrantes, luz e profunda emoção.</p>
+      <p>Especializada em <strong>óleo sobre tela</strong> e <strong>Acrílica</strong>, Ana transforma momentos efêmeros em memórias visuais eternas. Suas obras celebram a beleza das Cataratas do Iguaçu, as ruas históricas de Minas Gerais, os campos de lavanda da Europa e a fauna brasileira.</p>
+      <p class="destaque">✨ Cada obra é única, pintada à mão e assinada pela artista.</p>
     </div>
   </div>
+</section>
 
-  <script is:inline define:vars={{ obras }}>
-    // A variável 'obras' já existe aqui dentro automaticamente!
-    
-    // Variáveis de controle
-    var modal = document.getElementById("modal");
-    var img = document.getElementById("modal-img");
-    var contador = document.getElementById("contador");
-    var indexAtual = 0;
+<main class="galeria" id="galeria">
+  {obras.map((obra, index) => (
+    <article class="card-obra">
+      <div class="img-container" onclick={`window.abrirModal(${index})`}>
+        <img src={obra.img} alt={obra.titulo} loading="lazy" />
+        
+        {/* ✨ Badge de Vendido */}
+        {obra.vendido && (
+          <span class="badge-vendido">VENDIDO</span>
+        )}
+        
+        <span class="overlay-zoom">Ver Inteira</span>
+      </div>
 
-    // Função de Abrir
-    window.abrirModal = function(index) {
-      console.log("Abrindo obra index:", index); // Debug para testar
-      indexAtual = index;
-      
-      modal.style.display = "flex";
-      // Pequeno delay para animação CSS
-      setTimeout(function() { 
-        modal.classList.add("ativo"); 
-      }, 50);
-      
-      document.body.style.overflow = "hidden"; // Trava rolagem
-      atualizarImagem();
-    };
+      <div class="info">
+        <h3>{obra.titulo}</h3>
+        <p class="tecnica">{obra.tecnica}</p>
+        <p class="dimensoes">{obra.dimensoes}</p>
+        <p class="preco">{obra.preco}</p>
 
-    // Função de Fechar
-    window.fecharModal = function() {
-      modal.classList.remove("ativo");
-      setTimeout(function() {
-        modal.style.display = "none";
-        document.body.style.overflow = "auto"; 
-      }, 300);
-    };
+        {obra.vendido ? (
+          <button class="btn-zap vendido" disabled>Vendido</button>
+        ) : (
+          <a
+            href={`https://wa.me/${zapNumber}?text=${encodeURIComponent(`Olá Ana Morais. Tenho interesse na obra "${obra.titulo}". Poderia informar as formas de pagamento e envio?`)}`}
+            class="btn-zap"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Comprar Agora
+          </a>
+        )}
+      </div>
+    </article>
+  ))}
+</main>
 
-    // Função de Navegar (Carrossel)
-    window.navegar = function(dir) {
-      if(window.event) window.event.stopPropagation();
-      indexAtual = (indexAtual + dir + obras.length) % obras.length;
-      atualizarImagem();
-    };
+<div id="modal" class="modal">
+  <button class="nav prev" aria-label="Imagem anterior" onclick="window.navegar(-1, event)">&#10094;</button>
+  <button class="nav next" aria-label="Próxima imagem" onclick="window.navegar(1, event)">&#10095;</button>
+  <button class="fechar" aria-label="Fechar modal" onclick="window.fecharModal()">&times;</button>
 
-    // Função Interna
-    function atualizarImagem() {
-      if(!obras[indexAtual]) return;
-      img.src = obras[indexAtual].img;
-      contador.textContent = obras[indexAtual].titulo;
+  <div class="modal-conteudo">
+    <img id="modal-img" alt="Obra ampliada" />
+  </div>
+
+  <div class="modal-footer">
+    <span id="contador"></span>
+  </div>
+</div>
+
+<script is:inline define:vars={{ obras }}>
+  var modal = document.getElementById("modal");
+  var img = document.getElementById("modal-img");
+  var contador = document.getElementById("contador");
+  var indexAtual = 0;
+
+  window.abrirModal = function(index) {
+    indexAtual = index;
+    modal.style.display = "flex";
+    setTimeout(() => modal.classList.add("ativo"), 50);
+    document.body.style.overflow = "hidden";
+    atualizarImagem();
+  };
+
+  window.fecharModal = function() {
+    modal.classList.remove("ativo");
+    setTimeout(() => {
+      modal.style.display = "none";
+      document.body.style.overflow = "auto";
+    }, 300);
+  };
+
+  window.navegar = function(dir, e) {
+    if (e) e.stopPropagation();
+    indexAtual = (indexAtual + dir + obras.length) % obras.length;
+    atualizarImagem();
+  };
+
+  function atualizarImagem() {
+    img.src = obras[indexAtual].img;
+    img.alt = obras[indexAtual].titulo;
+    contador.textContent = obras[indexAtual].titulo;
+  }
+
+  document.addEventListener("keydown", function(e) {
+    if (modal.style.display === "flex") {
+      if (e.key === "Escape") window.fecharModal();
+      if (e.key === "ArrowRight") window.navegar(1);
+      if (e.key === "ArrowLeft") window.navegar(-1);
     }
+  });
+</script>
 
-    // Teclado (ESC e Setas)
-    document.addEventListener("keydown", function(e) {
-      if (modal.style.display === "flex") {
-        if (e.key === "Escape") window.fecharModal();
-        if (e.key === "ArrowRight") window.navegar(1);
-        if (e.key === "ArrowLeft") window.navegar(-1);
-      }
-    });
-  </script>
+<style>
+  /* GERAL */
+  * { box-sizing: border-box; }
+  
+  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
 
-  <style>
-    /* GERAL */
-    * { box-sizing: border-box; }
-    
-    .hero { 
-      text-align: center; padding: 60px 20px; background-color: white; border-bottom: 1px solid #eee;
-    }
-    .hero h1 { font-family: 'Times New Roman', serif; font-size: 3rem; margin: 0 0 10px 0; color: #333; }
-    .hero p { color: #777; font-style: italic; margin: 0; letter-spacing: 2px; text-transform: uppercase; font-size: 0.9rem; }
+  .hero { 
+    text-align: center; padding: 60px 20px; background-color: white; border-bottom: 1px solid #eee;
+  }
+  .hero h1 { font-family: 'Times New Roman', serif; font-size: 3rem; margin: 0 0 10px 0; color: #333; }
+  .hero p { color: #777; font-style: italic; margin: 0; letter-spacing: 2px; text-transform: uppercase; font-size: 0.9rem; }
 
-    /* GALERIA */
-    .galeria {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;
-      max-width: 1200px; margin: 0 auto; padding: 40px 20px;
-    }
-    .card-obra {
-      background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; transition: transform 0.2s;
-    }
-    .card-obra:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+  /* SEÇÃO: SOBRE A ARTISTA */
+  .sobre-artista {
+    background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
+    padding: 60px 20px;
+    border-bottom: 1px solid #eee;
+  }
+  .container-sobre {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 50px;
+    align-items: center;
+  }
+  .foto-artista-wrapper {
+    position: relative;
+  }
+  .foto-artista {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    border: 5px solid white;
+    transition: transform 0.3s ease;
+  }
+  .foto-artista:hover {
+    transform: scale(1.05);
+  }
+  .bio h2 {
+    font-family: 'Times New Roman', serif;
+    color: #333;
+    margin: 0 0 20px 0;
+    font-size: 2rem;
+    border-bottom: 3px solid #D4AF37;
+    display: inline-block;
+    padding-bottom: 5px;
+  }
+  .bio p {
+    color: #555;
+    line-height: 1.8;
+    margin-bottom: 15px;
+    font-size: 1rem;
+  }
+  .bio strong {
+    color: #D4AF37;
+    font-weight: bold;
+  }
+  .bio .destaque {
+    background: linear-gradient(135deg, #f0e6d2 0%, #fff9e6 100%);
+    padding: 15px 20px;
+    border-left: 4px solid #D4AF37;
+    border-radius: 4px;
+    font-style: italic;
+    color: #666;
+    margin-top: 20px;
+  }
 
-    /* FOTO DE CAPA */
-    .img-container {
-      height: 300px; width: 100%; position: relative; cursor: pointer; overflow: hidden; background: #f0f0f0;
-    }
-    .img-container img { 
-      width: 100%; height: 100%; object-fit: cover; transition: 0.5s; 
-    }
-    .overlay-zoom {
-      position: absolute; inset: 0; background: rgba(0,0,0,0.3); color: white;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: bold; opacity: 0; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
-    }
-    .img-container:hover .overlay-zoom { opacity: 1; }
-    .img-container:hover img { transform: scale(1.05); filter: brightness(0.9); } 
+  /* GALERIA */
+  .galeria {
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+    gap: 30px;
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 40px 20px;
+  }
+  .card-obra {
+    background: white; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+    border-radius: 8px; 
+    overflow: hidden; 
+    transition: transform 0.2s;
+  }
+  .card-obra:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+  }
 
-    /* INFO */
-    .info { padding: 20px; text-align: center; }
-    .info h3 { margin: 0 0 5px 0; font-size: 1.2rem; color: #222; font-family: 'Times New Roman', serif;}
-    .tecnica { color: #888; font-style: italic; font-size: 0.9rem; margin: 0 0 5px 0; }
-    .dimensoes { font-size: 0.85rem; color: #666; margin-bottom: 10px; display: block;}
-    .preco { font-size: 1.2rem; color: #D4AF37; font-weight: bold; margin-bottom: 15px; display: block;}
+  /* FOTO DE CAPA */
+  .img-container {
+    height: 300px; 
+    width: 100%; 
+    position: relative; 
+    cursor: pointer; 
+    overflow: hidden; 
+    background: #f0f0f0;
+  }
+  .img-container img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    transition: 0.5s; 
+  }
 
-    /* BOTÕES / LINKS */
-    .btn-zap {
-      display: block; text-decoration: none; text-align: center;
-      background: #25D366; color: white; border: none; padding: 12px 20px; width: 100%;
-      border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; transition: 0.2s;
-    }
-    .btn-zap:hover { background: #1ebc57; }
-    .btn-zap.vendido { background: #ccc; color: #666; cursor: not-allowed; pointer-events: none; }
+  /* ✨ BADGE VENDIDO */
+  .badge-vendido {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(220, 53, 69, 0.95);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    z-index: 10;
+    backdrop-filter: blur(4px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    animation: pulseVendido 2s ease-in-out infinite;
+  }
 
-    /* MODAL LIMPO */
-    .modal {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-      z-index: 9999; flex-direction: column; justify-content: center; align-items: center;
-      opacity: 0; transition: opacity 0.3s;
+  @keyframes pulseVendido {
+    0%, 100% {
+      transform: scale(1);
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
     }
-    .modal.ativo { opacity: 1; }
+    50% {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(220, 53, 69, 0.6);
+    }
+  }
 
-    .modal-conteudo {
-      flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 20px;
-    }
-    .modal img {
-      max-width: 100%; max-height: 80vh; 
-      object-fit: contain; 
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    }
+  /* Escurecer obras vendidas */
+  .card-obra:has(.badge-vendido) .img-container img {
+    filter: grayscale(30%) brightness(0.85);
+  }
 
-    .fechar { position: absolute; top: 20px; right: 30px; background: none; border: none; color: white; font-size: 40px; cursor: pointer; }
-    .nav {
-      position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none;
-      color: rgba(255,255,255,0.5); font-size: 50px; cursor: pointer; padding: 20px; transition: 0.2s;
+  .card-obra:has(.badge-vendido) .img-container:hover img {
+    filter: grayscale(30%) brightness(0.75);
+  }
+
+  .overlay-zoom {
+    position: absolute; 
+    inset: 0; 
+    background: rgba(0,0,0,0.3); 
+    color: white;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    font-weight: bold; 
+    opacity: 0; 
+    transition: 0.3s; 
+    text-transform: uppercase; 
+    letter-spacing: 1px;
+  }
+  .img-container:hover .overlay-zoom { opacity: 1; }
+  .img-container:hover img { transform: scale(1.05); filter: brightness(0.9); } 
+
+  /* INFO */
+  .info { padding: 20px; text-align: center; }
+  .info h3 { margin: 0 0 5px 0; font-size: 1.2rem; color: #222; font-family: 'Times New Roman', serif;}
+  .tecnica { color: #888; font-style: italic; font-size: 0.9rem; margin: 0 0 5px 0; }
+  .dimensoes { font-size: 0.85rem; color: #666; margin-bottom: 10px; display: block;}
+  .preco { font-size: 1.2rem; color: #D4AF37; font-weight: bold; margin-bottom: 15px; display: block;}
+
+  /* BOTÕES */
+  .btn-zap {
+    display: block; 
+    text-decoration: none; 
+    text-align: center;
+    background: #25D366; 
+    color: white; 
+    border: none; 
+    padding: 12px 20px; 
+    width: 100%;
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    text-transform: uppercase; 
+    font-size: 0.9rem; 
+    transition: 0.2s;
+  }
+  .btn-zap:hover { background: #1ebc57; }
+  .btn-zap.vendido { 
+    background: #ccc; 
+    color: #666; 
+    cursor: not-allowed; 
+    pointer-events: none; 
+  }
+
+  /* MODAL */
+  .modal {
+    display: none; 
+    position: fixed; 
+    inset: 0; 
+    background: rgba(0,0,0,0.95);
+    z-index: 9999; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    opacity: 0; 
+    transition: opacity 0.3s;
+  }
+  .modal.ativo { opacity: 1; }
+
+  .modal-conteudo {
+    flex: 1; 
+    width: 100%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    overflow: hidden; 
+    padding: 20px;
+  }
+  .modal img {
+    max-width: 100%; 
+    max-height: 80vh; 
+    object-fit: contain; 
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  }
+
+  .fechar { 
+    position: absolute; 
+    top: 20px; 
+    right: 30px; 
+    background: none; 
+    border: none; 
+    color: white; 
+    font-size: 40px; 
+    cursor: pointer; 
+    z-index: 10000;
+  }
+  .nav {
+    position: absolute; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    background: none; 
+    border: none;
+    color: rgba(255,255,255,0.5); 
+    font-size: 50px; 
+    cursor: pointer; 
+    padding: 20px; 
+    transition: 0.2s;
+    z-index: 10000;
+  }
+  .nav:hover { 
+    color: white; 
+    transform: translateY(-50%) scale(1.1); 
+  }
+  .nav.prev { left: 10px; }
+  .nav.next { right: 10px; }
+  .modal-footer { 
+    padding: 20px; 
+    color: white; 
+    font-family: 'Times New Roman', serif; 
+    font-size: 1.2rem; 
+  }
+
+  /* RESPONSIVO */
+  @media (max-width: 768px) {
+    .container-sobre {
+      grid-template-columns: 1fr;
+      gap: 30px;
+      text-align: center;
     }
-    .nav:hover { color: white; transform: translateY(-50%) scale(1.1); }
-    .nav.prev { left: 10px; }
-    .nav.next { right: 10px; }
-    .modal-footer { padding: 20px; color: white; font-family: 'Times New Roman', serif; font-size: 1.2rem; }
-  </style>
+    .foto-artista {
+      width: 180px;
+      height: 180px;
+    }
+    .foto-artista-wrapper {
+      display: flex;
+      justify-content: center;
+    }
+    .bio h2 {
+      font-size: 1.5rem;
+    }
+    .hero h1 {
+      font-size: 2rem;
+    }
+    .badge-vendido {
+      top: 10px;
+      right: 10px;
+      padding: 6px 12px;
+      font-size: 0.7rem;
+    }
+  }
+</style>
 
 </BaseLayout>
