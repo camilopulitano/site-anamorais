@@ -2,17 +2,17 @@
 // --- ARQUIVO: src/pages/index.astro ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// SEU NÚMERO DE WHATSAPP (Configurado aqui para gerar os links)
+// CONFIGURAÇÃO DO ZAP
 const zapNumber = "554598027599";
 
-// LISTA DE OBRAS
+// LISTA DE OBRAS (Mantendo seus nomes de arquivo corretos)
 const obras = [
-  // --- OBRAS VENDIDAS ---
+  // --- VENDIDAS ---
   { titulo: "A Rena", dimensoes: "30 x 40 cm", tecnica: "Aquarela", preco: "R$ 800,00", img: "/img/rena.jpg", vendido: true },
   { titulo: "O Gato na Janela", dimensoes: "40 x 50 cm", tecnica: "Acrílica", preco: "R$ 1.100,00", img: "/img/gatonajanela.jpg", vendido: true },
   { titulo: "Cores da Favela", dimensoes: "90 x 70 cm", tecnica: "Acrílica", preco: "R$ 2.000,00", img: "/img/favela.jpg", vendido: true },
   
-  // --- OBRAS DISPONÍVEIS ---
+  // --- DISPONÍVEIS ---
   { titulo: "Cataratas do Iguaçu", dimensoes: "130 x 80 cm", tecnica: "Óleo sobre Tela", preco: "R$ 2.000,00", img: "/img/cataratas.jpg" },
   { titulo: "Araras Azuis", dimensoes: "90 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.800,00", img: "/img/araras.jpg" },
   { titulo: "Araucárias", dimensoes: "70 x 70 cm", tecnica: "Óleo sobre Tela", preco: "R$ 1.400,00", img: "/img/araucarias.jpg" },
@@ -46,8 +46,6 @@ const obras = [
     {JSON.stringify(obras)}
   </script>
 
-  <script is:inline src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
-
   <header class="hero">
     <h1>Ana Morais</h1>
     <p>Galeria de Arte</p>
@@ -76,10 +74,6 @@ const obras = [
               Vendido
             </button>
           ) : (
-            /* AQUI ESTÁ A CORREÇÃO:
-               Usamos um link <a> direto em vez de botão com script.
-               Isso funciona em 100% dos celulares e navegadores.
-            */
             <a 
               href={`https://wa.me/${zapNumber}?text=${encodeURIComponent(`Olá Ana! Quero comprar a obra "${obra.titulo}". Qual a forma de pagamento?`)}`}
               class="btn-zap"
@@ -99,7 +93,7 @@ const obras = [
     <button class="nav next" onclick="navegar(1)">&#10095;</button>
     <button class="fechar" onclick="fecharModal()">&times;</button>
 
-    <div class="panzoom-container">
+    <div class="modal-conteudo">
       <img id="modal-img" />
     </div>
 
@@ -109,19 +103,18 @@ const obras = [
   </div>
 
   <script is:inline>
-    // Recupera dados
-    var obrasData = JSON.parse(document.getElementById('dados-obras').textContent);
-    
-    // Elementos
+    var obrasData = [];
+    try {
+      obrasData = JSON.parse(document.getElementById('dados-obras').textContent);
+    } catch (e) { console.error("Erro dados", e); }
+
     var modal = document.getElementById("modal");
     var img = document.getElementById("modal-img");
     var contador = document.getElementById("contador");
     var indexAtual = 0;
-    var panzoom = null;
-
-    // --- FUNÇÕES DE ZOOM ---
 
     window.abrirModal = function(index) {
+      if(!obrasData.length) return;
       indexAtual = index;
       modal.style.display = "flex";
       setTimeout(function() { modal.classList.add("ativo"); }, 10);
@@ -134,7 +127,6 @@ const obras = [
       setTimeout(function() {
         modal.style.display = "none";
         document.body.style.overflow = "auto"; 
-        if (panzoom) panzoom.dispose();
       }, 300);
     };
 
@@ -145,26 +137,9 @@ const obras = [
     };
 
     function atualizarImagem() {
+      if(!obrasData[indexAtual]) return;
       img.src = obrasData[indexAtual].img;
-      contador.textContent = obrasData[indexAtual].titulo + " (" + (indexAtual + 1) + " / " + obrasData.length + ")";
-
-      if (panzoom) panzoom.dispose();
-
-      img.onload = function() {
-        if (typeof Panzoom !== 'undefined') {
-          panzoom = Panzoom(img, { 
-              maxScale: 4, 
-              minScale: 0.5,
-              contain: null,
-              transformOrigin: "center center"
-          });
-          img.parentElement.addEventListener("wheel", panzoom.zoomWithWheel);
-        }
-      };
-      
-      img.onerror = function() {
-          console.log("Erro ao carregar imagem: " + img.src);
-      };
+      contador.textContent = obrasData[indexAtual].titulo;
     }
 
     // Teclado
@@ -182,57 +157,28 @@ const obras = [
     * { box-sizing: border-box; }
     
     .hero { 
-      text-align: center; 
-      padding: 60px 20px; 
-      background-color: white;
-      border-bottom: 1px solid #eee;
+      text-align: center; padding: 60px 20px; background-color: white; border-bottom: 1px solid #eee;
     }
-    .hero h1 { 
-      font-family: 'Times New Roman', serif; 
-      font-size: 3rem; 
-      margin: 0 0 10px 0; 
-      color: #333;
-    }
-    .hero p { 
-      color: #777; font-style: italic; margin: 0; letter-spacing: 2px;
-      text-transform: uppercase; font-size: 0.9rem;
-    }
+    .hero h1 { font-family: 'Times New Roman', serif; font-size: 3rem; margin: 0 0 10px 0; color: #333; }
+    .hero p { color: #777; font-style: italic; margin: 0; letter-spacing: 2px; text-transform: uppercase; font-size: 0.9rem; }
 
-    /* GRID */
+    /* GALERIA */
     .galeria {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 30px;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 20px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;
+      max-width: 1200px; margin: 0 auto; padding: 40px 20px;
     }
-
     .card-obra {
-      background: white;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      border-radius: 8px;
-      overflow: hidden;
-      transition: transform 0.2s;
+      background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; transition: transform 0.2s;
     }
     .card-obra:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 
-    /* IMAGEM PREENCHIDA */
+    /* FOTO DE CAPA */
     .img-container {
-      height: 300px; 
-      width: 100%; 
-      position: relative; 
-      cursor: pointer; 
-      overflow: hidden; 
-      background: #f0f0f0;
+      height: 300px; width: 100%; position: relative; cursor: pointer; overflow: hidden; background: #f0f0f0;
     }
     .img-container img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: cover; 
-      transition: 0.5s; 
+      width: 100%; height: 100%; object-fit: cover; transition: 0.5s; 
     }
-
     .overlay-zoom {
       position: absolute; inset: 0; background: rgba(0,0,0,0.3); color: white;
       display: flex; align-items: center; justify-content: center;
@@ -248,25 +194,16 @@ const obras = [
     .dimensoes { font-size: 0.85rem; color: #666; margin-bottom: 10px; display: block;}
     .preco { font-size: 1.2rem; color: #D4AF37; font-weight: bold; margin-bottom: 15px; display: block;}
 
-    /* BOTÕES / LINKS */
+    /* BOTÕES */
     .btn-zap {
-      /* Estilo de Botão para o Link */
-      display: block; /* Importante para o link se comportar como botão */
-      text-decoration: none; /* Tira o sublinhado */
-      text-align: center;
-      
+      display: block; text-decoration: none; text-align: center;
       background: #25D366; color: white; border: none; padding: 12px 20px; width: 100%;
-      border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase;
-      font-size: 0.9rem; transition: 0.2s;
+      border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; transition: 0.2s;
     }
     .btn-zap:hover { background: #1ebc57; }
+    .btn-zap.vendido { background: #ccc; color: #666; cursor: not-allowed; pointer-events: none; }
 
-    .btn-zap.vendido {
-      background: #ccc; color: #666; cursor: not-allowed; text-align: center;
-    }
-    .btn-zap.vendido:hover { background: #ccc; }
-
-    /* MODAL */
+    /* MODAL LIMPO (SEM ZOOM COMPLEXO) */
     .modal {
       display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
       z-index: 9999; flex-direction: column; justify-content: center; align-items: center;
@@ -274,31 +211,24 @@ const obras = [
     }
     .modal.ativo { opacity: 1; }
 
-    .panzoom-container {
-      flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden;
+    .modal-conteudo {
+      flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 20px;
     }
     .modal img {
-      max-width: 90vw; max-height: 80vh; 
-      object-fit: contain; 
-      cursor: grab;
+      max-width: 100%; max-height: 80vh; 
+      object-fit: contain; /* Garante que a imagem caiba na tela */
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
-    .modal img:active { cursor: grabbing; }
 
-    .fechar {
-      position: absolute; top: 20px; right: 30px; background: none; border: none;
-      color: white; font-size: 40px; cursor: pointer; z-index: 10000;
-    }
+    .fechar { position: absolute; top: 20px; right: 30px; background: none; border: none; color: white; font-size: 40px; cursor: pointer; }
     .nav {
       position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none;
-      color: rgba(255,255,255,0.5); font-size: 50px; cursor: pointer; padding: 20px; z-index: 10000; transition: 0.2s;
+      color: rgba(255,255,255,0.5); font-size: 50px; cursor: pointer; padding: 20px; transition: 0.2s;
     }
     .nav:hover { color: white; transform: translateY(-50%) scale(1.1); }
     .nav.prev { left: 10px; }
     .nav.next { right: 10px; }
-
-    .modal-footer {
-      padding: 20px; color: white; font-family: 'Times New Roman', serif; font-size: 1.2rem;
-    }
+    .modal-footer { padding: 20px; color: white; font-family: 'Times New Roman', serif; font-size: 1.2rem; }
   </style>
 
 </BaseLayout>
