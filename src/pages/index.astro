@@ -2,10 +2,10 @@
 // --- ARQUIVO: src/pages/index.astro ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// CONFIGURAÇÃO DO ZAP
+// CONFIGURAÇÃO DO WHATSAPP
 const zapNumber = "554598027599";
 
-// LISTA DE OBRAS (Mantendo seus nomes de arquivo corretos)
+// LISTA DE OBRAS
 const obras = [
   // --- VENDIDAS ---
   { titulo: "A Rena", dimensoes: "30 x 40 cm", tecnica: "Aquarela", preco: "R$ 800,00", img: "/img/rena.jpg", vendido: true },
@@ -28,7 +28,7 @@ const obras = [
   { titulo: "Compostela", dimensoes: "100 x 80 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.600,00", img: "/img/santiago.jpg" },
   { titulo: "Vista da Toscana", dimensoes: "70 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 2.200,00", img: "/img/toscana.jpg" },
   { titulo: "Igreja em Minas", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 580,00", img: "/img/minas3.jpg" },
-  { titulo: "Campo de Lavandas Roxas", dimensoes: "80 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.300,00", img: "/img/landasroxas.jpg" },
+  { titulo: "Campo de Lavandas Roxas", dimensoes: "80 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.300,00", img: "/img/landas roxas.jpg" },
   { titulo: "Flor de Hibisco", dimensoes: "30 x 30 cm", tecnica: "Aquarela", preco: "R$ 700,00", img: "/img/hibisco.jpg" },
   { titulo: "Colheita de Lavanda", dimensoes: "70 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.300,00", img: "/img/lavandas.jpg" },
   { titulo: "Mar Revolto", dimensoes: "100 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.700,00", img: "/img/mar.jpg" },
@@ -42,10 +42,6 @@ const obras = [
   descricao="Pinturas originais de Ana Morais."
 >
 
-  <script type="application/json" id="dados-obras">
-    {JSON.stringify(obras)}
-  </script>
-
   <header class="hero">
     <h1>Ana Morais</h1>
     <p>Galeria de Arte</p>
@@ -54,7 +50,7 @@ const obras = [
   <main class="galeria">
     {obras.map((obra, index) => (
       <article class="card-obra">
-        <div class="img-container" onclick={`abrirModal(${index})`}>
+        <div class="img-container" onclick={`window.abrirModal(${index})`}>
           <img 
             src={obra.img} 
             alt={obra.titulo} 
@@ -89,9 +85,9 @@ const obras = [
   </main>
 
   <div id="modal" class="modal">
-    <button class="nav prev" onclick="navegar(-1)">&#10094;</button>
-    <button class="nav next" onclick="navegar(1)">&#10095;</button>
-    <button class="fechar" onclick="fecharModal()">&times;</button>
+    <button class="nav prev" onclick="window.navegar(-1)">&#10094;</button>
+    <button class="nav next" onclick="window.navegar(1)">&#10095;</button>
+    <button class="fechar" onclick="window.fecharModal()">&times;</button>
 
     <div class="modal-conteudo">
       <img id="modal-img" />
@@ -102,26 +98,31 @@ const obras = [
     </div>
   </div>
 
-  <script is:inline>
-    var obrasData = [];
-    try {
-      obrasData = JSON.parse(document.getElementById('dados-obras').textContent);
-    } catch (e) { console.error("Erro dados", e); }
-
+  <script is:inline define:vars={{ obras }}>
+    // A variável 'obras' já existe aqui dentro automaticamente!
+    
+    // Variáveis de controle
     var modal = document.getElementById("modal");
     var img = document.getElementById("modal-img");
     var contador = document.getElementById("contador");
     var indexAtual = 0;
 
+    // Função de Abrir
     window.abrirModal = function(index) {
-      if(!obrasData.length) return;
+      console.log("Abrindo obra index:", index); // Debug para testar
       indexAtual = index;
+      
       modal.style.display = "flex";
-      setTimeout(function() { modal.classList.add("ativo"); }, 10);
-      document.body.style.overflow = "hidden"; 
+      // Pequeno delay para animação CSS
+      setTimeout(function() { 
+        modal.classList.add("ativo"); 
+      }, 50);
+      
+      document.body.style.overflow = "hidden"; // Trava rolagem
       atualizarImagem();
     };
 
+    // Função de Fechar
     window.fecharModal = function() {
       modal.classList.remove("ativo");
       setTimeout(function() {
@@ -130,24 +131,26 @@ const obras = [
       }, 300);
     };
 
+    // Função de Navegar (Carrossel)
     window.navegar = function(dir) {
       if(window.event) window.event.stopPropagation();
-      indexAtual = (indexAtual + dir + obrasData.length) % obrasData.length;
+      indexAtual = (indexAtual + dir + obras.length) % obras.length;
       atualizarImagem();
     };
 
+    // Função Interna
     function atualizarImagem() {
-      if(!obrasData[indexAtual]) return;
-      img.src = obrasData[indexAtual].img;
-      contador.textContent = obrasData[indexAtual].titulo;
+      if(!obras[indexAtual]) return;
+      img.src = obras[indexAtual].img;
+      contador.textContent = obras[indexAtual].titulo;
     }
 
-    // Teclado
+    // Teclado (ESC e Setas)
     document.addEventListener("keydown", function(e) {
       if (modal.style.display === "flex") {
-        if (e.key === "Escape") fecharModal();
-        if (e.key === "ArrowRight") navegar(1);
-        if (e.key === "ArrowLeft") navegar(-1);
+        if (e.key === "Escape") window.fecharModal();
+        if (e.key === "ArrowRight") window.navegar(1);
+        if (e.key === "ArrowLeft") window.navegar(-1);
       }
     });
   </script>
@@ -194,7 +197,7 @@ const obras = [
     .dimensoes { font-size: 0.85rem; color: #666; margin-bottom: 10px; display: block;}
     .preco { font-size: 1.2rem; color: #D4AF37; font-weight: bold; margin-bottom: 15px; display: block;}
 
-    /* BOTÕES */
+    /* BOTÕES / LINKS */
     .btn-zap {
       display: block; text-decoration: none; text-align: center;
       background: #25D366; color: white; border: none; padding: 12px 20px; width: 100%;
@@ -203,7 +206,7 @@ const obras = [
     .btn-zap:hover { background: #1ebc57; }
     .btn-zap.vendido { background: #ccc; color: #666; cursor: not-allowed; pointer-events: none; }
 
-    /* MODAL LIMPO (SEM ZOOM COMPLEXO) */
+    /* MODAL LIMPO */
     .modal {
       display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
       z-index: 9999; flex-direction: column; justify-content: center; align-items: center;
@@ -216,7 +219,7 @@ const obras = [
     }
     .modal img {
       max-width: 100%; max-height: 80vh; 
-      object-fit: contain; /* Garante que a imagem caiba na tela */
+      object-fit: contain; 
       box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
 
