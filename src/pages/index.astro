@@ -2,13 +2,14 @@
 // --- ARQUIVO: src/pages/index.astro ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
+// SEU NÚMERO DE WHATSAPP (Configurado aqui para gerar os links)
+const zapNumber = "554598027599";
+
 // LISTA DE OBRAS
 const obras = [
   // --- OBRAS VENDIDAS ---
   { titulo: "A Rena", dimensoes: "30 x 40 cm", tecnica: "Aquarela", preco: "R$ 800,00", img: "/img/rena.jpg", vendido: true },
-  
   { titulo: "O Gato na Janela", dimensoes: "40 x 50 cm", tecnica: "Acrílica", preco: "R$ 1.100,00", img: "/img/gatonajanela.jpg", vendido: true },
-  
   { titulo: "Cores da Favela", dimensoes: "90 x 70 cm", tecnica: "Acrílica", preco: "R$ 2.000,00", img: "/img/favela.jpg", vendido: true },
   
   // --- OBRAS DISPONÍVEIS ---
@@ -27,10 +28,7 @@ const obras = [
   { titulo: "Compostela", dimensoes: "100 x 80 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.600,00", img: "/img/santiago.jpg" },
   { titulo: "Vista da Toscana", dimensoes: "70 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 2.200,00", img: "/img/toscana.jpg" },
   { titulo: "Igreja em Minas", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 580,00", img: "/img/minas3.jpg" },
-  
- 
   { titulo: "Campo de Lavandas Roxas", dimensoes: "80 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.300,00", img: "/img/landasroxas.jpg" },
-  
   { titulo: "Flor de Hibisco", dimensoes: "30 x 30 cm", tecnica: "Aquarela", preco: "R$ 700,00", img: "/img/hibisco.jpg" },
   { titulo: "Colheita de Lavanda", dimensoes: "70 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.300,00", img: "/img/lavandas.jpg" },
   { titulo: "Mar Revolto", dimensoes: "100 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.700,00", img: "/img/mar.jpg" },
@@ -78,9 +76,17 @@ const obras = [
               Vendido
             </button>
           ) : (
-            <button class="btn-zap" data-obra={obra.titulo} onclick="abrirWhatsapp(this)">
+            /* AQUI ESTÁ A CORREÇÃO:
+               Usamos um link <a> direto em vez de botão com script.
+               Isso funciona em 100% dos celulares e navegadores.
+            */
+            <a 
+              href={`https://wa.me/${zapNumber}?text=${encodeURIComponent(`Olá Ana! Quero comprar a obra "${obra.titulo}". Qual a forma de pagamento?`)}`}
+              class="btn-zap"
+              target="_blank"
+            >
               Comprar Agora
-            </button>
+            </a>
           )}
 
         </div>
@@ -103,15 +109,17 @@ const obras = [
   </div>
 
   <script is:inline>
+    // Recupera dados
     var obrasData = JSON.parse(document.getElementById('dados-obras').textContent);
     
+    // Elementos
     var modal = document.getElementById("modal");
     var img = document.getElementById("modal-img");
     var contador = document.getElementById("contador");
     var indexAtual = 0;
     var panzoom = null;
-    
-    var WHATSAPP_NUMBER = "554598027599"; 
+
+    // --- FUNÇÕES DE ZOOM ---
 
     window.abrirModal = function(index) {
       indexAtual = index;
@@ -134,13 +142,6 @@ const obras = [
       if(window.event) window.event.stopPropagation();
       indexAtual = (indexAtual + dir + obrasData.length) % obrasData.length;
       atualizarImagem();
-    };
-
-    window.abrirWhatsapp = function(el) {
-      var nomeObra = el.getAttribute('data-obra');
-      var msg = "Olá Ana! Quero comprar a obra \"" + nomeObra + "\". Qual a forma de pagamento?";
-      var url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(msg);
-      window.open(url, "_blank");
     };
 
     function atualizarImagem() {
@@ -166,6 +167,7 @@ const obras = [
       };
     }
 
+    // Teclado
     document.addEventListener("keydown", function(e) {
       if (modal.style.display === "flex") {
         if (e.key === "Escape") fecharModal();
@@ -176,6 +178,7 @@ const obras = [
   </script>
 
   <style>
+    /* GERAL */
     * { box-sizing: border-box; }
     
     .hero { 
@@ -195,6 +198,7 @@ const obras = [
       text-transform: uppercase; font-size: 0.9rem;
     }
 
+    /* GRID */
     .galeria {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -213,6 +217,7 @@ const obras = [
     }
     .card-obra:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 
+    /* IMAGEM PREENCHIDA */
     .img-container {
       height: 300px; 
       width: 100%; 
@@ -236,13 +241,20 @@ const obras = [
     .img-container:hover .overlay-zoom { opacity: 1; }
     .img-container:hover img { transform: scale(1.05); filter: brightness(0.9); } 
 
+    /* INFO */
     .info { padding: 20px; text-align: center; }
     .info h3 { margin: 0 0 5px 0; font-size: 1.2rem; color: #222; font-family: 'Times New Roman', serif;}
     .tecnica { color: #888; font-style: italic; font-size: 0.9rem; margin: 0 0 5px 0; }
     .dimensoes { font-size: 0.85rem; color: #666; margin-bottom: 10px; display: block;}
     .preco { font-size: 1.2rem; color: #D4AF37; font-weight: bold; margin-bottom: 15px; display: block;}
 
+    /* BOTÕES / LINKS */
     .btn-zap {
+      /* Estilo de Botão para o Link */
+      display: block; /* Importante para o link se comportar como botão */
+      text-decoration: none; /* Tira o sublinhado */
+      text-align: center;
+      
       background: #25D366; color: white; border: none; padding: 12px 20px; width: 100%;
       border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase;
       font-size: 0.9rem; transition: 0.2s;
@@ -250,10 +262,11 @@ const obras = [
     .btn-zap:hover { background: #1ebc57; }
 
     .btn-zap.vendido {
-      background: #ccc; color: #666; cursor: not-allowed;
+      background: #ccc; color: #666; cursor: not-allowed; text-align: center;
     }
     .btn-zap.vendido:hover { background: #ccc; }
 
+    /* MODAL */
     .modal {
       display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95);
       z-index: 9999; flex-direction: column; justify-content: center; align-items: center;
