@@ -1,0 +1,73 @@
+---
+import type { Situacao } from '../content/obras';
+
+interface Props {
+  situacao: Situacao;
+  destaque?: boolean;
+}
+const { situacao, destaque = false } = Astro.props;
+
+/*
+ * Disponível = ponto cheio verde-mata; Vendida = anel tinta-suave.
+ * As duas diferem em forma e em luminosidade, não só em cor.
+ */
+const rotulo = situacao === 'disponivel' ? 'Disponível' : 'Vendida';
+---
+
+<span class:list={['selo', situacao, { destaque }]}><span class="ponto" aria-hidden="true"></span>{rotulo}</span>
+
+<style>
+  .selo {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    flex-shrink: 0;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .ponto {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+
+  .disponivel {
+    color: var(--mata);
+  }
+
+  .disponivel .ponto {
+    background: var(--mata);
+  }
+
+  .vendida {
+    color: var(--tinta-suave);
+  }
+
+  .vendida .ponto {
+    border: 1.5px solid var(--tinta-suave);
+  }
+
+  .destaque {
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .destaque .ponto {
+    width: 9px;
+    height: 9px;
+  }
+
+  .destaque.disponivel {
+    background: rgba(36, 68, 61, 0.08);
+  }
+
+  .destaque.vendida {
+    background: rgba(107, 95, 78, 0.1);
+  }
+</style>
