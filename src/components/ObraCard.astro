@@ -1,0 +1,121 @@
+---
+import { Image } from 'astro:assets';
+import Selo from './Selo.astro';
+import { imagemDe, TEMAS, type Obra } from '../content/obras';
+
+interface Props {
+  obra: Obra;
+  /** Atributo sizes da imagem: quanto da tela ela ocupa. */
+  sizes: string;
+  /**
+   * Só a imagem principal da página carrega com prioridade. Várias imagens
+   * "ansiosas" disputam banda e atrasam justamente o elemento do LCP.
+   */
+  prioridade?: boolean;
+  /** Título e selo lado a lado (galeria) ou empilhados (faixas). */
+  legenda?: 'linha' | 'pilha';
+  /** Mostra o tema pequeno acima do título. */
+  mostrarTema?: boolean;
+}
+
+const { obra, sizes, prioridade = false, legenda = 'pilha', mostrarTema = false } = Astro.props;
+const imagem = imagemDe(obra);
+---
+
+<a class="card" href={`/obras/${obra.slug}`}>
+  <span class="moldura" style={`aspect-ratio: ${imagem.width} / ${imagem.height}`}>
+    <Image
+      src={imagem}
+      alt={obra.alt}
+      widths={[360, 560, 800, 1200]}
+      sizes={sizes}
+      quality={72}
+      format="webp"
+      loading={prioridade ? 'eager' : 'lazy'}
+      fetchpriority={prioridade ? 'high' : 'auto'}
+      decoding="async"
+      data-fade={prioridade ? undefined : ''}
+    />
+  </span>
+  <span class:list={['legenda', legenda]}>
+    <span class="textos">
+      {mostrarTema && <span class="tema">{TEMAS[obra.tema]}</span>}
+      <span class="titulo">{obra.titulo}</span>
+    </span>
+    <Selo situacao={obra.situacao} />
+  </span>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Esqueleto: a moldura já ocupa o espaço da obra, na proporção dela,
+     antes da imagem chegar. */
+  .moldura {
+    display: block;
+    width: 100%;
+    background: rgba(36, 30, 22, 0.06);
+    box-shadow: var(--sombra-obra);
+    overflow: hidden;
+  }
+
+  .moldura :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity 420ms var(--entrada), transform 600ms var(--entrada);
+  }
+
+  .card:hover .moldura :global(img) {
+    transform: scale(1.015);
+  }
+
+  .legenda {
+    display: flex;
+    gap: 6px 12px;
+  }
+
+  .legenda.pilha {
+    flex-direction: column;
+  }
+
+  .legenda.linha {
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .textos {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .tema {
+    font-size: 12px;
+    color: var(--tinta-suave);
+  }
+
+  .titulo {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.3;
+    color: var(--tinta);
+    transition: color var(--duracao) var(--entrada);
+  }
+
+  .card:hover .titulo {
+    color: var(--mata);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card:hover .moldura :global(img) {
+      transform: none;
+    }
+  }
+</style>

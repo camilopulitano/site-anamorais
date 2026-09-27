@@ -1,0 +1,102 @@
+---
+interface Props {
+  atual?: 'inicio' | 'obras' | 'sobre';
+}
+const { atual } = Astro.props;
+
+/** Só entram rotas que existem. Item de menu que cai em 404 é pior que item ausente. */
+const menu = [
+  { rotulo: 'Obras', href: '/obras', chave: 'obras' },
+  { rotulo: 'Sobre', href: '/sobre', chave: 'sobre' },
+  { rotulo: 'Contato', href: '/#contato', chave: 'contato' },
+] as const;
+---
+
+<header class="cabecalho">
+  <div class="conteiner linha">
+    <a class="marca" href="/" aria-current={atual === 'inicio' ? 'page' : undefined}>Ana Quintanas</a>
+    <nav aria-label="Principal">
+      <ul>
+        {
+          menu.map((item) => (
+            <li>
+              <a href={item.href} aria-current={atual === item.chave ? 'page' : undefined}>
+                {item.rotulo}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .cabecalho {
+    border-bottom: 1px solid var(--linha);
+  }
+
+  .linha {
+    min-height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .marca {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--tinta);
+    text-decoration: none;
+  }
+
+  ul {
+    display: flex;
+    gap: 40px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    border-bottom: 2px solid transparent;
+    color: var(--tinta);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--duracao) var(--entrada), border-color var(--duracao) var(--entrada);
+  }
+
+  nav a:hover {
+    color: var(--mata);
+  }
+
+  nav a[aria-current='page'] {
+    color: var(--mata);
+    border-bottom-color: var(--mata);
+  }
+
+  @media (max-width: 640px) {
+    .linha {
+      min-height: 64px;
+    }
+
+    .marca {
+      font-size: 20px;
+    }
+
+    ul {
+      gap: 18px;
+    }
+
+    nav a {
+      font-size: 14px;
+    }
+  }
+</style>

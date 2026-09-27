@@ -1,0 +1,273 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ObraCard from '../../components/ObraCard.astro';
+import { obras, TEMAS, type Tema } from '../../content/obras';
+
+const contagem = (filtro: (o: (typeof obras)[number]) => boolean) => obras.filter(filtro).length;
+const situacoes = [
+  { valor: 'todas', rotulo: 'Todas', n: obras.length },
+  { valor: 'disponivel', rotulo: 'Disponíveis', n: contagem((o) => o.situacao === 'disponivel') },
+  { valor: 'vendida', rotulo: 'Vendidas', n: contagem((o) => o.situacao === 'vendida') },
+];
+const temas: { valor: 'todos' | Tema; rotulo: string }[] = [
+  { valor: 'todos', rotulo: 'Todos os temas' },
+  ...(Object.keys(TEMAS) as Tema[]).map((t) => ({ valor: t, rotulo: TEMAS[t] })),
+];
+---
+
+<BaseLayout
+  titulo="Obras"
+  descricao="As pinturas de Ana Quintanas: Brasil, flores e naturezas-mortas, retrato e outros lugares. Cada obra mostra se está disponível ou vendida."
+  paginaAtual="obras"
+>
+  <div class="conteiner pagina">
+    <header class="topo">
+      <h1>Obras</h1>
+      <p>
+        Podem ser paisagens, cidades, casas, natureza, cenas simples do cotidiano, cores, contrastes ou lugares que
+        carregam história.
+      </p>
+    </header>
+
+    <div class="filtros">
+      <div class="grupo" role="group" aria-label="Situação">
+        {
+          situacoes.map((s, i) => (
+            <button type="button" class="pilula" data-filtro="situacao" data-valor={s.valor} aria-pressed={i === 0 ? 'true' : 'false'}>
+              {s.rotulo} <span class="n">{s.n}</span>
+            </button>
+          ))
+        }
+      </div>
+      <div class="grupo" role="group" aria-label="Tema">
+        {
+          temas.map((t, i) => (
+            <button type="button" class="aba" data-filtro="tema" data-valor={t.valor} aria-pressed={i === 0 ? 'true' : 'false'}>
+              {t.rotulo}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <p class="resumo" aria-live="polite" id="resumo">Mostrando {obras.length} obras</p>
+    <p class="vazio" id="vazio" hidden>Nenhuma obra com essa combinação. Tente outro tema.</p>
+
+    <ul class="mural" role="list">
+      {
+        obras.map((obra, i) => (
+          <li data-situacao={obra.situacao} data-tema={obra.tema}>
+            <ObraCard
+              obra={obra}
+              legenda="linha"
+              prioridade={i === 0}
+              sizes="(max-width: 560px) 92vw, (max-width: 900px) 45vw, (max-width: 1200px) 30vw, 300px"
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>
+
+<script>
+  type Filtro = 'situacao' | 'tema';
+  const padrao: Record<Filtro, string> = { situacao: 'todas', tema: 'todos' };
+  const estado: Record<Filtro, string> = { ...padrao };
+
+  const itens = Array.from(document.querySelectorAll<HTMLLIElement>('.mural > li'));
+  const botoes = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filtro]'));
+  const resumo = document.getElementById('resumo')!;
+  const vazio = document.getElementById('vazio')!;
+
+  // Só aceita valores que existem nos botões — nada vindo da URL entra cru na página.
+  const validos = (f: Filtro) => new Set(botoes.filter((b) => b.dataset.filtro === f).map((b) => b.dataset.valor));
+
+  function aplicar(atualizarUrl: boolean) {
+    let visiveis = 0;
+    for (const li of itens) {
+      const mostra =
+        (estado.situacao === 'todas' || li.dataset.situacao === estado.situacao) &&
+        (estado.tema === 'todos' || li.dataset.tema === estado.tema);
+      li.hidden = !mostra;
+      if (mostra) visiveis++;
+    }
+    for (const b of botoes) {
+      const f = b.dataset.filtro as Filtro;
+      b.setAttribute('aria-pressed', String(estado[f] === b.dataset.valor));
+    }
+    resumo.textContent = visiveis === 1 ? 'Mostrando 1 obra' : `Mostrando ${visiveis} obras`;
+    vazio.hidden = visiveis > 0;
+
+    if (atualizarUrl) {
+      const url = new URL(window.location.href);
+      (Object.keys(estado) as Filtro[]).forEach((f) => {
+        if (estado[f] === padrao[f]) url.searchParams.delete(f);
+        else url.searchParams.set(f, estado[f]);
+      });
+      history.replaceState(null, '', url);
+    }
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  (Object.keys(estado) as Filtro[]).forEach((f) => {
+    const v = params.get(f);
+    if (v && validos(f).has(v)) estado[f] = v;
+  });
+  aplicar(false);
+
+  for (const b of botoes) {
+    b.addEventListener('click', () => {
+      estado[b.dataset.filtro as Filtro] = b.dataset.valor!;
+      aplicar(true);
+    });
+  }
+</script>
+
+<style>
+  .pagina {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding-block: clamp(48px, 6vw, 80px) clamp(72px, 9vw, 128px);
+  }
+
+  .topo {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 880px;
+  }
+
+  h1 {
+    font-size: clamp(44px, 5vw, 64px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .topo p {
+    font-family: var(--serif);
+    font-size: clamp(18px, 1.6vw, 21px);
+    line-height: 1.5;
+    color: var(--tinta-suave);
+  }
+
+  .filtros {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px 32px;
+    padding-block: 20px;
+    border-block: 1px solid var(--linha);
+  }
+
+  .grupo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 4px;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 14px;
+    min-height: 44px;
+    transition: background-color var(--duracao) var(--entrada), color var(--duracao) var(--entrada),
+      border-color var(--duracao) var(--entrada);
+  }
+
+  .pilula {
+    margin-right: 4px;
+    padding: 0 18px;
+    border: 1px solid rgba(36, 30, 22, 0.28);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--tinta);
+    font-weight: 500;
+  }
+
+  .pilula .n {
+    color: var(--tinta-suave);
+  }
+
+  .pilula:hover {
+    border-color: var(--mata);
+  }
+
+  .pilula[aria-pressed='true'] {
+    background: var(--mata);
+    border-color: var(--mata);
+    color: var(--superficie);
+    font-weight: 600;
+  }
+
+  .pilula[aria-pressed='true'] .n {
+    color: inherit;
+    opacity: 0.85;
+  }
+
+  .aba {
+    padding: 0 14px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--tinta-suave);
+    font-weight: 500;
+  }
+
+  .aba:hover {
+    color: var(--tinta);
+  }
+
+  .aba[aria-pressed='true'] {
+    border-bottom-color: var(--mata);
+    color: var(--mata);
+    font-weight: 600;
+  }
+
+  .resumo {
+    margin-top: -12px;
+    font-size: 14px;
+    color: var(--tinta-suave);
+  }
+
+  .vazio {
+    padding-block: 64px;
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--tinta-suave);
+  }
+
+  /* Mural em colunas: cada pintura na proporção dela, sem corte. */
+  .mural {
+    columns: 4 260px;
+    column-gap: clamp(20px, 3vw, 40px);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mural li {
+    break-inside: avoid;
+    margin-bottom: 48px;
+    animation: entrar 360ms var(--entrada) both;
+  }
+
+  .mural li[hidden] {
+    display: none;
+  }
+
+  @keyframes entrar {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .mural li {
+      margin-bottom: 36px;
+    }
+  }
+</style>

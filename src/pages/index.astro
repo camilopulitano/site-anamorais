@@ -1,490 +1,289 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Selo from '../components/Selo.astro';
+import FaixaObras from '../components/FaixaObras.astro';
+import Contato from '../components/Contato.astro';
+import { disponiveis, imagemDe, obraPorSlug, obras } from '../content/obras';
+import fotoAna from '../assets/ana/sorriso-hibiscos.jpg';
 
-// CONFIGURAÇÃO DO WHATSAPP
-const zapNumber = "554598027599";
-
-// LISTA DE OBRAS
-const obras = [
-  // --- VENDIDAS ---
-  { titulo: "A Rena", dimensoes: "30 x 40 cm", tecnica: "Acrílica", preco: "R$ 400,00", img: "/img/rena.jpg", vendido: true },
-  { titulo: "O Gato na Janela", dimensoes: "40 x 50 cm", tecnica: "Acrílica", preco: "R$ 1.100,00", img: "/img/gatonajanela.jpg", vendido: true },
-  { titulo: "Favela", dimensoes: "90 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 2.000,00", img: "/img/favela.jpg", vendido: true },
-
-  // --- DISPONÍVEIS ---
-  { titulo: "Cataratas do Iguaçu", dimensoes: "130 x 80 cm", tecnica: "Óleo sobre tela", preco: "R$ 2.000,00", img: "/img/cataratas.jpg" },
-  { titulo: "Araras Azuis", dimensoes: "90 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.800,00", img: "/img/araras.jpg" },
-  { titulo: "Araucárias", dimensoes: "70 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.400,00", img: "/img/araucarias.jpg" },
-  { titulo: "Fruto", dimensoes: "70 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.200,00", img: "/img/fruto.jpg" },
-  { titulo: "Ruas de Paraty", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 680,00", img: "/img/paraty.jpg" },
-  { titulo: "Minas Gerais", dimensoes: "40 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 580,00", img: "/img/minas.jpg" },
-  { titulo: "Paisagem de Minas", dimensoes: "40 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 450,00", img: "/img/minas2.jpg" },
-  { titulo: "Mulher", dimensoes: "60 x 80 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.600,00", img: "/img/mulher.jpg" },
-  { titulo: "Rosas", dimensoes: "30 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 750,00", img: "/img/rosas.jpg" },
-  { titulo: "Varanda", dimensoes: "60 x 80 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.200,00", img: "/img/varanda.jpg" },
-  { titulo: "Barco", dimensoes: "40 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 900,00", img: "/img/barco.jpg" },
-  { titulo: "Compostela", dimensoes: "70 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.200,00", img: "/img/santiago.jpg" },
-  { titulo: "Vista da Toscana", dimensoes: "70 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 2.200,00", img: "/img/toscana.jpg" },
-  { titulo: "Igreja em Minas", dimensoes: "50 x 60 cm", tecnica: "Óleo sobre tela", preco: "R$ 580,00", img: "/img/minas3.jpg" },
-  { titulo: "Campo de Lavandas Roxas", dimensoes: "40 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 1.300,00", img: "/img/lavandas-roxas.jpg" },
-  { titulo: "Flor de Hibisco", dimensoes: "60 x 80 cm", tecnica: "Óleo sobre tela", preco: "R$ 1200,00", img: "/img/hibisco.jpg" },
-  { titulo: "Colheita de Lavanda", dimensoes: "20 x 30 cm", tecnica: "Óleo sobre tela", preco: "R$ 380,00", img: "/img/lavandas.jpg" },
-  { titulo: "Mar Revolto", dimensoes: "20 x 30 cm", tecnica: "Óleo sobre tela", preco: "R$ 350,00", img: "/img/mar.jpg" },
-  { titulo: "Eucaliptos", dimensoes: "40 x 50 cm", tecnica: "Óleo sobre tela", preco: "R$ 600,00", img: "/img/eucalipto.jpg" },
-  { titulo: "Ipê Amarelo", dimensoes: "50 x 70 cm", tecnica: "Óleo sobre tela", preco: "R$ 690,00", img: "/img/ipe.jpg" }
-];
+const destaque = obraPorSlug('morro-colorido');
+const noAtelie = ['rua-de-pedra', 'hibiscos', 'retrato', 'janela-para-a-toscana'].map(obraPorSlug);
+const brasil = ['cataratas-do-iguacu', 'casa-amarela', 'araras-azuis'].map(obraPorSlug);
+const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
 ---
 
-<BaseLayout titulo="Ana Morais — Galeria Oficial" descricao="Pinturas originais de Ana Morais.">
-
-<!-- ✨ JSON-LD para SEO - Dados Estruturados -->
-<script type="application/ld+json" set:html={JSON.stringify({
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "ArtGallery",
-      "name": "Galeria Ana Morais",
-      "description": "Galeria oficial de pinturas originais de Ana Morais.",
-      "url": "https://www.anamorais.art",
-      "image": "https://www.anamorais.art/img/og-capa.jpg",
-      "telephone": "+55-45-98027599",
-      "artist": {
-        "@type": "Person",
-        "name": "Ana Morais",
-        "jobTitle": "Artista Plástica"
-      }
-    },
-    ...obras.map(obra => ({
-      "@type": "VisualArtwork",
-      "name": obra.titulo,
-      "artform": "Painting",
-      "artMedium": obra.tecnica,
-      "width": obra.dimensoes.split('x')[0].trim(),
-      "height": obra.dimensoes.split('x')[1]?.trim() || "",
-      "image": `https://www.anamorais.art${obra.img}`,
-      "creator": {
-        "@type": "Person",
-        "name": "Ana Morais"
-      },
-      "offers": {
-        "@type": "Offer",
-        "priceCurrency": "BRL",
-        "price": obra.preco.replace(/[^\d,]/g, '').replace(',', '.'),
-        "availability": obra.vendido 
-          ? "https://schema.org/SoldOut" 
-          : "https://schema.org/InStock",
-        "url": `https://www.anamorais.art#${obra.titulo.toLowerCase().replace(/\s+/g, '-')}`
-      }
-    }))
-  ]
-})} />
-
-<header class="hero">
-  <h1>Ana Morais</h1>
-  <p>Galeria de Arte</p>
-</header>
-
-<!-- ✨ SEÇÃO: SOBRE A ARTISTA -->
-<section class="sobre-artista">
-  <div class="container-sobre">
-    <div class="foto-artista-wrapper">
-      <img src="/img/ana-perfil.jpeg" alt="Ana Morais - Artista Plástica" class="foto-artista">
-    </div>
-    <div class="bio">
-      <h2>Sobre a Artista</h2>
-      <p>Ana Morais é uma artista brasileira apaixonada por capturar a essência das paisagens naturais e urbanas do Brasil e do mundo. Com mais de 15 anos de experiência, cada pincelada conta uma história de cores vibrantes, luz e profunda emoção.</p>
-      <p>Especializada em <strong>óleo sobre tela</strong> e <strong>Acrílica</strong>, Ana transforma momentos efêmeros em memórias visuais eternas. Suas obras celebram a beleza das Cataratas do Iguaçu, as ruas históricas de Minas Gerais, os campos de lavanda da Europa e a fauna brasileira.</p>
-      <p class="destaque">✨ Cada obra é única, pintada à mão e assinada pela artista.</p>
-    </div>
-  </div>
-</section>
-
-<main class="galeria" id="galeria">
-  {obras.map((obra, index) => (
-    <article class="card-obra">
-      <div class="img-container" onclick={`window.abrirModal(${index})`}>
-        <img src={obra.img} alt={obra.titulo} loading="lazy" />
-        
-        {/* ✨ Badge de Vendido */}
-        {obra.vendido && (
-          <span class="badge-vendido">VENDIDO</span>
-        )}
-        
-        <span class="overlay-zoom">Ver Inteira</span>
+<BaseLayout paginaAtual="inicio">
+  <section class="abertura conteiner">
+    <div class="manifesto">
+      <p class="sobrancelha">Pintora brasileira</p>
+      <blockquote>
+        <p>
+          “Quero pintar um Brasil verdadeiro, diverso, cheio de identidade, história e beleza.
+          <em>Um Brasil que não precisa parecer com nenhum outro lugar para ser bonito.</em>”
+        </p>
+        <footer>— Ana Quintanas</footer>
+      </blockquote>
+      <p class="posicionamento">
+        Do morro ao casario colonial, da mata às cataratas: Ana Quintanas pinta o Brasil de todo dia — inclusive o que a
+        gente se acostumou a não ver — com técnica apurada e olhar de quem é daqui.
+      </p>
+      <div class="acoes">
+        <a class="botao" href="/obras">Ver as obras</a>
+        <a class="link-seta" href="/sobre">Sobre a Ana</a>
       </div>
+    </div>
+    <figure class="obra-destaque">
+      <a href={`/obras/${destaque.slug}`}>
+        <Image
+          src={imagemDe(destaque)}
+          alt={destaque.alt}
+          widths={[420, 640, 900, 1280]}
+          sizes="(max-width: 900px) 92vw, 560px"
+          quality={78}
+          format="webp"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </a>
+      <figcaption>
+        <span class="titulo-obra">{destaque.titulo}</span>
+        <Selo situacao={destaque.situacao} />
+      </figcaption>
+    </figure>
+  </section>
 
-      <div class="info">
-        <h3>{obra.titulo}</h3>
-        <p class="tecnica">{obra.tecnica}</p>
-        <p class="dimensoes">{obra.dimensoes}</p>
-        <p class="preco">{obra.preco}</p>
-
-        {obra.vendido ? (
-          <button class="btn-zap vendido" disabled>Vendido</button>
-        ) : (
-          <a
-            href={`https://wa.me/${zapNumber}?text=${encodeURIComponent(`Olá Ana Morais. Tenho interesse na obra "${obra.titulo}". Poderia informar as formas de pagamento e envio?`)}`}
-            class="btn-zap"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Comprar Agora
-          </a>
-        )}
+  <section class="faixa-clara" aria-labelledby="titulo-disponiveis">
+    <div class="conteiner secao">
+      <div class="cabeca">
+        <div class="pilha">
+          <p class="sobrancelha">No ateliê agora</p>
+          <h2 id="titulo-disponiveis">Obras disponíveis</h2>
+        </div>
+        <a class="link-seta" href="/obras?situacao=disponivel">Ver as {disponiveis.length} disponíveis →</a>
       </div>
-    </article>
-  ))}
-</main>
+      <FaixaObras obras={noAtelie} />
+    </div>
+  </section>
 
-<div id="modal" class="modal">
-  <button class="nav prev" aria-label="Imagem anterior" onclick="window.navegar(-1, event)">&#10094;</button>
-  <button class="nav next" aria-label="Próxima imagem" onclick="window.navegar(1, event)">&#10095;</button>
-  <button class="fechar" aria-label="Fechar modal" onclick="window.fecharModal()">&times;</button>
+  <section class="conteiner secao" aria-labelledby="titulo-brasil">
+    <div class="pilha intro-brasil">
+      <p class="sobrancelha" id="titulo-brasil">Brasil</p>
+      <p class="citacao">
+        “Meu trabalho não está preso a um único tema, mas existe uma coisa que conecta tudo: o meu olhar sobre o
+        Brasil.”
+      </p>
+    </div>
+    <FaixaObras obras={brasil} />
+    <a class="link-seta" href="/obras?tema=brasil">Ver as {totalBrasil} obras do Brasil →</a>
+  </section>
 
-  <div class="modal-conteudo">
-    <img id="modal-img" alt="Obra ampliada" />
-  </div>
+  <section class="faixa-mata" aria-labelledby="titulo-sobre">
+    <div class="conteiner sobre">
+      <Image
+        src={fotoAna}
+        alt="Ana Quintanas sorrindo, sentada no ateliê diante da tela Hibiscos"
+        widths={[360, 560, 800]}
+        sizes="(max-width: 900px) 92vw, 380px"
+        quality={74}
+        format="webp"
+        loading="lazy"
+        class="foto-ana"
+        data-fade=""
+      />
+      <div class="pilha texto-sobre">
+        <p class="sobrancelha" id="titulo-sobre">Sobre</p>
+        <p class="citacao">
+          Sou artista e pintora brasileira, e grande parte do que me move na pintura vem justamente do Brasil.
+        </p>
+        <a class="link-seta" href="/sobre">Ler o texto da Ana →</a>
+      </div>
+    </div>
+  </section>
 
-  <div class="modal-footer">
-    <span id="contador"></span>
-  </div>
-</div>
-
-<script is:inline define:vars={{ obras }}>
-  var modal = document.getElementById("modal");
-  var img = document.getElementById("modal-img");
-  var contador = document.getElementById("contador");
-  var indexAtual = 0;
-
-  window.abrirModal = function(index) {
-    indexAtual = index;
-    modal.style.display = "flex";
-    setTimeout(() => modal.classList.add("ativo"), 50);
-    document.body.style.overflow = "hidden";
-    atualizarImagem();
-  };
-
-  window.fecharModal = function() {
-    modal.classList.remove("ativo");
-    setTimeout(() => {
-      modal.style.display = "none";
-      document.body.style.overflow = "auto";
-    }, 300);
-  };
-
-  window.navegar = function(dir, e) {
-    if (e) e.stopPropagation();
-    indexAtual = (indexAtual + dir + obras.length) % obras.length;
-    atualizarImagem();
-  };
-
-  function atualizarImagem() {
-    img.src = obras[indexAtual].img;
-    img.alt = obras[indexAtual].titulo;
-    contador.textContent = obras[indexAtual].titulo;
-  }
-
-  document.addEventListener("keydown", function(e) {
-    if (modal.style.display === "flex") {
-      if (e.key === "Escape") window.fecharModal();
-      if (e.key === "ArrowRight") window.navegar(1);
-      if (e.key === "ArrowLeft") window.navegar(-1);
-    }
-  });
-</script>
+  <Contato />
+</BaseLayout>
 
 <style>
-  /* GERAL */
-  * { box-sizing: border-box; }
-  
-  body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-
-  .hero { 
-    text-align: center; padding: 60px 20px; background-color: white; border-bottom: 1px solid #eee;
-  }
-  .hero h1 { font-family: 'Times New Roman', serif; font-size: 3rem; margin: 0 0 10px 0; color: #333; }
-  .hero p { color: #777; font-style: italic; margin: 0; letter-spacing: 2px; text-transform: uppercase; font-size: 0.9rem; }
-
-  /* SEÇÃO: SOBRE A ARTISTA */
-  .sobre-artista {
-    background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
-    padding: 60px 20px;
-    border-bottom: 1px solid #eee;
-  }
-  .container-sobre {
-    max-width: 1000px;
-    margin: 0 auto;
+  .abertura {
     display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 50px;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(40px, 6vw, 80px);
     align-items: center;
+    padding-block: clamp(40px, 5vw, 72px) clamp(72px, 9vw, 128px);
   }
-  .foto-artista-wrapper {
-    position: relative;
+
+  .manifesto {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
   }
-  .foto-artista {
-    width: 220px;
-    height: 220px;
-    border-radius: 50%;
-    object-fit: cover;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-    border: 5px solid white;
-    transition: transform 0.3s ease;
+
+  blockquote {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
-  .foto-artista:hover {
-    transform: scale(1.05);
+
+  blockquote p {
+    font-family: var(--serif);
+    font-size: clamp(28px, 3vw, 42px);
+    line-height: 1.18;
+    letter-spacing: -0.015em;
   }
-  .bio h2 {
-    font-family: 'Times New Roman', serif;
-    color: #333;
-    margin: 0 0 20px 0;
-    font-size: 2rem;
-    border-bottom: 3px solid #D4AF37;
-    display: inline-block;
-    padding-bottom: 5px;
+
+  blockquote em {
+    color: var(--mata);
   }
-  .bio p {
-    color: #555;
-    line-height: 1.8;
-    margin-bottom: 15px;
-    font-size: 1rem;
+
+  blockquote footer {
+    font-size: 15px;
+    color: var(--tinta-suave);
   }
-  .bio strong {
-    color: #D4AF37;
-    font-weight: bold;
+
+  .posicionamento {
+    max-width: 480px;
+    padding-top: 20px;
+    border-top: 1px solid var(--linha);
+    font-size: 17px;
+    line-height: 1.6;
   }
-  .bio .destaque {
-    background: linear-gradient(135deg, #f0e6d2 0%, #fff9e6 100%);
-    padding: 15px 20px;
-    border-left: 4px solid #D4AF37;
-    border-radius: 4px;
+
+  .acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 32px;
+  }
+
+  .obra-destaque {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .obra-destaque :global(img) {
+    max-height: 760px;
+    width: auto;
+    box-shadow: 0 1px 2px rgba(36, 30, 22, 0.12), 0 18px 40px rgba(36, 30, 22, 0.16);
+  }
+
+  figcaption {
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+  }
+
+  .titulo-obra {
+    font-family: var(--serif);
     font-style: italic;
-    color: #666;
-    margin-top: 20px;
+    font-size: 17px;
   }
 
-  /* GALERIA */
-  .galeria {
-    display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-    gap: 30px;
-    max-width: 1200px; 
-    margin: 0 auto; 
-    padding: 40px 20px;
-  }
-  .card-obra {
-    background: white; 
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
-    border-radius: 8px; 
-    overflow: hidden; 
-    transition: transform 0.2s;
-  }
-  .card-obra:hover { 
-    transform: translateY(-5px); 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+  .faixa-clara {
+    background: var(--superficie);
   }
 
-  /* FOTO DE CAPA */
-  .img-container {
-    height: 300px; 
-    width: 100%; 
-    position: relative; 
-    cursor: pointer; 
-    overflow: hidden; 
-    background: #f0f0f0;
-  }
-  .img-container img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-    transition: 0.5s; 
+  .secao {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    padding-block: clamp(72px, 9vw, 128px);
   }
 
-  /* ✨ BADGE VENDIDO */
-  .badge-vendido {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: rgba(220, 53, 69, 0.95);
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 0.75rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
-    z-index: 10;
-    backdrop-filter: blur(4px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    animation: pulseVendido 2s ease-in-out infinite;
+  .cabeca {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px 32px;
   }
 
-  @keyframes pulseVendido {
-    0%, 100% {
-      transform: scale(1);
-      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
-    }
-    50% {
-      transform: scale(1.05);
-      box-shadow: 0 6px 16px rgba(220, 53, 69, 0.6);
-    }
+  .pilha {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
-  /* Escurecer obras vendidas */
-  .card-obra:has(.badge-vendido) .img-container img {
-    filter: grayscale(30%) brightness(0.85);
+  h2 {
+    font-size: clamp(32px, 3.4vw, 44px);
   }
 
-  .card-obra:has(.badge-vendido) .img-container:hover img {
-    filter: grayscale(30%) brightness(0.75);
+  .citacao {
+    font-family: var(--serif);
+    font-size: clamp(24px, 2.6vw, 36px);
+    line-height: 1.28;
+    letter-spacing: -0.01em;
   }
 
-  .overlay-zoom {
-    position: absolute; 
-    inset: 0; 
-    background: rgba(0,0,0,0.3); 
-    color: white;
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    font-weight: bold; 
-    opacity: 0; 
-    transition: 0.3s; 
-    text-transform: uppercase; 
-    letter-spacing: 1px;
-  }
-  .img-container:hover .overlay-zoom { opacity: 1; }
-  .img-container:hover img { transform: scale(1.05); filter: brightness(0.9); } 
-
-  /* INFO */
-  .info { padding: 20px; text-align: center; }
-  .info h3 { margin: 0 0 5px 0; font-size: 1.2rem; color: #222; font-family: 'Times New Roman', serif;}
-  .tecnica { color: #888; font-style: italic; font-size: 0.9rem; margin: 0 0 5px 0; }
-  .dimensoes { font-size: 0.85rem; color: #666; margin-bottom: 10px; display: block;}
-  .preco { font-size: 1.2rem; color: #D4AF37; font-weight: bold; margin-bottom: 15px; display: block;}
-
-  /* BOTÕES */
-  .btn-zap {
-    display: block; 
-    text-decoration: none; 
-    text-align: center;
-    background: #25D366; 
-    color: white; 
-    border: none; 
-    padding: 12px 20px; 
-    width: 100%;
-    border-radius: 4px; 
-    cursor: pointer; 
-    font-weight: bold; 
-    text-transform: uppercase; 
-    font-size: 0.9rem; 
-    transition: 0.2s;
-  }
-  .btn-zap:hover { background: #1ebc57; }
-  .btn-zap.vendido { 
-    background: #ccc; 
-    color: #666; 
-    cursor: not-allowed; 
-    pointer-events: none; 
+  .intro-brasil {
+    max-width: 920px;
   }
 
-  /* MODAL */
-  .modal {
-    display: none; 
-    position: fixed; 
-    inset: 0; 
-    background: rgba(0,0,0,0.95);
-    z-index: 9999; 
-    flex-direction: column; 
-    justify-content: center; 
+  .secao > .link-seta {
+    align-self: flex-start;
+    margin-top: -16px;
+  }
+
+  .faixa-mata {
+    background: var(--mata);
+    color: var(--linho);
+  }
+
+  .sobre {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(40px, 7vw, 96px);
     align-items: center;
-    opacity: 0; 
-    transition: opacity 0.3s;
-  }
-  .modal.ativo { opacity: 1; }
-
-  .modal-conteudo {
-    flex: 1; 
-    width: 100%; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    overflow: hidden; 
-    padding: 20px;
-  }
-  .modal img {
-    max-width: 100%; 
-    max-height: 80vh; 
-    object-fit: contain; 
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    padding-block: clamp(72px, 9vw, 120px);
   }
 
-  .fechar { 
-    position: absolute; 
-    top: 20px; 
-    right: 30px; 
-    background: none; 
-    border: none; 
-    color: white; 
-    font-size: 40px; 
-    cursor: pointer; 
-    z-index: 10000;
-  }
-  .nav {
-    position: absolute; 
-    top: 50%; 
-    transform: translateY(-50%); 
-    background: none; 
-    border: none;
-    color: rgba(255,255,255,0.5); 
-    font-size: 50px; 
-    cursor: pointer; 
-    padding: 20px; 
-    transition: 0.2s;
-    z-index: 10000;
-  }
-  .nav:hover { 
-    color: white; 
-    transform: translateY(-50%) scale(1.1); 
-  }
-  .nav.prev { left: 10px; }
-  .nav.next { right: 10px; }
-  .modal-footer { 
-    padding: 20px; 
-    color: white; 
-    font-family: 'Times New Roman', serif; 
-    font-size: 1.2rem; 
+  .sobre :global(.foto-ana) {
+    justify-self: end;
+    width: 100%;
+    max-width: 380px;
   }
 
-  /* RESPONSIVO */
-  @media (max-width: 768px) {
-    .container-sobre {
-      grid-template-columns: 1fr;
-      gap: 30px;
-      text-align: center;
+  .faixa-mata .sobrancelha,
+  .faixa-mata .link-seta {
+    color: var(--ocre);
+  }
+
+  .faixa-mata .link-seta:hover {
+    color: var(--linho);
+  }
+
+  .texto-sobre {
+    gap: 28px;
+    max-width: 620px;
+  }
+
+  @media (max-width: 900px) {
+    .abertura,
+    .sobre {
+      grid-template-columns: minmax(0, 1fr);
     }
-    .foto-artista {
-      width: 180px;
-      height: 180px;
+
+    .obra-destaque :global(img) {
+      max-height: none;
+      width: 100%;
     }
-    .foto-artista-wrapper {
-      display: flex;
-      justify-content: center;
+
+    .sobre :global(.foto-ana) {
+      justify-self: start;
+      max-width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      object-position: 50% 25%;
     }
-    .bio h2 {
-      font-size: 1.5rem;
-    }
-    .hero h1 {
-      font-size: 2rem;
-    }
-    .badge-vendido {
-      top: 10px;
-      right: 10px;
-      padding: 6px 12px;
-      font-size: 0.7rem;
+  }
+
+  @media (max-width: 640px) {
+    .acoes .botao {
+      width: 100%;
     }
   }
 </style>
-
-</BaseLayout>

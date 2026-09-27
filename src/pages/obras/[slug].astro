@@ -1,0 +1,297 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Selo from '../../components/Selo.astro';
+import FaixaObras from '../../components/FaixaObras.astro';
+import { imagemDe, obras, TEMAS, type Obra } from '../../content/obras';
+import { linkObra } from '../../config/contato';
+
+export function getStaticPaths() {
+  return obras.map((obra, i) => ({
+    params: { slug: obra.slug },
+    props: {
+      obra,
+      anterior: obras[(i - 1 + obras.length) % obras.length],
+      proxima: obras[(i + 1) % obras.length],
+    },
+  }));
+}
+
+interface Props {
+  obra: Obra;
+  anterior: Obra;
+  proxima: Obra;
+}
+
+const { obra, anterior, proxima } = Astro.props;
+const imagem = imagemDe(obra);
+const disponivel = obra.situacao === 'disponivel';
+
+// Até 4 obras do mesmo tema; completa com outras se faltar.
+const mesmoTema = obras.filter((o) => o.tema === obra.tema && o.slug !== obra.slug);
+const outras = obras.filter((o) => o.tema !== obra.tema);
+const relacionadas = [...mesmoTema, ...outras].slice(0, 4);
+const tituloRelacionadas = mesmoTema.length >= 2 ? `Mais — ${TEMAS[obra.tema]}` : 'Outras obras';
+
+const ficha = [
+  { rotulo: 'Técnica', valor: obra.tecnica },
+  { rotulo: 'Dimensões', valor: obra.dimensoes },
+  { rotulo: 'Ano', valor: obra.ano?.toString() },
+  { rotulo: 'Tema', valor: TEMAS[obra.tema] },
+].filter((l) => l.valor);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'VisualArtwork',
+  name: obra.titulo,
+  artform: 'Pintura',
+  creator: { '@type': 'Person', name: 'Ana Quintanas' },
+  image: new URL(imagem.src, Astro.site).toString(),
+  description: obra.alt,
+  ...(obra.tecnica && { artMedium: obra.tecnica }),
+  ...(obra.ano && { dateCreated: String(obra.ano) }),
+  // Sem preço: o site é portfólio. Só a disponibilidade.
+  offers: {
+    '@type': 'Offer',
+    availability: disponivel ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut',
+  },
+};
+---
+
+<BaseLayout
+  titulo={obra.titulo}
+  descricao={`${obra.titulo}, pintura de Ana Quintanas. ${disponivel ? 'Obra disponível.' : 'Obra vendida.'} ${obra.alt}.`}
+  imagem={imagem}
+  jsonLd={jsonLd}
+  paginaAtual="obras"
+>
+  <div class="conteiner">
+    <nav class="trilha" aria-label="Você está em">
+      <a href="/obras">Obras</a>
+      <span aria-hidden="true">/</span>
+      <a href={`/obras?tema=${obra.tema}`}>{TEMAS[obra.tema]}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{obra.titulo}</span>
+    </nav>
+
+    <article class="ficha">
+      <div class="palco">
+        <Image
+          src={imagem}
+          alt={obra.alt}
+          widths={[480, 800, 1200, 1600]}
+          sizes="(max-width: 900px) 92vw, 760px"
+          quality={80}
+          format="webp"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+
+      <div class="dados">
+        <header class="pilha">
+          <h1>{obra.titulo}</h1>
+          <p class="autora">Ana Quintanas</p>
+        </header>
+
+        <Selo situacao={obra.situacao} destaque />
+
+        <dl>
+          {
+            ficha.map((l) => (
+              <div class="linha-ficha">
+                <dt>{l.rotulo}</dt>
+                <dd>{l.valor}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        {
+          disponivel ? (
+            <div class="pilha estreita">
+              <a class="botao" href={linkObra(obra.titulo)} rel="noopener">
+                Perguntar sobre esta obra
+              </a>
+              <p class="nota">A conversa segue pelo WhatsApp da Ana.</p>
+            </div>
+          ) : (
+            <div class="pilha estreita">
+              <p class="nota esquerda">Esta obra já foi vendida.</p>
+              <a class="botao botao--contorno" href="/obras?situacao=disponivel">
+                Ver obras disponíveis
+              </a>
+            </div>
+          )
+        }
+
+        <nav class="vizinhas" aria-label="Outras obras">
+          <a href={`/obras/${anterior.slug}`} rel="prev">← {anterior.titulo}</a>
+          <a href={`/obras/${proxima.slug}`} rel="next">{proxima.titulo} →</a>
+        </nav>
+      </div>
+    </article>
+  </div>
+
+  <section class="relacionadas" aria-labelledby="titulo-relacionadas">
+    <div class="conteiner secao">
+      <div class="cabeca">
+        <h2 id="titulo-relacionadas">{tituloRelacionadas}</h2>
+        <a class="link-seta" href="/obras">Ver todas →</a>
+      </div>
+      <FaixaObras obras={relacionadas} />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .trilha {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    padding-top: 32px;
+    font-size: 14px;
+    color: var(--tinta-suave);
+  }
+
+  .trilha a {
+    color: var(--tinta-suave);
+  }
+
+  .trilha [aria-current] {
+    color: var(--tinta);
+  }
+
+  .ficha {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    gap: clamp(40px, 6vw, 80px);
+    align-items: start;
+    padding-block: 40px clamp(72px, 9vw, 120px);
+  }
+
+  .palco {
+    display: flex;
+    justify-content: center;
+    padding: clamp(20px, 4vw, 56px);
+    background: var(--superficie);
+  }
+
+  .palco :global(img) {
+    max-height: 78vh;
+    width: auto;
+    box-shadow: 0 1px 2px rgba(36, 30, 22, 0.12), 0 18px 40px rgba(36, 30, 22, 0.16);
+  }
+
+  .dados {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 32px;
+    padding-top: 8px;
+  }
+
+  .pilha {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  h1 {
+    font-size: clamp(36px, 4vw, 52px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .autora {
+    font-size: 16px;
+    color: var(--tinta-suave);
+  }
+
+  dl {
+    width: 100%;
+    margin: 0;
+    border-bottom: 1px solid var(--linha);
+  }
+
+  .linha-ficha {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    padding-block: 14px;
+    border-top: 1px solid var(--linha);
+    font-size: 15px;
+  }
+
+  dt {
+    color: var(--tinta-suave);
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  .estreita {
+    width: 100%;
+  }
+
+  .nota {
+    font-size: 13px;
+    color: var(--tinta-suave);
+    text-align: center;
+  }
+
+  .nota.esquerda {
+    font-size: 15px;
+    text-align: left;
+  }
+
+  .vizinhas {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .vizinhas a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .relacionadas {
+    background: var(--superficie);
+  }
+
+  .secao {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding-block: clamp(64px, 8vw, 104px);
+  }
+
+  .cabeca {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 12px 32px;
+  }
+
+  h2 {
+    font-size: clamp(28px, 3vw, 36px);
+  }
+
+  @media (max-width: 900px) {
+    .ficha {
+      grid-template-columns: minmax(0, 1fr);
+      padding-top: 24px;
+    }
+
+    .palco :global(img) {
+      max-height: none;
+      width: 100%;
+    }
+  }
+</style>

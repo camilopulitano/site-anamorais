@@ -1,0 +1,102 @@
+---
+import { Image } from 'astro:assets';
+import retrato from '../assets/ana/retrato-pincel.jpg';
+import { INSTAGRAM_URL, INSTAGRAM_USUARIO, linkWhatsApp, WHATSAPP_LEGIVEL } from '../config/contato';
+---
+
+<section id="contato" class="contato" aria-labelledby="titulo-contato">
+  <div class="conteiner linha">
+    <div class="apresentacao">
+      <Image
+        src={retrato}
+        alt="Retrato de Ana Quintanas segurando um pincel"
+        width={256}
+        height={256}
+        fit="cover"
+        position="top"
+        quality={75}
+        format="webp"
+        loading="lazy"
+        class="retrato"
+      />
+      <div class="textos">
+        <h2 id="titulo-contato">Contato</h2>
+        <p>Quer saber mais sobre uma obra disponível? Fale direto com a Ana.</p>
+      </div>
+    </div>
+    <div class="acoes">
+      <a class="botao" href={linkWhatsApp('Olá, Ana! Vim pelo seu site.')} rel="noopener">WhatsApp · {WHATSAPP_LEGIVEL}</a>
+      <a class="botao botao--contorno" href={INSTAGRAM_URL} rel="noopener">Instagram · @{INSTAGRAM_USUARIO}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contato {
+    padding-block: clamp(72px, 9vw, 112px);
+    scroll-margin-top: 24px;
+  }
+
+  .linha {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px 64px;
+    flex-wrap: wrap;
+  }
+
+  .apresentacao {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .apresentacao :global(.retrato) {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .textos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 560px;
+  }
+
+  h2 {
+    font-size: clamp(32px, 3.4vw, 44px);
+  }
+
+  .textos p {
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--tinta-suave);
+  }
+
+  .acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  @media (max-width: 640px) {
+    .apresentacao {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    .apresentacao :global(.retrato) {
+      width: 104px;
+      height: 104px;
+    }
+
+    .acoes,
+    .acoes .botao {
+      width: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,87 @@
+---
+import { INSTAGRAM_URL, INSTAGRAM_USUARIO, linkWhatsApp, WHATSAPP_LEGIVEL } from '../config/contato';
+const ano = new Date().getFullYear();
+---
+
+<footer class="rodape">
+  <div class="conteiner linha">
+    <div class="assinatura">
+      <span class="nome">Ana Quintanas</span>
+      <span class="sub">Pintora brasileira</span>
+    </div>
+    <ul class="contatos">
+      <li><a href={linkWhatsApp()} rel="noopener">WhatsApp {WHATSAPP_LEGIVEL}</a></li>
+      <li><a href={INSTAGRAM_URL} rel="noopener">Instagram @{INSTAGRAM_USUARIO}</a></li>
+    </ul>
+    <p class="direitos">© {ano} Ana Quintanas · Todas as imagens são de obras da artista</p>
+  </div>
+</footer>
+
+<style>
+  .rodape {
+    background: var(--tinta);
+    color: var(--linho);
+  }
+
+  .linha {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px 48px;
+    padding-block: 48px;
+  }
+
+  .assinatura {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .nome {
+    font-family: var(--serif);
+    font-size: 22px;
+  }
+
+  .sub,
+  .direitos {
+    font-size: 13px;
+    color: var(--rodape-suave);
+  }
+
+  .contatos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    align-self: center;
+  }
+
+  .contatos a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--linho);
+    font-size: 14px;
+  }
+
+  .contatos a:hover {
+    color: var(--ocre);
+  }
+
+  .direitos {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 720px) {
+    .linha {
+      grid-template-columns: 1fr;
+    }
+
+    .contatos {
+      flex-direction: column;
+      align-self: start;
+      gap: 0;
+    }
+  }
+</style>

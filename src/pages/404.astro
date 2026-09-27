@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout titulo="Página não encontrada">
+  <section class="conteiner nada">
+    <p class="sobrancelha">Erro 404</p>
+    <h1>Essa página não existe.</h1>
+    <p>Talvez a obra tenha mudado de nome. As pinturas estão todas na galeria.</p>
+    <a class="botao" href="/obras">Ver as obras</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .nada {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    padding-block: clamp(96px, 14vw, 180px);
+  }
+
+  h1 {
+    font-size: clamp(36px, 5vw, 60px);
+  }
+
+  .nada > p:not(.sobrancelha) {
+    font-size: 18px;
+    color: var(--tinta-suave);
+  }
+</style>
