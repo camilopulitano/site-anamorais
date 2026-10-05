@@ -3,6 +3,8 @@
  * Paleta tirada das próprias telas. Contrastes medidos sobre --linho:
  *   --tinta 13,5:1 · --tinta-suave 5,1:1 · --mata 8,7:1 · --ocre-texto 5,1:1
  *   --ocre 1,7:1 → NUNCA como texto sobre fundo claro (só sobre --mata, 5,1:1).
+ * Selos de situação (texto branco por cima):
+ *   --verde 6,0:1 (disponível) · --vermelho 6,6:1 (vendida). Como texto sobre --linho: 4,9:1 e 5,4:1.
  */
 :root {
   --linho: #ede8da;
@@ -13,6 +15,8 @@
   --ocre: #d0ae75;
   --ocre-texto: #7a5c29;
   --rodape-suave: #b8ae9c;
+  --verde: #1b7236;
+  --vermelho: #b42318;
   --linha: rgba(36, 30, 22, 0.14);
   --sombra-obra: 0 1px 2px rgba(36, 30, 22, 0.1), 0 10px 24px rgba(36, 30, 22, 0.1);
 
@@ -193,4 +197,17 @@ img[data-fade].carregada {
   @view-transition {
     navigation: auto;
   }
+}
+
+/* Texto só para leitor de tela. */
+.so-leitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
