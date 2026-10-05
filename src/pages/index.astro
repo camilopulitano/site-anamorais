@@ -5,7 +5,6 @@ import Selo from '../components/Selo.astro';
 import FaixaObras from '../components/FaixaObras.astro';
 import Contato from '../components/Contato.astro';
 import DicaWhatsApp from '../components/DicaWhatsApp.astro';
-import { linkObra } from '../config/contato';
 import { disponiveis, imagemDe, obraPorSlug, obras } from '../content/obras';
 import fotoAna from '../assets/ana/sorriso-hibiscos.jpg';
 
@@ -36,20 +35,21 @@ const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
       </div>
     </div>
     <figure class="obra-destaque">
-      <a class="quadro com-dica" href={linkObra(destaque)} target="_blank" rel="noopener">
-        <Image
-          src={imagemDe(destaque)}
-          alt={destaque.alt}
-          widths={[420, 640, 900, 1280]}
-          sizes="(max-width: 900px) 92vw, 560px"
-          quality={78}
-          format="webp"
-          loading="eager"
-          fetchpriority="high"
-        />
-        <span class="so-leitor">— perguntar sobre esta obra no WhatsApp da Ana (abre em nova aba)</span>
-        <DicaWhatsApp />
-      </a>
+      <div class="quadro com-consultar">
+        <a href={`/obras/${destaque.slug}`}>
+          <Image
+            src={imagemDe(destaque)}
+            alt={destaque.alt}
+            widths={[420, 640, 900, 1280]}
+            sizes="(max-width: 900px) 92vw, 560px"
+            quality={78}
+            format="webp"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </a>
+        <DicaWhatsApp obra={destaque} />
+      </div>
       <figcaption>
         <a class="titulo-obra" href={`/obras/${destaque.slug}`}>{destaque.titulo}</a>
         <Selo situacao={destaque.situacao} />
@@ -177,7 +177,10 @@ const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
 
   .quadro {
     display: block;
-    cursor: pointer;
+  }
+
+  .quadro > a {
+    display: block;
   }
 
   figcaption {
