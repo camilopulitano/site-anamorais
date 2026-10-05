@@ -30,6 +30,17 @@ export function linkWhatsApp(mensagem?: string): string {
   return mensagem ? `${base}?text=${encodeURIComponent(mensagem)}` : base;
 }
 
-export function linkObra(titulo: string): string {
-  return linkWhatsApp(`Olá, Ana! Vi a obra "${titulo}" no seu site e gostaria de saber mais sobre ela.`);
+/**
+ * Link de WhatsApp sobre uma obra específica — usado no clique da imagem e
+ * nos botões da ficha. A mensagem já pergunta valor e leva o link da ficha,
+ * para a Ana saber exatamente de qual pintura se trata (os títulos ainda
+ * são provisórios).
+ */
+export function linkObra(obra: { slug: string; titulo: string; situacao: 'disponivel' | 'vendida' }): string {
+  const ficha = new URL(`/obras/${obra.slug}`, import.meta.env.SITE).toString();
+  const pedido =
+    obra.situacao === 'disponivel'
+      ? `Vi a obra "${obra.titulo}" no seu site e gostaria de saber o valor e mais informações.`
+      : `Vi a obra "${obra.titulo}" no seu site. Sei que ela já foi vendida, mas gostaria de saber valores e mais informações sobre o seu trabalho.`;
+  return linkWhatsApp(`Olá, Ana! ${pedido}\n${ficha}`);
 }
