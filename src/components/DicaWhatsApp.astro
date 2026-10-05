@@ -1,0 +1,74 @@
+---
+/**
+ * Etiqueta "Consultar valor" que aparece sobre a imagem de uma obra,
+ * avisando que o clique abre o WhatsApp da Ana.
+ *
+ * Uso: o link que envolve a imagem recebe a classe `com-dica`.
+ * No computador a etiqueta surge ao passar o mouse (ou focar pelo teclado);
+ * no celular, onde não existe "passar o mouse", ela fica sempre visível.
+ */
+---
+
+<span class="dica" aria-hidden="true">
+  <svg viewBox="0 0 24 24" width="15" height="15" focusable="false">
+    <path
+      fill="currentColor"
+      d="M12 3C7 3 3 6.6 3 11c0 2.2 1 4.2 2.7 5.6L5 21l4.3-2.2c.9.2 1.8.3 2.7.3 5 0 9-3.6 9-8s-4-8-9-8z"
+    ></path>
+  </svg>
+  Consultar valor
+</span>
+
+<style>
+  :global(.com-dica) {
+    position: relative;
+  }
+
+  .dica {
+    position: absolute;
+    z-index: 1;
+    left: 12px;
+    bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px 7px 10px;
+    border-radius: 999px;
+    background: var(--verde);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(36, 30, 22, 0.25);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity var(--duracao) var(--entrada), transform var(--duracao) var(--entrada);
+  }
+
+  :global(.com-dica:hover) .dica,
+  :global(.com-dica:focus-visible) .dica {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (hover: none) {
+    .dica {
+      left: 8px;
+      bottom: 8px;
+      padding: 6px 10px 6px 8px;
+      font-size: 12px;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dica {
+      transform: none;
+      transition: opacity var(--duracao) linear;
+    }
+  }
+</style>

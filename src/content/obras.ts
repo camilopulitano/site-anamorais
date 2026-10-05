@@ -37,8 +37,10 @@ export const TEMAS: Record<Tema, string> = {
 export const obras: Obra[] = [
   { slug: 'morro-colorido', titulo: 'Morro colorido', situacao: 'vendida', tema: 'brasil', alt: 'Morro com casas coloridas empilhadas, fios elétricos e roupas no varal; um menino desce a escadaria e o morro Dois Irmãos aparece ao fundo' },
   { slug: 'rua-de-pedra', titulo: 'Rua de pedra', situacao: 'disponivel', tema: 'brasil', alt: 'Rua de pedra em cidade colonial, casas brancas com barrado amarelo e janelas verdes, cacto e mata, montanhas azuis ao fundo' },
+  { slug: 'capela-a-beira-mar', titulo: 'Capela à beira-mar', situacao: 'vendida', tema: 'brasil', ano: 2026, alt: 'Capela colonial branca de janelas verdes numa praia de água turquesa, entre coqueiros, com dois barcos ancorados à direita' },
   { slug: 'ipe-amarelo', titulo: 'Ipê-amarelo', situacao: 'vendida', tema: 'brasil', alt: 'Ipê-amarelo florido sobre casa colonial branca de portas verdes, céu azul' },
   { slug: 'hibiscos', titulo: 'Hibiscos', situacao: 'disponivel', tema: 'flores', alt: 'Dois hibiscos vermelhos entre folhagem verde' },
+  { slug: 'casa-azul', titulo: 'Casa azul', situacao: 'vendida', tema: 'brasil', ano: 2026, alt: 'Casa de fachada azul e branca, número 920, com janelas de venezianas brancas, vasos de plantas e calçada de pedras portuguesas em ondas pretas e brancas sob céu de entardecer' },
   { slug: 'cataratas-do-iguacu', titulo: 'Cataratas do Iguaçu', situacao: 'vendida', tema: 'brasil', alt: 'Cataratas do Iguaçu, quedas d’água entre a mata' },
   { slug: 'retrato', titulo: 'Retrato', situacao: 'disponivel', tema: 'retrato', alt: 'Retrato de mulher de cabelos cacheados escuros e blusa rosa' },
   { slug: 'araras-azuis', titulo: 'Araras-azuis', situacao: 'vendida', tema: 'brasil', alt: 'Casal de araras-azuis de olhos amarelos' },

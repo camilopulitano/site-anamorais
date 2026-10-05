@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Selo from '../../components/Selo.astro';
 import FaixaObras from '../../components/FaixaObras.astro';
+import DicaWhatsApp from '../../components/DicaWhatsApp.astro';
 import { imagemDe, obras, TEMAS, type Obra } from '../../content/obras';
 import { linkObra } from '../../config/contato';
 
@@ -26,6 +27,7 @@ interface Props {
 const { obra, anterior, proxima } = Astro.props;
 const imagem = imagemDe(obra);
 const disponivel = obra.situacao === 'disponivel';
+const whatsapp = linkObra(obra);
 
 // Até 4 obras do mesmo tema; completa com outras se faltar.
 const mesmoTema = obras.filter((o) => o.tema === obra.tema && o.slug !== obra.slug);
@@ -76,16 +78,20 @@ const jsonLd = {
 
     <article class="ficha">
       <div class="palco">
-        <Image
-          src={imagem}
-          alt={obra.alt}
-          widths={[480, 800, 1200, 1600]}
-          sizes="(max-width: 900px) 92vw, 760px"
-          quality={80}
-          format="webp"
-          loading="eager"
-          fetchpriority="high"
-        />
+        <a class="quadro com-dica" href={whatsapp} target="_blank" rel="noopener">
+          <Image
+            src={imagem}
+            alt={obra.alt}
+            widths={[480, 800, 1200, 1600]}
+            sizes="(max-width: 900px) 92vw, 760px"
+            quality={80}
+            format="webp"
+            loading="eager"
+            fetchpriority="high"
+          />
+          <span class="so-leitor">— perguntar o valor desta obra no WhatsApp da Ana (abre em nova aba)</span>
+          <DicaWhatsApp />
+        </a>
       </div>
 
       <div class="dados">
@@ -110,14 +116,17 @@ const jsonLd = {
         {
           disponivel ? (
             <div class="pilha estreita">
-              <a class="botao" href={linkObra(obra.titulo)} rel="noopener">
-                Perguntar sobre esta obra
+              <a class="botao" href={whatsapp} target="_blank" rel="noopener">
+                Consultar valor no WhatsApp
               </a>
               <p class="nota">A conversa segue pelo WhatsApp da Ana.</p>
             </div>
           ) : (
             <div class="pilha estreita">
-              <p class="nota esquerda">Esta obra já foi vendida.</p>
+              <p class="nota esquerda">Esta obra já foi vendida — mas dá para conversar com a Ana sobre ela e sobre o trabalho dela.</p>
+              <a class="botao" href={whatsapp} target="_blank" rel="noopener">
+                Falar com a Ana no WhatsApp
+              </a>
               <a class="botao botao--contorno" href="/obras?situacao=disponivel">
                 Ver obras disponíveis
               </a>
@@ -175,6 +184,11 @@ const jsonLd = {
     justify-content: center;
     padding: clamp(20px, 4vw, 56px);
     background: var(--superficie);
+  }
+
+  .quadro {
+    display: block;
+    cursor: pointer;
   }
 
   .palco :global(img) {
@@ -287,6 +301,10 @@ const jsonLd = {
     .ficha {
       grid-template-columns: minmax(0, 1fr);
       padding-top: 24px;
+    }
+
+    .quadro {
+      width: 100%;
     }
 
     .palco :global(img) {

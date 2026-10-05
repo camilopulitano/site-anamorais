@@ -34,6 +34,7 @@ const temas: { valor: 'todos' | Tema; rotulo: string }[] = [
         {
           situacoes.map((s, i) => (
             <button type="button" class="pilula" data-filtro="situacao" data-valor={s.valor} aria-pressed={i === 0 ? 'true' : 'false'}>
+              {s.valor !== 'todas' && <span class="marca" aria-hidden="true" />}
               {s.rotulo} <span class="n">{s.n}</span>
             </button>
           ))
@@ -205,6 +206,60 @@ const temas: { valor: 'todos' | Tema; rotulo: string }[] = [
   .pilula[aria-pressed='true'] .n {
     color: inherit;
     opacity: 0.85;
+  }
+
+  /* Disponíveis em verde, Vendidas em vermelho — as mesmas cores dos selos.
+     O marcador também muda de forma (ponto cheio × anel), não só de cor. */
+  .marca {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
+    border-radius: 50%;
+    vertical-align: 1px;
+  }
+
+  .pilula[data-valor='disponivel'] .marca {
+    background: var(--verde);
+  }
+
+  .pilula[data-valor='vendida'] .marca {
+    border: 2px solid var(--vermelho);
+  }
+
+  .pilula[data-valor='disponivel'] {
+    border-color: var(--verde);
+    color: var(--verde);
+  }
+
+  .pilula[data-valor='vendida'] {
+    border-color: var(--vermelho);
+    color: var(--vermelho);
+  }
+
+  .pilula[data-valor='disponivel']:hover {
+    background: rgba(27, 114, 54, 0.08);
+  }
+
+  .pilula[data-valor='vendida']:hover {
+    background: rgba(180, 35, 24, 0.07);
+  }
+
+  .pilula[data-valor='disponivel'][aria-pressed='true'] {
+    background: var(--verde);
+    border-color: var(--verde);
+    color: #fff;
+  }
+
+  .pilula[data-valor='vendida'][aria-pressed='true'] {
+    background: var(--vermelho);
+    border-color: var(--vermelho);
+    color: #fff;
+  }
+
+  .pilula[aria-pressed='true'] .marca {
+    background: #fff;
+    border-color: #fff;
   }
 
   .aba {
