@@ -211,3 +211,16 @@ img[data-fade].carregada {
   white-space: nowrap;
   border: 0;
 }
+
+/* Botão verde de WhatsApp ("Consultar valor"). Branco sobre --verde: 6,0:1. */
+.botao--verde {
+  background: var(--verde);
+  border-color: var(--verde);
+  color: #fff;
+}
+
+.botao--verde:hover {
+  background: #145a2a;
+  border-color: #145a2a;
+  color: #fff;
+}
