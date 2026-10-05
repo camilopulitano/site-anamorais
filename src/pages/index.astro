@@ -4,6 +4,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Selo from '../components/Selo.astro';
 import FaixaObras from '../components/FaixaObras.astro';
 import Contato from '../components/Contato.astro';
+import DicaWhatsApp from '../components/DicaWhatsApp.astro';
+import { linkObra } from '../config/contato';
 import { disponiveis, imagemDe, obraPorSlug, obras } from '../content/obras';
 import fotoAna from '../assets/ana/sorriso-hibiscos.jpg';
 
@@ -34,7 +36,7 @@ const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
       </div>
     </div>
     <figure class="obra-destaque">
-      <a href={`/obras/${destaque.slug}`}>
+      <a class="quadro com-dica" href={linkObra(destaque)} target="_blank" rel="noopener">
         <Image
           src={imagemDe(destaque)}
           alt={destaque.alt}
@@ -45,9 +47,11 @@ const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
           loading="eager"
           fetchpriority="high"
         />
+        <span class="so-leitor">— perguntar sobre esta obra no WhatsApp da Ana (abre em nova aba)</span>
+        <DicaWhatsApp />
       </a>
       <figcaption>
-        <span class="titulo-obra">{destaque.titulo}</span>
+        <a class="titulo-obra" href={`/obras/${destaque.slug}`}>{destaque.titulo}</a>
         <Selo situacao={destaque.situacao} />
       </figcaption>
     </figure>
@@ -171,16 +175,29 @@ const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
     box-shadow: 0 1px 2px rgba(36, 30, 22, 0.12), 0 18px 40px rgba(36, 30, 22, 0.16);
   }
 
+  .quadro {
+    display: block;
+    cursor: pointer;
+  }
+
   figcaption {
     display: flex;
     gap: 14px;
-    align-items: baseline;
+    align-items: center;
   }
 
   .titulo-obra {
     font-family: var(--serif);
     font-style: italic;
     font-size: 17px;
+    color: var(--tinta);
+    text-decoration: none;
+  }
+
+  .titulo-obra:hover {
+    color: var(--mata);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   .faixa-clara {
@@ -265,6 +282,10 @@ const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
     .abertura,
     .sobre {
       grid-template-columns: minmax(0, 1fr);
+    }
+
+    .obra-destaque .quadro {
+      width: 100%;
     }
 
     .obra-destaque :global(img) {
