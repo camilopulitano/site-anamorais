@@ -3,7 +3,6 @@ import { Image } from 'astro:assets';
 import Selo from './Selo.astro';
 import DicaWhatsApp from './DicaWhatsApp.astro';
 import { imagemDe, TEMAS, type Obra } from '../content/obras';
-import { linkObra } from '../config/contato';
 
 interface Props {
   obra: Obra;
@@ -22,40 +21,36 @@ interface Props {
 
 const { obra, sizes, prioridade = false, legenda = 'pilha', mostrarTema = false } = Astro.props;
 const imagem = imagemDe(obra);
+const ficha = `/obras/${obra.slug}`;
 ---
 
 <!--
-  Dois destinos, dois links (link dentro de link não é HTML válido):
-  - a IMAGEM abre o WhatsApp da Ana já perguntando valor desta obra;
-  - o TÍTULO abre a ficha da obra no site.
+  A imagem e o título levam à ficha da obra.
+  O botão verde "Consultar valor", por cima da imagem, abre o WhatsApp.
+  (São links irmãos, não um dentro do outro — link dentro de link não é HTML válido.)
 -->
 <article class="card">
-  <a
-    class="moldura com-dica"
-    href={linkObra(obra)}
-    target="_blank"
-    rel="noopener"
-    style={`aspect-ratio: ${imagem.width} / ${imagem.height}`}
-  >
-    <Image
-      src={imagem}
-      alt={obra.alt}
-      widths={[360, 560, 800, 1200]}
-      sizes={sizes}
-      quality={72}
-      format="webp"
-      loading={prioridade ? 'eager' : 'lazy'}
-      fetchpriority={prioridade ? 'high' : 'auto'}
-      decoding="async"
-      data-fade={prioridade ? undefined : ''}
-    />
-    <span class="so-leitor">— perguntar o valor de “{obra.titulo}” no WhatsApp da Ana (abre em nova aba)</span>
-    <DicaWhatsApp />
-  </a>
+  <div class="quadro com-consultar">
+    <a class="moldura" href={ficha} style={`aspect-ratio: ${imagem.width} / ${imagem.height}`}>
+      <Image
+        src={imagem}
+        alt={obra.alt}
+        widths={[360, 560, 800, 1200]}
+        sizes={sizes}
+        quality={72}
+        format="webp"
+        loading={prioridade ? 'eager' : 'lazy'}
+        fetchpriority={prioridade ? 'high' : 'auto'}
+        decoding="async"
+        data-fade={prioridade ? undefined : ''}
+      />
+    </a>
+    <DicaWhatsApp obra={obra} />
+  </div>
   <div class:list={['legenda', legenda]}>
     <span class="textos">
       {mostrarTema && <span class="tema">{TEMAS[obra.tema]}</span>}
-      <a class="titulo" href={`/obras/${obra.slug}`}>{obra.titulo}</a>
+      <a class="titulo" href={ficha}>{obra.titulo}</a>
     </span>
     <Selo situacao={obra.situacao} />
   </div>
@@ -76,7 +71,6 @@ const imagem = imagemDe(obra);
     background: rgba(36, 30, 22, 0.06);
     box-shadow: var(--sombra-obra);
     overflow: hidden;
-    cursor: pointer;
   }
 
   .moldura :global(img) {
@@ -86,7 +80,7 @@ const imagem = imagemDe(obra);
     transition: opacity 420ms var(--entrada), transform 600ms var(--entrada);
   }
 
-  .moldura:hover :global(img) {
+  .card:hover .moldura :global(img) {
     transform: scale(1.015);
   }
 
@@ -124,14 +118,12 @@ const imagem = imagemDe(obra);
     transition: color var(--duracao) var(--entrada);
   }
 
-  .titulo:hover {
+  .card:hover .titulo {
     color: var(--mata);
-    text-decoration: underline;
-    text-underline-offset: 3px;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .moldura:hover :global(img) {
+    .card:hover .moldura :global(img) {
       transform: none;
     }
   }
