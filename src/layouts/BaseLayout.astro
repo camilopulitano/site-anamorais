@@ -5,6 +5,8 @@ import Cabecalho from '../components/Cabecalho.astro';
 import Rodape from '../components/Rodape.astro';
 import { INSTAGRAM_URL } from '../config/contato';
 import imagemPadrao from '../assets/obras/morro-colorido.jpg';
+import { IDIOMAS, INFO, PADRAO, idiomaDe, rota, semIdioma } from '../i18n/idiomas';
+import { t } from '../i18n/ui';
 
 interface Props {
   titulo?: string;
@@ -14,17 +16,27 @@ interface Props {
   /** Dados estruturados extras da página (schema.org). */
   jsonLd?: Record<string, unknown>;
   paginaAtual?: 'inicio' | 'obras' | 'videos' | 'sobre';
+  /** Página sem versões em outros idiomas (ex.: 404). */
+  semTraducoes?: boolean;
 }
+
+const lang = idiomaDe(Astro.url);
+const T = t(lang);
 
 const {
   titulo,
-  descricao = 'Portfólio de Ana Quintanas, artista plástica e pintora brasileira. Lugares, histórias e memórias: paisagens, casas e natureza pelo olhar dela.',
+  descricao = T.meta.descricao,
   imagem = imagemPadrao,
   jsonLd,
   paginaAtual,
+  semTraducoes = false,
 } = Astro.props;
 
-const tituloFinal = titulo ? `${titulo} · Ana Quintanas` : 'Ana Quintanas — pintora brasileira';
+const tituloFinal = titulo ? `${titulo} · Ana Quintanas` : T.meta.titulo;
+const base = semIdioma(Astro.url.pathname);
+const alternativas = semTraducoes
+  ? []
+  : IDIOMAS.map((l) => ({ hreflang: INFO[l].html, href: new URL(rota(l, base), Astro.site).toString() }));
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const og = await getImage({ src: imagem, width: 1200, format: 'jpeg', quality: 80 });
 const ogUrl = new URL(og.src, Astro.site);
@@ -33,26 +45,33 @@ const pessoa = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: 'Ana Quintanas',
-  jobTitle: 'Pintora',
-  nationality: 'Brasileira',
+  jobTitle: T.profissao,
+  nationality: { '@type': 'Country', name: 'Brazil' },
   url: Astro.site?.toString(),
   sameAs: [INSTAGRAM_URL],
 };
 ---
 
 <!doctype html>
-<html lang="pt-BR">
+<html lang={INFO[lang].html}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{tituloFinal}</title>
     <meta name="description" content={descricao} />
     <link rel="canonical" href={canonical} />
+    {alternativas.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    {
+      alternativas.length > 0 && (
+        <link rel="alternate" hreflang="x-default" href={new URL(rota(PADRAO, base), Astro.site).toString()} />
+      )
+    }
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#24443D" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:locale" content={INFO[lang].og} />
+    {alternativas.length > 0 && IDIOMAS.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={INFO[l].og} />)}
     <meta property="og:site_name" content="Ana Quintanas" />
     <meta property="og:title" content={tituloFinal} />
     <meta property="og:description" content={descricao} />
@@ -71,7 +90,7 @@ const pessoa = {
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
   <body>
-    <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+    <a class="pular" href="#conteudo">{T.menu.pular}</a>
     <Cabecalho atual={paginaAtual} />
     <main id="conteudo">
       <slot />
