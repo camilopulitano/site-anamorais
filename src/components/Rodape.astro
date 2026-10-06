@@ -1,19 +1,36 @@
 ---
 import { INSTAGRAM_URL, INSTAGRAM_USUARIO, linkWhatsApp, WHATSAPP_LEGIVEL } from '../config/contato';
+import { IDIOMAS, INFO, idiomaDe, rota, semIdioma } from '../i18n/idiomas';
+import { t } from '../i18n/ui';
+
 const ano = new Date().getFullYear();
+const lang = idiomaDe(Astro.url);
+const T = t(lang);
+const base = semIdioma(Astro.url.pathname);
 ---
 
 <footer class="rodape">
   <div class="conteiner linha">
     <div class="assinatura">
       <span class="nome">Ana Quintanas</span>
-      <span class="sub">Pintora brasileira</span>
+      <span class="sub">{T.profissao}</span>
     </div>
     <ul class="contatos">
       <li><a href={linkWhatsApp()} rel="noopener">WhatsApp {WHATSAPP_LEGIVEL}</a></li>
       <li><a href={INSTAGRAM_URL} rel="noopener">Instagram @{INSTAGRAM_USUARIO}</a></li>
     </ul>
-    <p class="direitos">© {ano} Ana Quintanas · Todas as imagens são de obras da artista</p>
+    <ul class="idiomas" aria-label={T.menu.idioma}>
+      {
+        IDIOMAS.map((l) => (
+          <li>
+            <a href={rota(l, base)} lang={INFO[l].html} hreflang={INFO[l].html} aria-current={l === lang ? 'true' : undefined}>
+              {INFO[l].nome}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="direitos">© {ano} Ana Quintanas · {T.rodapeDireitos}</p>
   </div>
 </footer>
 
@@ -69,8 +86,31 @@ const ano = new Date().getFullYear();
     color: var(--ocre);
   }
 
-  .direitos {
+  .direitos,
+  .idiomas {
     grid-column: 1 / -1;
+  }
+
+  .idiomas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .idiomas a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--rodape-suave);
+    font-size: 13px;
+  }
+
+  .idiomas a:hover,
+  .idiomas a[aria-current] {
+    color: var(--linho);
   }
 
   @media (max-width: 720px) {

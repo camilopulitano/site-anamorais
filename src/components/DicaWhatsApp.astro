@@ -1,6 +1,8 @@
 ---
 import { linkObra } from '../config/contato';
 import type { Obra } from '../content/obras';
+import { idiomaDe } from '../i18n/idiomas';
+import { t } from '../i18n/ui';
 
 /**
  * Botão verde "Consultar valor" sobre a imagem de uma obra.
@@ -16,16 +18,18 @@ interface Props {
   obra: Pick<Obra, 'slug' | 'titulo' | 'situacao'>;
 }
 const { obra } = Astro.props;
+const lang = idiomaDe(Astro.url);
+const T = t(lang);
 ---
 
-<a class="consultar" href={linkObra(obra)} target="_blank" rel="noopener">
+<a class="consultar" href={linkObra(obra, lang)} target="_blank" rel="noopener">
   <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" focusable="false">
     <path
       fill="currentColor"
       d="M12 3C7 3 3 6.6 3 11c0 2.2 1 4.2 2.7 5.6L5 21l4.3-2.2c.9.2 1.8.3 2.7.3 5 0 9-3.6 9-8s-4-8-9-8z"
     ></path>
   </svg>
-  Consultar valor<span class="so-leitor"> de “{obra.titulo}” no WhatsApp da Ana (abre em nova aba)</span>
+  {T.consultar.botao}<span class="so-leitor">{T.consultar.leitor(obra.titulo)}</span>
 </a>
 
 <style>
@@ -41,22 +45,26 @@ const { obra } = Astro.props;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    max-width: calc(100% - 24px);
     min-height: 34px;
-    padding: 0 14px 0 11px;
-    border-radius: 999px;
+    padding: 6px 14px 6px 11px;
+    border-radius: 17px;
     background: var(--verde);
     color: #fff;
     font-family: var(--sans);
     font-size: 13px;
     font-weight: 600;
-    line-height: 1;
-    white-space: nowrap;
+    line-height: 1.2;
     text-decoration: none;
     box-shadow: 0 2px 8px rgba(36, 30, 22, 0.25);
     opacity: 0;
     transform: translateY(6px);
     transition: opacity var(--duracao) var(--entrada), transform var(--duracao) var(--entrada),
       background-color var(--duracao) var(--entrada);
+  }
+
+  .consultar svg {
+    flex-shrink: 0;
   }
 
   .consultar:hover {
@@ -74,8 +82,9 @@ const { obra } = Astro.props;
     .consultar {
       left: 8px;
       bottom: 8px;
+      max-width: calc(100% - 16px);
       min-height: 36px;
-      padding: 0 12px 0 10px;
+      padding: 6px 12px 6px 10px;
       font-size: 12px;
       opacity: 1;
       transform: none;

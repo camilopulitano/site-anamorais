@@ -1,5 +1,7 @@
 ---
 import type { Situacao } from '../content/obras';
+import { idiomaDe } from '../i18n/idiomas';
+import { t } from '../i18n/ui';
 
 interface Props {
   situacao: Situacao;
@@ -12,7 +14,8 @@ const { situacao, destaque = false } = Astro.props;
  * Além da cor, as duas diferem na forma do marcador (ponto cheio × anel)
  * e no rótulo escrito — quem não distingue verde de vermelho continua lendo.
  */
-const rotulo = situacao === 'disponivel' ? 'Disponível' : 'Vendida';
+const T = t(idiomaDe(Astro.url));
+const rotulo = situacao === 'disponivel' ? T.selo.disponivel : T.selo.vendida;
 ---
 
 <span class:list={['selo', situacao, { destaque }]}><span class="ponto" aria-hidden="true"></span>{rotulo}</span>

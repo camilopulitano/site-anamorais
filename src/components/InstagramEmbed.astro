@@ -16,7 +16,11 @@ interface Props {
   rotulo?: string;
 }
 
-const { url, rotulo = 'Ver no Instagram' } = Astro.props;
+import { idiomaDe } from '../i18n/idiomas';
+import { t } from '../i18n/ui';
+
+const T = t(idiomaDe(Astro.url));
+const { url, rotulo = T.obra.verNoInstagram } = Astro.props;
 
 // Link limpo: sem rastreadores (?stkn=, ?igsh=, ?img_index=...).
 const limpo = (() => {
@@ -33,7 +37,7 @@ const limpo = (() => {
         <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
         <circle cx="17.4" cy="6.6" r="1.2" fill="currentColor"></circle>
       </svg>
-      <span>{rotulo}<span class="so-leitor"> (abre em nova aba)</span></span>
+      <span>{rotulo}<span class="so-leitor"> {T.novaAba}</span></span>
     </a>
   </blockquote>
 </div>

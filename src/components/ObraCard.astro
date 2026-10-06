@@ -2,7 +2,10 @@
 import { Image } from 'astro:assets';
 import Selo from './Selo.astro';
 import DicaWhatsApp from './DicaWhatsApp.astro';
-import { imagemDe, TEMAS, type Obra } from '../content/obras';
+import { imagemDe, type Obra } from '../content/obras';
+import { idiomaDe, rota } from '../i18n/idiomas';
+import { t } from '../i18n/ui';
+import { altDaObra } from '../i18n/obras';
 
 interface Props {
   obra: Obra;
@@ -21,7 +24,9 @@ interface Props {
 
 const { obra, sizes, prioridade = false, legenda = 'pilha', mostrarTema = false } = Astro.props;
 const imagem = imagemDe(obra);
-const ficha = `/obras/${obra.slug}`;
+const lang = idiomaDe(Astro.url);
+const T = t(lang);
+const ficha = rota(lang, `/obras/${obra.slug}`);
 ---
 
 <!--
@@ -34,7 +39,7 @@ const ficha = `/obras/${obra.slug}`;
     <a class="moldura" href={ficha} style={`aspect-ratio: ${imagem.width} / ${imagem.height}`}>
       <Image
         src={imagem}
-        alt={obra.alt}
+        alt={altDaObra(obra, lang)}
         widths={[360, 560, 800, 1200]}
         sizes={sizes}
         quality={72}
@@ -49,8 +54,8 @@ const ficha = `/obras/${obra.slug}`;
   </div>
   <div class:list={['legenda', legenda]}>
     <span class="textos">
-      {mostrarTema && <span class="tema">{TEMAS[obra.tema]}</span>}
-      <a class="titulo" href={ficha}>{obra.titulo}</a>
+      {mostrarTema && <span class="tema">{T.temas[obra.tema]}</span>}
+      <a class="titulo" href={ficha} lang={lang === 'pt' ? undefined : 'pt-BR'}>{obra.titulo}</a>
     </span>
     <Selo situacao={obra.situacao} />
   </div>

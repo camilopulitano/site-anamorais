@@ -1,22 +1,31 @@
 ---
+import { IDIOMAS, INFO, idiomaDe, rota, semIdioma } from '../i18n/idiomas';
+import { t } from '../i18n/ui';
+
 interface Props {
   atual?: 'inicio' | 'obras' | 'videos' | 'sobre';
 }
 const { atual } = Astro.props;
+const lang = idiomaDe(Astro.url);
+const T = t(lang);
+/** A mesma página nos outros idiomas: /en/obras/hibiscos → /fr/obras/hibiscos. */
+const base = semIdioma(Astro.url.pathname);
+
+const ROTULO_NAV = { pt: 'Principal', en: 'Main', es: 'Principal', fr: 'Principal', it: 'Principale', zh: '主导航' };
 
 /** Só entram rotas que existem. Item de menu que cai em 404 é pior que item ausente. */
 const menu = [
-  { rotulo: 'Obras', href: '/obras', chave: 'obras' },
-  { rotulo: 'Vídeos', href: '/videos', chave: 'videos' },
-  { rotulo: 'Sobre', href: '/sobre', chave: 'sobre' },
-  { rotulo: 'Contato', href: '/#contato', chave: 'contato' },
+  { rotulo: T.menu.obras, href: rota(lang, '/obras'), chave: 'obras' },
+  { rotulo: T.menu.videos, href: rota(lang, '/videos'), chave: 'videos' },
+  { rotulo: T.menu.sobre, href: rota(lang, '/sobre'), chave: 'sobre' },
+  { rotulo: T.menu.contato, href: `${rota(lang, '/')}#contato`, chave: 'contato' },
 ] as const;
 ---
 
 <header class="cabecalho">
   <div class="conteiner linha">
-    <a class="marca" href="/" aria-current={atual === 'inicio' ? 'page' : undefined}>Ana Quintanas</a>
-    <nav aria-label="Principal">
+    <a class="marca" href={rota(lang, '/')} aria-current={atual === 'inicio' ? 'page' : undefined}>Ana Quintanas</a>
+    <nav class="principal" aria-label={ROTULO_NAV[lang]}>
       <ul>
         {
           menu.map((item) => (
@@ -29,8 +38,57 @@ const menu = [
         }
       </ul>
     </nav>
+    <details class="idioma">
+      <summary aria-label={`${T.menu.idioma}: ${INFO[lang].nome}`}>
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+          <path
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9s1.2-6.4 3.8-9z"
+          ></path>
+        </svg>
+        <span aria-hidden="true">{INFO[lang].curto}</span>
+        <svg class="seta" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true" focusable="false">
+          <path fill="none" stroke="currentColor" stroke-width="1.6" d="M2.5 4.5 6 8l3.5-3.5"></path>
+        </svg>
+      </summary>
+      <ul>
+        {
+          IDIOMAS.map((l) => (
+            <li>
+              <a
+                href={rota(l, base)}
+                lang={INFO[l].html}
+                hreflang={INFO[l].html}
+                aria-current={l === lang ? 'true' : undefined}
+              >
+                {INFO[l].nome}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </details>
   </div>
 </header>
+
+<script>
+  // Fecha a lista de idiomas ao clicar fora dela ou apertar Esc.
+  const caixa = document.querySelector<HTMLDetailsElement>('.cabecalho details.idioma');
+  if (caixa) {
+    document.addEventListener('click', (e) => {
+      if (caixa.open && !caixa.contains(e.target as Node)) caixa.open = false;
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && caixa.open) {
+        caixa.open = false;
+        caixa.querySelector('summary')?.focus();
+      }
+    });
+  }
+</script>
 
 <style>
   .cabecalho {
@@ -39,13 +97,16 @@ const menu = [
 
   .linha {
     min-height: 96px;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas: 'marca nav idioma';
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
+    gap: 16px 32px;
   }
 
   .marca {
+    grid-area: marca;
+    justify-self: start;
     font-family: var(--serif);
     font-size: 26px;
     font-weight: 500;
@@ -54,7 +115,11 @@ const menu = [
     text-decoration: none;
   }
 
-  ul {
+  .principal {
+    grid-area: nav;
+  }
+
+  .principal ul {
     display: flex;
     gap: 40px;
     margin: 0;
@@ -62,7 +127,7 @@ const menu = [
     list-style: none;
   }
 
-  nav a {
+  .principal a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
@@ -70,54 +135,142 @@ const menu = [
     color: var(--tinta);
     font-size: 15px;
     font-weight: 500;
+    white-space: nowrap;
     text-decoration: none;
     transition: color var(--duracao) var(--entrada), border-color var(--duracao) var(--entrada);
   }
 
-  nav a:hover {
+  .principal a:hover {
     color: var(--mata);
   }
 
-  nav a[aria-current='page'] {
+  .principal a[aria-current='page'] {
     color: var(--mata);
     border-bottom-color: var(--mata);
   }
 
-  @media (max-width: 640px) {
+  /* Seletor de idioma */
+  .idioma {
+    grid-area: idioma;
+    position: relative;
+  }
+
+  summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1px solid rgba(36, 30, 22, 0.22);
+    border-radius: 999px;
+    color: var(--tinta);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    transition: border-color var(--duracao) var(--entrada), color var(--duracao) var(--entrada);
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary:hover,
+  .idioma[open] summary {
+    border-color: var(--mata);
+    color: var(--mata);
+  }
+
+  .seta {
+    transition: transform var(--duracao) var(--entrada);
+  }
+
+  .idioma[open] .seta {
+    transform: rotate(180deg);
+  }
+
+  .idioma ul {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 168px;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    background: var(--superficie);
+    border: 1px solid var(--linha);
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(36, 30, 22, 0.16);
+  }
+
+  .idioma ul a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: 6px;
+    color: var(--tinta);
+    font-size: 15px;
+    text-decoration: none;
+  }
+
+  .idioma ul a:hover {
+    background: rgba(36, 68, 61, 0.08);
+    color: var(--mata);
+  }
+
+  .idioma ul a[aria-current] {
+    color: var(--mata);
+    font-weight: 600;
+  }
+
+  .idioma ul a[aria-current]::after {
+    content: '✓';
+    margin-left: auto;
+    padding-left: 12px;
+  }
+
+  @media (max-width: 900px) {
     .linha {
-      min-height: 64px;
+      gap: 16px 20px;
+    }
+
+    .principal ul {
+      gap: 24px;
+    }
+  }
+
+  /* Tablet/celular: nome e idioma em cima, menu embaixo ocupando a largura toda. */
+  @media (max-width: 720px) {
+    .linha {
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        'marca idioma'
+        'nav nav';
+      gap: 2px 16px;
+      min-height: 0;
+      padding-top: 12px;
     }
 
     .marca {
       font-size: 20px;
     }
 
-    ul {
-      gap: 18px;
-    }
-
-    nav a {
-      font-size: 14px;
-    }
-  }
-
-  /* Celular estreito: nome em cima, menu embaixo ocupando a largura toda. */
-  @media (max-width: 520px) {
-    .linha {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 2px;
-      min-height: 0;
-      padding-top: 14px;
-    }
-
-    nav {
-      width: 100%;
-    }
-
-    ul {
+    .principal ul {
       justify-content: space-between;
       gap: 8px;
+    }
+
+    .principal a {
+      font-size: 14px;
+    }
+
+    summary {
+      min-height: 40px;
+      padding: 0 10px;
     }
   }
 </style>

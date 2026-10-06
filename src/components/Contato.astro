@@ -2,6 +2,10 @@
 import { Image } from 'astro:assets';
 import retrato from '../assets/ana/retrato-paleta.jpg';
 import { INSTAGRAM_URL, INSTAGRAM_USUARIO, linkWhatsApp, WHATSAPP_LEGIVEL } from '../config/contato';
+import { idiomaDe } from '../i18n/idiomas';
+import { t } from '../i18n/ui';
+
+const T = t(idiomaDe(Astro.url));
 ---
 
 <section id="contato" class="contato" aria-labelledby="titulo-contato">
@@ -9,7 +13,7 @@ import { INSTAGRAM_URL, INSTAGRAM_USUARIO, linkWhatsApp, WHATSAPP_LEGIVEL } from
     <div class="apresentacao">
       <Image
         src={retrato}
-        alt="Retrato de Ana Quintanas sorrindo, de óculos, no ateliê"
+        alt={T.contato.retratoAlt}
         width={256}
         height={256}
         fit="cover"
@@ -20,13 +24,13 @@ import { INSTAGRAM_URL, INSTAGRAM_USUARIO, linkWhatsApp, WHATSAPP_LEGIVEL } from
         class="retrato"
       />
       <div class="textos">
-        <h2 id="titulo-contato">Contato</h2>
-        <p>Quer saber mais sobre uma obra disponível? Fale direto com a Ana.</p>
-        <p class="certificado">Toda obra é original e acompanha certificado de autenticidade assinado pela artista.</p>
+        <h2 id="titulo-contato">{T.contato.titulo}</h2>
+        <p>{T.contato.texto}</p>
+        <p class="certificado">{T.contato.certificado}</p>
       </div>
     </div>
     <div class="acoes">
-      <a class="botao" href={linkWhatsApp('Olá, Ana! Vim pelo seu site.')} rel="noopener">WhatsApp · {WHATSAPP_LEGIVEL}</a>
+      <a class="botao" href={linkWhatsApp(T.whatsapp.ola)} rel="noopener">WhatsApp · {WHATSAPP_LEGIVEL}</a>
       <a class="botao botao--contorno" href={INSTAGRAM_URL} rel="noopener">Instagram · @{INSTAGRAM_USUARIO}</a>
     </div>
   </div>
