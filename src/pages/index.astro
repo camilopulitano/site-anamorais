@@ -57,7 +57,7 @@ const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
           <p class="sobrancelha">No ateliê agora</p>
           <h2 id="titulo-disponiveis">Obras disponíveis</h2>
         </div>
-        <a class="link-seta" href="/obras?situacao=disponivel">Ver as {disponiveis.length} disponíveis →</a>
+        <a class="link-seta" href="/obras?situacao=disponivel">Ver todas as disponíveis →</a>
       </div>
       <FaixaObras obras={noAtelie} />
     </div>
@@ -72,7 +72,7 @@ const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
       </p>
     </div>
     <FaixaObras obras={brasil} />
-    <a class="link-seta" href="/obras?tema=brasil">Ver as {totalBrasil} obras do Brasil →</a>
+    <a class="link-seta" href="/obras?tema=brasil">Ver todas as obras do Brasil →</a>
   </section>
 
   <section class="faixa-mata" aria-labelledby="titulo-sobre">
