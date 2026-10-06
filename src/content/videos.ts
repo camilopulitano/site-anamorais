@@ -14,6 +14,11 @@ export interface Video {
 
 export const videos: Video[] = [
   {
+    url: 'https://www.instagram.com/reel/DTDHINqEw3M/',
+    legenda:
+      'Frida. Uma das minhas obras preferidas. Frida é sinônimo de força e autenticidade. Inspira porque transformou dor em arte, vulnerabilidade em potência.',
+  },
+  {
     url: 'https://www.instagram.com/reel/DdoWAkdzGZg/',
     legenda: 'É um estudo que faço para entender a luz e a sombra antes de aplicar as cores.',
   },
