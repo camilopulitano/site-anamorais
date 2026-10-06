@@ -1,0 +1,10 @@
+---
+import LivroImpressao from '../../../views/LivroImpressao.astro';
+import { caminhosDeIdioma } from '../../../i18n/idiomas';
+
+export function getStaticPaths() {
+  return caminhosDeIdioma();
+}
+---
+
+<LivroImpressao />

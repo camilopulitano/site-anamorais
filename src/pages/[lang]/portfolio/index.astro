@@ -1,0 +1,10 @@
+---
+import Livro from '../../../views/Livro.astro';
+import { caminhosDeIdioma } from '../../../i18n/idiomas';
+
+export function getStaticPaths() {
+  return caminhosDeIdioma();
+}
+---
+
+<Livro />
