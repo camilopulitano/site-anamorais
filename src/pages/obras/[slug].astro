@@ -4,7 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Selo from '../../components/Selo.astro';
 import FaixaObras from '../../components/FaixaObras.astro';
 import InstagramEmbed from '../../components/InstagramEmbed.astro';
-import { imagemDe, obras, TEMAS, type Obra } from '../../content/obras';
+import { fotosDe, imagemDe, obras, TEMAS, type Obra } from '../../content/obras';
 import { linkObra } from '../../config/contato';
 
 export function getStaticPaths() {
@@ -28,6 +28,7 @@ const { obra, anterior, proxima } = Astro.props;
 const imagem = imagemDe(obra);
 const disponivel = obra.situacao === 'disponivel';
 const whatsapp = linkObra(obra);
+const fotos = fotosDe(obra);
 
 // Até 4 obras do mesmo tema; completa com outras se faltar.
 const mesmoTema = obras.filter((o) => o.tema === obra.tema && o.slug !== obra.slug);
@@ -77,17 +78,41 @@ const jsonLd = {
     </nav>
 
     <article class="ficha">
-      <div class="palco">
-        <Image
-          src={imagem}
-          alt={obra.alt}
-          widths={[480, 800, 1200, 1600]}
-          sizes="(max-width: 900px) 92vw, 760px"
-          quality={80}
-          format="webp"
-          loading="eager"
-          fetchpriority="high"
-        />
+      <div class="imagens">
+        <div class="palco">
+          <Image
+            src={imagem}
+            alt={obra.alt}
+            widths={[480, 800, 1200, 1600]}
+            sizes="(max-width: 900px) 92vw, 760px"
+            quality={80}
+            format="webp"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+
+        {
+          fotos.length > 0 && (
+            <section class="com-a-artista" aria-label="Fotos da obra com a artista">
+              <p class="rotulo-fotos">Com a artista</p>
+              <div class="fotos">
+                {fotos.map((f) => (
+                  <Image
+                    src={f.src}
+                    alt={f.alt}
+                    widths={[360, 560, 800]}
+                    sizes="(max-width: 900px) 92vw, 380px"
+                    quality={74}
+                    format="webp"
+                    loading="lazy"
+                    data-fade=""
+                  />
+                ))}
+              </div>
+            </section>
+          )
+        }
       </div>
 
       <div class="dados">
@@ -201,6 +226,39 @@ const jsonLd = {
     gap: clamp(40px, 6vw, 80px);
     align-items: start;
     padding-block: 40px clamp(72px, 9vw, 120px);
+  }
+
+  .imagens {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    min-width: 0;
+  }
+
+  .com-a-artista {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .rotulo-fotos {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ocre-texto);
+  }
+
+  .fotos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 380px));
+    gap: 20px;
+  }
+
+  .fotos :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: 2px;
   }
 
   .palco {
