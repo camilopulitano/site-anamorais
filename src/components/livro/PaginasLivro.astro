@@ -1,0 +1,565 @@
+---
+/**
+ * As páginas do portfólio em livro — o mesmo HTML para a versão online
+ * (que vira página) e para o PDF.
+ *
+ * Todas as medidas internas estão em cqw (1cqw = 1% da largura da página),
+ * então a página é a mesma em qualquer tamanho: 210 mm no PDF ou 360 px
+ * no celular. A proporção é 210 × 270 (livro de arte vertical).
+ *
+ * As pinturas nunca são cortadas: a moldura recebe o tamanho exato da
+ * proporção de cada tela, dentro de uma área fixa.
+ */
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { paginasDoLivro } from '../../content/livro';
+import { imagemDe, type Obra } from '../../content/obras';
+import { INSTAGRAM_URL, INSTAGRAM_USUARIO, linkWhatsApp, WHATSAPP_LEGIVEL } from '../../config/contato';
+import { idiomaDe } from '../../i18n/idiomas';
+import { t } from '../../i18n/ui';
+import { altDaObra, sobreDaObra } from '../../i18n/obras';
+import fotoAna from '../../assets/ana/sorriso-hibiscos.jpg';
+
+interface Props {
+  /** 'tela' = versão online (imagens leves); 'impressao' = PDF (arquivos originais). */
+  modo: 'tela' | 'impressao';
+}
+const { modo } = Astro.props;
+const lang = idiomaDe(Astro.url);
+const T = t(lang);
+const paginas = paginasDoLivro(lang);
+const total = paginas.length;
+const site = Astro.site ? Astro.site.host : '';
+const naoPt = lang === 'pt' ? undefined : 'pt-BR';
+
+/** Endereço da imagem: original no PDF (cor fiel, sem recompressão); WebP leve na tela. */
+async function fonte(img: ImageMetadata, largura = 1200): Promise<string> {
+  if (modo === 'impressao') return img.src;
+  const o = await getImage({ src: img, width: Math.min(largura, img.width), format: 'webp', quality: 82 });
+  return o.src;
+}
+
+/** Tamanho da pintura dentro de uma área (em cqw), sem cortar nada. */
+function encaixe(img: ImageMetadata, larguraMax: number, alturaMax: number) {
+  const r = img.width / img.height;
+  const largura = Math.min(larguraMax, alturaMax * r);
+  return { largura: +largura.toFixed(3), altura: +(largura / r).toFixed(3) };
+}
+
+/** Tamanho da letra do pensamento conforme o comprimento do texto. */
+function corpoDoPensamento(texto: string): number {
+  const n = lang === 'zh' ? texto.length * 2.2 : texto.length;
+  if (n < 90) return 6.2;
+  if (n < 160) return 4.9;
+  if (n < 240) return 4.1;
+  return 3.5;
+}
+
+const fichaDe = (obra: Obra) =>
+  [
+    obra.tecnica && { rotulo: T.obra.tecnica, valor: T.tecnicas[obra.tecnica] ?? obra.tecnica },
+    obra.dimensoes && { rotulo: T.obra.dimensoes, valor: obra.dimensoes },
+    obra.ano && { rotulo: T.obra.ano, valor: String(obra.ano) },
+  ].filter(Boolean) as { rotulo: string; valor: string }[];
+
+const srcFoto = await fonte(fotoAna, 1400);
+const montadas = await Promise.all(
+  paginas.map(async (p, i) => {
+    const lado = i === 0 ? 'dir' : i % 2 === 0 ? 'dir' : 'esq';
+    if (p.tipo === 'obra' || p.tipo === 'capa') {
+      const img = imagemDe(p.obra);
+      const caixa = p.tipo === 'capa' ? encaixe(img, 62, 66) : encaixe(img, 80, fichaDe(p.obra).length ? 70 : 76);
+      return { p, i, lado, img, src: await fonte(img), caixa };
+    }
+    return { p, i, lado };
+  }),
+);
+
+const rotuloDaPagina = (i: number) =>
+  i === 0 ? T.livro.capa : i === total - 1 ? T.livro.contracapa : T.livro.paginaDe.replace('{a}', String(i)).replace('{t}', String(total - 2));
+const carregar = (i: number) => (modo === 'impressao' || i < 4 ? 'eager' : 'lazy');
+---
+
+{
+  montadas.map(({ p, i, lado, img, src, caixa }) => (
+    <section
+      class:list={['folha', `folha--${p.tipo}`, `folha--${lado}`, { escura: p.tipo === 'capa' || p.tipo === 'contracapa' || p.tipo === 'abertura' }]}
+      data-density={p.tipo === 'capa' || p.tipo === 'contracapa' ? 'hard' : 'soft'}
+      data-indice={i}
+      aria-label={rotuloDaPagina(i)}
+    >
+      {p.tipo === 'capa' && img && caixa && (
+        <div class="miolo">
+          <header class="capa-topo">
+            <p class="f-sobrancelha">{T.livro.titulo}</p>
+            <h1 class="capa-nome">Ana Quintanas</h1>
+            <p class="capa-sub">{T.profissao}</p>
+          </header>
+          <figure class="capa-obra">
+            <img
+              src={src}
+              alt={altDaObra(p.obra, lang)}
+              width={img.width}
+              height={img.height}
+              style={`width:${caixa.largura}cqw;height:${caixa.altura}cqw`}
+              loading="eager"
+              decoding="async"
+            />
+            <figcaption>
+              {T.livro.naCapa}: <span lang={naoPt}>{p.obra.titulo}</span>
+            </figcaption>
+          </figure>
+        </div>
+      )}
+
+      {p.tipo === 'foto' && (
+        <img class="foto-cheia" src={srcFoto} alt={T.inicio.fotoAlt} width={fotoAna.width} height={fotoAna.height} loading="eager" decoding="async" />
+      )}
+
+      {p.tipo === 'sobre' && (
+        <div class="miolo">
+          <p class="f-sobrancelha">{T.menu.sobre}</p>
+          <h2 class="f-titulo">Ana Quintanas</h2>
+          <div class="sobre-texto">
+            {T.sobre.paragrafos.map((par) => (
+              <p>{par}</p>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {p.tipo === 'abertura' && (
+        <div class="miolo">
+          {p.numeral && <p class="abertura-numeral">{p.numeral}</p>}
+          {p.titulo && <h2 class="abertura-titulo">{p.titulo}</h2>}
+          {p.texto && <p class="abertura-texto">{p.texto}</p>}
+        </div>
+      )}
+
+      {p.tipo === 'pensamento' && (
+        <div class="miolo">
+          <p class="f-sobrancelha">{T.livro.pensamentos}</p>
+          <blockquote class="pensamento" style={`font-size:${corpoDoPensamento(p.texto)}cqw`}>
+            <p>{p.texto}</p>
+          </blockquote>
+          <p class="assinatura">— Ana Quintanas</p>
+        </div>
+      )}
+
+      {p.tipo === 'obra' && img && caixa && (
+        <div class="miolo">
+          <div class="quadro" style={`--area:${fichaDe(p.obra).length ? 70 : 76}cqw`}>
+            <img
+              src={src}
+              alt={altDaObra(p.obra, lang)}
+              width={img.width}
+              height={img.height}
+              style={`width:${caixa.largura}cqw;height:${caixa.altura}cqw`}
+              loading={carregar(i)}
+              decoding="async"
+            />
+          </div>
+          <div class="legenda-obra">
+            <p class="f-sobrancelha">{T.temas[p.obra.tema]}</p>
+            <h2 class="obra-titulo" lang={naoPt}>
+              {p.obra.titulo}
+            </h2>
+            {sobreDaObra(p.obra, lang) ? <p class="obra-texto">{sobreDaObra(p.obra, lang)}</p> : <p class="obra-texto preencher">[PREENCHER]</p>}
+            {fichaDe(p.obra).length > 0 && (
+              <dl class="ficha">
+                {fichaDe(p.obra).map((l) => (
+                  <div>
+                    <dt>{l.rotulo}</dt>
+                    <dd>{l.valor}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </div>
+        </div>
+      )}
+
+      {p.tipo === 'contracapa' && (
+        <div class="miolo">
+          <div class="contato-livro">
+            <p class="f-sobrancelha">{T.contato.titulo}</p>
+            <p class="contato-texto">{T.contato.texto}</p>
+            <dl class="contatos-livro">
+              <div>
+                <dt>WhatsApp</dt>
+                <dd>
+                  <a href={linkWhatsApp(T.whatsapp.ola)}>{WHATSAPP_LEGIVEL}</a>
+                </dd>
+              </div>
+              <div>
+                <dt>Instagram</dt>
+                <dd>
+                  <a href={INSTAGRAM_URL}>@{INSTAGRAM_USUARIO}</a>
+                </dd>
+              </div>
+              <div>
+                <dt>{T.livro.site}</dt>
+                <dd>
+                  <a href={Astro.site?.toString()}>{site}</a>
+                </dd>
+              </div>
+            </dl>
+            <p class="contato-certificado">{T.contato.certificado}</p>
+          </div>
+          <p class="contracapa-nome">Ana Quintanas</p>
+        </div>
+      )}
+
+      {p.tipo !== 'capa' && p.tipo !== 'contracapa' && p.tipo !== 'foto' && p.tipo !== 'abertura' && (
+        <p class="folio" aria-hidden="true">
+          {i}
+        </p>
+      )}
+    </section>
+  ))
+}
+
+<style is:global>
+  /* ---------- Página ---------- */
+  .folha {
+    position: relative;
+    container-type: inline-size;
+    overflow: hidden;
+    background: var(--superficie);
+    color: var(--tinta);
+    font-family: var(--sans);
+  }
+
+  .folha.escura {
+    background: var(--mata);
+    color: var(--linho);
+  }
+
+  .folha .miolo {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 10cqw 9cqw 11cqw 11cqw;
+  }
+
+  /* Margem maior do lado da lombada. */
+  .folha--esq .miolo {
+    padding-left: 9cqw;
+    padding-right: 11cqw;
+  }
+
+  .folha .f-sobrancelha {
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 1.55cqw;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ocre-texto);
+  }
+
+  .folha.escura .f-sobrancelha {
+    color: var(--ocre);
+  }
+
+  .folha .f-titulo {
+    margin: 2.2cqw 0 0;
+    font-family: var(--serif);
+    font-size: 6.4cqw;
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .folha .folio {
+    position: absolute;
+    bottom: 5cqw;
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 1.45cqw;
+    letter-spacing: 0.08em;
+    color: var(--tinta-suave);
+  }
+
+  .folha--dir .folio {
+    right: 9cqw;
+  }
+
+  .folha--esq .folio {
+    left: 9cqw;
+  }
+
+  /* ---------- Capa ---------- */
+  .folha--capa .miolo {
+    padding: 10cqw 9cqw 8cqw;
+  }
+
+  .capa-topo {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6cqw;
+  }
+
+  .folha .capa-nome {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 10.5cqw;
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    color: var(--linho);
+  }
+
+  .capa-sub {
+    margin: 0;
+    font-size: 1.9cqw;
+    color: var(--rodape-suave);
+  }
+
+  .capa-obra {
+    flex: 1;
+    min-height: 0;
+    margin: 6cqw 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2.4cqw;
+  }
+
+  .capa-obra img {
+    max-width: none;
+    box-shadow: 0 0.4cqw 2.4cqw rgba(0, 0, 0, 0.35);
+  }
+
+  .capa-obra figcaption {
+    align-self: stretch;
+    font-size: 1.55cqw;
+    color: var(--rodape-suave);
+    text-align: center;
+  }
+
+  /* ---------- Foto da artista ---------- */
+  .foto-cheia {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: 50% 35%;
+  }
+
+  /* ---------- Sobre ---------- */
+  .sobre-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 1.9cqw;
+    margin-top: 6cqw;
+    font-family: var(--serif);
+    font-size: 2.3cqw;
+    line-height: 1.6;
+  }
+
+  .sobre-texto p {
+    margin: 0;
+  }
+
+  /* ---------- Abertura de seção ---------- */
+  .folha--abertura .miolo {
+    justify-content: flex-end;
+    padding-bottom: 14cqw;
+  }
+
+  .abertura-numeral {
+    margin: 0 0 3cqw;
+    font-family: var(--serif);
+    font-size: 3.4cqw;
+    color: var(--ocre);
+  }
+
+  .folha .abertura-titulo {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 12cqw;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--linho);
+  }
+
+  .abertura-texto {
+    max-width: 62cqw;
+    margin: 5cqw 0 0;
+    font-family: var(--serif);
+    font-size: 2.5cqw;
+    line-height: 1.5;
+    color: var(--linho);
+    opacity: 0.88;
+  }
+
+  /* ---------- Pensamento ---------- */
+  .folha--pensamento .miolo {
+    padding-bottom: 18cqw;
+  }
+
+  .folha .pensamento {
+    margin: auto 0 0;
+    font-family: var(--serif);
+    font-style: italic;
+    line-height: 1.3;
+    letter-spacing: -0.012em;
+    color: var(--mata);
+  }
+
+  .pensamento p {
+    margin: 0;
+  }
+
+  .assinatura {
+    margin: 4cqw 0 0;
+    font-size: 1.7cqw;
+    color: var(--tinta-suave);
+  }
+
+  /* ---------- Obra ---------- */
+  .folha .quadro {
+    flex: 0 0 var(--area, 76cqw);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quadro img {
+    max-width: none;
+    background: rgba(36, 30, 22, 0.06);
+    box-shadow: 0 0.15cqw 0.3cqw rgba(36, 30, 22, 0.12), 0 1.4cqw 3.4cqw rgba(36, 30, 22, 0.14);
+  }
+
+  .legenda-obra {
+    display: flex;
+    flex-direction: column;
+    margin-top: 6cqw;
+  }
+
+  .folha .obra-titulo {
+    margin: 1.4cqw 0 0;
+    font-family: var(--serif);
+    font-size: 5cqw;
+    font-weight: 400;
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+  }
+
+  .obra-texto {
+    margin: 2.2cqw 0 0;
+    font-family: var(--serif);
+    font-size: 2.2cqw;
+    line-height: 1.55;
+    color: var(--tinta);
+  }
+
+  .obra-texto.preencher {
+    color: var(--vermelho);
+    font-family: var(--sans);
+    font-weight: 600;
+  }
+
+  .folha .ficha {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6cqw 4cqw;
+    margin: 2.8cqw 0 0;
+    padding-top: 2cqw;
+    border-top: 1px solid var(--linha);
+    font-size: 1.7cqw;
+  }
+
+  .ficha div {
+    display: flex;
+    gap: 1.2cqw;
+  }
+
+  .ficha dt {
+    color: var(--tinta-suave);
+  }
+
+  .ficha dd {
+    margin: 0;
+  }
+
+  /* ---------- Contracapa ---------- */
+  .folha--contracapa .miolo {
+    justify-content: space-between;
+    padding: 12cqw 11cqw 9cqw;
+  }
+
+  .contato-livro {
+    display: flex;
+    flex-direction: column;
+    gap: 3cqw;
+  }
+
+  .contato-texto {
+    margin: 0;
+    max-width: 66cqw;
+    font-family: var(--serif);
+    font-size: 4cqw;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .contatos-livro {
+    display: flex;
+    flex-direction: column;
+    gap: 2cqw;
+    margin: 3cqw 0 0;
+    padding: 3.4cqw 0;
+    border-block: 1px solid rgba(237, 232, 218, 0.22);
+  }
+
+  .contatos-livro div {
+    display: grid;
+    grid-template-columns: 22cqw 1fr;
+    align-items: baseline;
+  }
+
+  .contatos-livro dt {
+    font-size: 1.55cqw;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ocre);
+  }
+
+  .contatos-livro dd {
+    margin: 0;
+    font-size: 2.5cqw;
+  }
+
+  .folha .contatos-livro a {
+    color: var(--linho);
+    text-decoration: none;
+  }
+
+  .contato-certificado {
+    margin: 0;
+    max-width: 60cqw;
+    font-size: 1.75cqw;
+    line-height: 1.5;
+    color: var(--rodape-suave);
+  }
+
+  .contracapa-nome {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 6cqw;
+    letter-spacing: -0.02em;
+  }
+
+  /* Chinês: sem itálico. */
+  .folha:lang(zh) .pensamento {
+    font-style: normal;
+  }
+</style>
