@@ -1,16 +1,14 @@
 ---
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Selo from '../components/Selo.astro';
 import FaixaObras from '../components/FaixaObras.astro';
 import Contato from '../components/Contato.astro';
-import DicaWhatsApp from '../components/DicaWhatsApp.astro';
-import { disponiveis, imagemDe, obraPorSlug, obras } from '../content/obras';
-import fotoAna from '../assets/ana/sorriso-hibiscos.jpg';
+import { disponiveis, obraPorSlug, obras } from '../content/obras';
+import fotoHero from '../assets/ana/sorriso-hibiscos.jpg';
+import fotoAna from '../assets/ana/cavalete-luz.jpg';
 
-const destaque = obraPorSlug('morro-colorido');
 const noAtelie = ['rua-de-pedra', 'hibiscos', 'retrato', 'janela-para-a-toscana'].map(obraPorSlug);
-const brasil = ['cataratas-do-iguacu', 'casa-amarela', 'araras-azuis'].map(obraPorSlug);
+const brasil = ['morro-colorido', 'cataratas-do-iguacu', 'casa-amarela', 'araras-azuis'].map(obraPorSlug);
 const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
 ---
 
@@ -34,24 +32,20 @@ const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
       </div>
     </div>
     <figure class="obra-destaque">
-      <div class="quadro com-consultar">
-        <a href={`/obras/${destaque.slug}`}>
-          <Image
-            src={imagemDe(destaque)}
-            alt={destaque.alt}
-            widths={[420, 640, 900, 1280]}
-            sizes="(max-width: 900px) 92vw, 560px"
-            quality={78}
-            format="webp"
-            loading="eager"
-            fetchpriority="high"
-          />
-        </a>
-        <DicaWhatsApp obra={destaque} />
-      </div>
+      <a class="quadro" href="/sobre">
+        <Image
+          src={fotoHero}
+          alt="Ana Quintanas sorrindo, sentada no ateliê diante da tela Hibiscos"
+          widths={[420, 640, 900, 1280]}
+          sizes="(max-width: 900px) 92vw, 560px"
+          quality={78}
+          format="webp"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </a>
       <figcaption>
-        <a class="titulo-obra" href={`/obras/${destaque.slug}`}>{destaque.titulo}</a>
-        <Selo situacao={destaque.situacao} />
+        <span class="titulo-obra">Ana Quintanas no ateliê, com <a href="/obras/hibiscos">Hibiscos</a></span>
       </figcaption>
     </figure>
   </section>
@@ -85,7 +79,7 @@ const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
     <div class="conteiner sobre">
       <Image
         src={fotoAna}
-        alt="Ana Quintanas sorrindo, sentada no ateliê diante da tela Hibiscos"
+        alt="Ana Quintanas pintando diante do cavalete, contra a luz da janela"
         widths={[360, 560, 800]}
         sizes="(max-width: 900px) 92vw, 380px"
         quality={74}
@@ -196,9 +190,8 @@ const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
     text-decoration: none;
   }
 
-  .titulo-obra:hover {
+  .titulo-obra a {
     color: var(--mata);
-    text-decoration: underline;
     text-underline-offset: 3px;
   }
 
@@ -290,9 +283,17 @@ const totalBrasil = obras.filter((o) => o.tema === 'brasil').length;
       width: 100%;
     }
 
+    /* No celular a foto da Ana vem primeiro, antes do texto. */
+    .obra-destaque {
+      order: -1;
+    }
+
     .obra-destaque :global(img) {
       max-height: none;
       width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      object-position: 50% 40%;
     }
 
     .sobre :global(.foto-ana) {
