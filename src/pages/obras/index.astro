@@ -35,7 +35,7 @@ const temas: { valor: 'todos' | Tema; rotulo: string }[] = [
           situacoes.map((s, i) => (
             <button type="button" class="pilula" data-filtro="situacao" data-valor={s.valor} aria-pressed={i === 0 ? 'true' : 'false'}>
               {s.valor !== 'todas' && <span class="marca" aria-hidden="true" />}
-              {s.rotulo} <span class="n">{s.n}</span>
+              {s.rotulo}
             </button>
           ))
         }
@@ -51,7 +51,7 @@ const temas: { valor: 'todos' | Tema; rotulo: string }[] = [
       </div>
     </div>
 
-    <p class="resumo" aria-live="polite" id="resumo">Mostrando {obras.length} obras</p>
+    <p class="resumo so-leitor" aria-live="polite" id="resumo">Mostrando {obras.length} obras</p>
     <p class="vazio" id="vazio" hidden>Nenhuma obra com essa combinação. Tente outro tema.</p>
 
     <ul class="mural" role="list">
