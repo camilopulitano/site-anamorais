@@ -1,0 +1,10 @@
+---
+import Inicio from '../../views/Inicio.astro';
+import { caminhosDeIdioma } from '../../i18n/idiomas';
+
+export function getStaticPaths() {
+  return caminhosDeIdioma();
+}
+---
+
+<Inicio />

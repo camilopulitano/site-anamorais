@@ -1,0 +1,10 @@
+---
+import Sobre from '../../views/Sobre.astro';
+import { caminhosDeIdioma } from '../../i18n/idiomas';
+
+export function getStaticPaths() {
+  return caminhosDeIdioma();
+}
+---
+
+<Sobre />

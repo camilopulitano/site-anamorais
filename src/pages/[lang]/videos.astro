@@ -1,0 +1,10 @@
+---
+import Videos from '../../views/Videos.astro';
+import { caminhosDeIdioma } from '../../i18n/idiomas';
+
+export function getStaticPaths() {
+  return caminhosDeIdioma();
+}
+---
+
+<Videos />
