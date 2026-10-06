@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import retrato from '../assets/ana/retrato-pincel.jpg';
+import retrato from '../assets/ana/retrato-paleta.jpg';
 import { INSTAGRAM_URL, INSTAGRAM_USUARIO, linkWhatsApp, WHATSAPP_LEGIVEL } from '../config/contato';
 ---
 
@@ -9,11 +9,11 @@ import { INSTAGRAM_URL, INSTAGRAM_USUARIO, linkWhatsApp, WHATSAPP_LEGIVEL } from
     <div class="apresentacao">
       <Image
         src={retrato}
-        alt="Retrato de Ana Quintanas segurando um pincel"
+        alt="Retrato de Ana Quintanas sorrindo, de óculos, no ateliê"
         width={256}
         height={256}
         fit="cover"
-        position="top"
+        position="center"
         quality={75}
         format="webp"
         loading="lazy"
@@ -22,6 +22,7 @@ import { INSTAGRAM_URL, INSTAGRAM_USUARIO, linkWhatsApp, WHATSAPP_LEGIVEL } from
       <div class="textos">
         <h2 id="titulo-contato">Contato</h2>
         <p>Quer saber mais sobre uma obra disponível? Fale direto com a Ana.</p>
+        <p class="certificado">Toda obra é original e acompanha certificado de autenticidade assinado pela artista.</p>
       </div>
     </div>
     <div class="acoes">
@@ -74,6 +75,11 @@ import { INSTAGRAM_URL, INSTAGRAM_USUARIO, linkWhatsApp, WHATSAPP_LEGIVEL } from
     font-size: 17px;
     line-height: 1.55;
     color: var(--tinta-suave);
+  }
+
+  .textos .certificado {
+    font-size: 15px;
+    color: var(--tinta);
   }
 
   .acoes {

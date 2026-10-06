@@ -1,12 +1,13 @@
 ---
 interface Props {
-  atual?: 'inicio' | 'obras' | 'sobre';
+  atual?: 'inicio' | 'obras' | 'videos' | 'sobre';
 }
 const { atual } = Astro.props;
 
 /** Só entram rotas que existem. Item de menu que cai em 404 é pior que item ausente. */
 const menu = [
   { rotulo: 'Obras', href: '/obras', chave: 'obras' },
+  { rotulo: 'Vídeos', href: '/videos', chave: 'videos' },
   { rotulo: 'Sobre', href: '/sobre', chave: 'sobre' },
   { rotulo: 'Contato', href: '/#contato', chave: 'contato' },
 ] as const;
@@ -97,6 +98,26 @@ const menu = [
 
     nav a {
       font-size: 14px;
+    }
+  }
+
+  /* Celular estreito: nome em cima, menu embaixo ocupando a largura toda. */
+  @media (max-width: 520px) {
+    .linha {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      min-height: 0;
+      padding-top: 14px;
+    }
+
+    nav {
+      width: 100%;
+    }
+
+    ul {
+      justify-content: space-between;
+      gap: 8px;
     }
   }
 </style>
