@@ -99,8 +99,9 @@ export function imagemDe(obra: Obra): ImageMetadata {
   return imagens[`../assets/obras/${obra.slug}.jpg`].default;
 }
 
-export function fotosDe(obra: Obra): { src: ImageMetadata; alt: string; legenda?: string }[] {
+export function fotosDe(obra: Obra): { arquivo: string; src: ImageMetadata; alt: string; legenda?: string }[] {
   return (obra.fotos ?? []).map((f) => ({
+    arquivo: f.arquivo,
     src: extras[`../assets/obras/extras/${f.arquivo}.jpg`].default,
     alt: f.alt,
     legenda: f.legenda,
@@ -115,3 +116,12 @@ export function obraPorSlug(slug: string): Obra {
 
 export const disponiveis = obras.filter((o) => o.situacao === 'disponivel');
 export const vendidas = obras.filter((o) => o.situacao === 'vendida');
+
+/** Cada obra com a anterior e a próxima da galeria (para as páginas de obra). */
+export function obrasComVizinhas() {
+  return obras.map((obra, i) => ({
+    obra,
+    anterior: obras[(i - 1 + obras.length) % obras.length],
+    proxima: obras[(i + 1) % obras.length],
+  }));
+}
