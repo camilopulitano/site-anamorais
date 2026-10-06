@@ -13,12 +13,12 @@ interface Props {
   imagem?: ImageMetadata;
   /** Dados estruturados extras da página (schema.org). */
   jsonLd?: Record<string, unknown>;
-  paginaAtual?: 'inicio' | 'obras' | 'sobre';
+  paginaAtual?: 'inicio' | 'obras' | 'videos' | 'sobre';
 }
 
 const {
   titulo,
-  descricao = 'Portfólio de Ana Quintanas, pintora brasileira. Paisagens, cidades, casas, natureza e cenas do cotidiano — o olhar dela sobre o Brasil.',
+  descricao = 'Portfólio de Ana Quintanas, artista plástica e pintora brasileira. Lugares, histórias e memórias: paisagens, casas e natureza pelo olhar dela.',
   imagem = imagemPadrao,
   jsonLd,
   paginaAtual,
