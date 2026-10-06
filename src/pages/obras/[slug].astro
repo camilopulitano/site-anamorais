@@ -94,20 +94,22 @@ const jsonLd = {
 
         {
           fotos.length > 0 && (
-            <section class="com-a-artista" aria-label="Fotos da obra com a artista">
-              <p class="rotulo-fotos">Com a artista</p>
+            <section class="com-a-artista" aria-label="Mais fotos da obra">
               <div class="fotos">
                 {fotos.map((f) => (
-                  <Image
-                    src={f.src}
-                    alt={f.alt}
-                    widths={[360, 560, 800]}
-                    sizes="(max-width: 900px) 92vw, 380px"
-                    quality={74}
-                    format="webp"
-                    loading="lazy"
-                    data-fade=""
-                  />
+                  <figure>
+                    {f.legenda && <figcaption class="rotulo-fotos">{f.legenda}</figcaption>}
+                    <Image
+                      src={f.src}
+                      alt={f.alt}
+                      widths={[360, 560, 800]}
+                      sizes="(max-width: 900px) 92vw, 380px"
+                      quality={74}
+                      format="webp"
+                      loading="lazy"
+                      data-fade=""
+                    />
+                  </figure>
                 ))}
               </div>
             </section>
@@ -253,6 +255,13 @@ const jsonLd = {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 380px));
     gap: 20px;
+  }
+
+  .fotos figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .fotos :global(img) {
