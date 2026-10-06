@@ -3,7 +3,7 @@ import { IDIOMAS, INFO, idiomaDe, rota, semIdioma } from '../i18n/idiomas';
 import { t } from '../i18n/ui';
 
 interface Props {
-  atual?: 'inicio' | 'obras' | 'videos' | 'sobre';
+  atual?: 'inicio' | 'obras' | 'videos' | 'portfolio' | 'sobre';
 }
 const { atual } = Astro.props;
 const lang = idiomaDe(Astro.url);
@@ -17,6 +17,7 @@ const ROTULO_NAV = { pt: 'Principal', en: 'Main', es: 'Principal', fr: 'Principa
 const menu = [
   { rotulo: T.menu.obras, href: rota(lang, '/obras'), chave: 'obras' },
   { rotulo: T.menu.videos, href: rota(lang, '/videos'), chave: 'videos' },
+  { rotulo: T.livro.menu, href: rota(lang, '/portfolio'), chave: 'portfolio' },
   { rotulo: T.menu.sobre, href: rota(lang, '/sobre'), chave: 'sobre' },
   { rotulo: T.menu.contato, href: `${rota(lang, '/')}#contato`, chave: 'contato' },
 ] as const;
@@ -271,6 +272,19 @@ const menu = [
     summary {
       min-height: 40px;
       padding: 0 10px;
+    }
+  }
+
+  /* Celular bem estreito: o menu pode quebrar em duas linhas. */
+  @media (max-width: 380px) {
+    .principal ul {
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 0 16px;
+    }
+
+    .principal a {
+      font-size: 13px;
     }
   }
 </style>
