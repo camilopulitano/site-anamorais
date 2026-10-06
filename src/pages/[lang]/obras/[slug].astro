@@ -1,0 +1,15 @@
+---
+import ObraView from '../../../views/Obra.astro';
+import { obrasComVizinhas } from '../../../content/obras';
+import { OUTROS } from '../../../i18n/idiomas';
+
+export function getStaticPaths() {
+  return OUTROS.flatMap((lang) =>
+    obrasComVizinhas().map((p) => ({ params: { lang, slug: p.obra.slug }, props: p })),
+  );
+}
+
+const { obra, anterior, proxima } = Astro.props;
+---
+
+<ObraView obra={obra} anterior={anterior} proxima={proxima} />
