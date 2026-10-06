@@ -1,3 +1,6 @@
+import { rota, type Idioma } from '../i18n/idiomas';
+import { t } from '../i18n/ui';
+
 /**
  * Contato da Ana — um lugar só.
  *
@@ -31,16 +34,17 @@ export function linkWhatsApp(mensagem?: string): string {
 }
 
 /**
- * Link de WhatsApp sobre uma obra específica — usado no clique da imagem e
- * nos botões da ficha. A mensagem já pergunta valor e leva o link da ficha,
- * para a Ana saber exatamente de qual pintura se trata (os títulos ainda
- * são provisórios).
+ * Link de WhatsApp sobre uma obra específica — usado no botão "Consultar
+ * valor". A mensagem sai no idioma de quem está no site, já pergunta o
+ * valor e leva o link da ficha, para a Ana saber exatamente de qual
+ * pintura se trata.
  */
-export function linkObra(obra: { slug: string; titulo: string; situacao: 'disponivel' | 'vendida' }): string {
-  const ficha = new URL(`/obras/${obra.slug}`, import.meta.env.SITE).toString();
-  const pedido =
-    obra.situacao === 'disponivel'
-      ? `Vi a obra "${obra.titulo}" no seu site e gostaria de saber o valor e mais informações.`
-      : `Vi a obra "${obra.titulo}" no seu site. Sei que ela já foi vendida, mas gostaria de saber valores e mais informações sobre o seu trabalho.`;
-  return linkWhatsApp(`Olá, Ana! ${pedido}\n${ficha}`);
+export function linkObra(
+  obra: { slug: string; titulo: string; situacao: 'disponivel' | 'vendida' },
+  lang: Idioma = 'pt',
+): string {
+  const T = t(lang);
+  const ficha = new URL(rota(lang, `/obras/${obra.slug}`), import.meta.env.SITE).toString();
+  const pedido = obra.situacao === 'disponivel' ? T.whatsapp.disponivel(obra.titulo) : T.whatsapp.vendida(obra.titulo);
+  return linkWhatsApp(`${pedido}\n${ficha}`);
 }
