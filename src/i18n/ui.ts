@@ -89,6 +89,31 @@ export interface Textos {
     janelaAlt: string;
   };
   contato: { titulo: string; texto: string; certificado: string; retratoAlt: string };
+  livro: {
+    menu: string;
+    titulo: string;
+    descricao: string;
+    intro: string;
+    baixar: string;
+    folhear: string;
+    pensamentos: string;
+    anterior: string;
+    proxima: string;
+    /** {a} = página, {t} = total. */
+    paginaDe: string;
+    /** {a}, {b} = páginas abertas, {t} = total. */
+    paginasDe: string;
+    capa: string;
+    contracapa: string;
+    animacao: string;
+    ampliar: string;
+    fechar: string;
+    dica: string;
+    site: string;
+    naCapa: string;
+    chamadaTitulo: string;
+    chamadaTexto: string;
+  };
   naoEncontrada: { titulo: string; texto: string; botao: string };
 }
 
@@ -210,6 +235,29 @@ const pt: Textos = {
     texto: 'Quer saber mais sobre uma obra disponível? Fale direto com a Ana.',
     certificado: 'Toda obra é original e acompanha certificado de autenticidade assinado pela artista.',
     retratoAlt: 'Retrato de Ana Quintanas sorrindo, de óculos, no ateliê',
+  },
+  livro: {
+    menu: "Portfólio",
+    titulo: "Portfólio",
+    descricao: "O portfólio de Ana Quintanas em forma de livro: folheie online ou baixe o PDF para ler e imprimir.",
+    intro: "O portfólio em forma de livro. Folheie aqui ou baixe o PDF para ler com calma e imprimir.",
+    baixar: "Baixar PDF",
+    folhear: "Folhear online",
+    pensamentos: "Pensamentos",
+    anterior: "Página anterior",
+    proxima: "Próxima página",
+    paginaDe: "Página {a} de {t}",
+    paginasDe: "Páginas {a} e {b} de {t}",
+    capa: "Capa",
+    contracapa: "Contracapa",
+    animacao: "Animação ao virar a página",
+    ampliar: "Ampliar",
+    fechar: "Fechar",
+    dica: "Clique na página, arraste o canto ou use as setas do teclado.",
+    site: "Site",
+    naCapa: "Na capa",
+    chamadaTitulo: "O portfólio em livro",
+    chamadaTexto: "Todas as obras, os textos e os pensamentos da Ana, página por página. Para folhear aqui ou baixar em PDF.",
   },
   naoEncontrada: {
     titulo: 'Essa página não existe.',
@@ -335,6 +383,29 @@ const en: Textos = {
     certificado: 'Every work is original and comes with a certificate of authenticity signed by the artist.',
     retratoAlt: 'Portrait of Ana Quintanas smiling, wearing glasses, in the studio',
   },
+  livro: {
+    menu: "Portfolio",
+    titulo: "Portfolio",
+    descricao: "Ana Quintanas’s portfolio as a book: leaf through it online or download the PDF to read and print.",
+    intro: "The portfolio as a book. Leaf through it here or download the PDF to read at your own pace and print.",
+    baixar: "Download PDF",
+    folhear: "Leaf through online",
+    pensamentos: "Thoughts",
+    anterior: "Previous page",
+    proxima: "Next page",
+    paginaDe: "Page {a} of {t}",
+    paginasDe: "Pages {a} and {b} of {t}",
+    capa: "Cover",
+    contracapa: "Back cover",
+    animacao: "Page-turn animation",
+    ampliar: "Enlarge",
+    fechar: "Close",
+    dica: "Click the page, drag the corner or use the arrow keys.",
+    site: "Website",
+    naCapa: "On the cover",
+    chamadaTitulo: "The portfolio as a book",
+    chamadaTexto: "All of Ana’s works, texts and thoughts, page by page. Leaf through it here or download it as a PDF.",
+  },
   naoEncontrada: {
     titulo: 'This page does not exist.',
     texto: 'The work may have changed its name. All the paintings are in the gallery.',
@@ -459,6 +530,29 @@ const es: Textos = {
     texto: '¿Quieres saber más sobre una obra disponible? Habla directamente con Ana.',
     certificado: 'Cada obra es original y viene con certificado de autenticidad firmado por la artista.',
     retratoAlt: 'Retrato de Ana Quintanas sonriendo, con gafas, en el taller',
+  },
+  livro: {
+    menu: "Portafolio",
+    titulo: "Portafolio",
+    descricao: "El portafolio de Ana Quintanas en forma de libro: hojéalo en línea o descarga el PDF para leer e imprimir.",
+    intro: "El portafolio en forma de libro. Hojéalo aquí o descarga el PDF para leerlo con calma e imprimirlo.",
+    baixar: "Descargar PDF",
+    folhear: "Hojear en línea",
+    pensamentos: "Pensamientos",
+    anterior: "Página anterior",
+    proxima: "Página siguiente",
+    paginaDe: "Página {a} de {t}",
+    paginasDe: "Páginas {a} y {b} de {t}",
+    capa: "Portada",
+    contracapa: "Contraportada",
+    animacao: "Animación al pasar la página",
+    ampliar: "Ampliar",
+    fechar: "Cerrar",
+    dica: "Haz clic en la página, arrastra la esquina o usa las flechas del teclado.",
+    site: "Sitio web",
+    naCapa: "En la portada",
+    chamadaTitulo: "El portafolio en libro",
+    chamadaTexto: "Todas las obras, los textos y los pensamientos de Ana, página a página. Para hojear aquí o descargar en PDF.",
   },
   naoEncontrada: {
     titulo: 'Esta página no existe.',
@@ -586,6 +680,29 @@ const fr: Textos = {
     certificado: 'Chaque œuvre est originale et accompagnée d’un certificat d’authenticité signé par l’artiste.',
     retratoAlt: 'Portrait d’Ana Quintanas souriante, avec des lunettes, dans l’atelier',
   },
+  livro: {
+    menu: "Portfolio",
+    titulo: "Portfolio",
+    descricao: "Le portfolio d’Ana Quintanas sous forme de livre : feuilletez-le en ligne ou téléchargez le PDF pour le lire et l’imprimer.",
+    intro: "Le portfolio sous forme de livre. Feuilletez-le ici ou téléchargez le PDF pour le lire tranquillement et l’imprimer.",
+    baixar: "Télécharger le PDF",
+    folhear: "Feuilleter en ligne",
+    pensamentos: "Pensées",
+    anterior: "Page précédente",
+    proxima: "Page suivante",
+    paginaDe: "Page {a} sur {t}",
+    paginasDe: "Pages {a} et {b} sur {t}",
+    capa: "Couverture",
+    contracapa: "Quatrième de couverture",
+    animacao: "Animation de la page tournée",
+    ampliar: "Agrandir",
+    fechar: "Fermer",
+    dica: "Cliquez sur la page, faites glisser le coin ou utilisez les flèches du clavier.",
+    site: "Site",
+    naCapa: "En couverture",
+    chamadaTitulo: "Le portfolio en livre",
+    chamadaTexto: "Toutes les œuvres, les textes et les pensées d’Ana, page après page. À feuilleter ici ou à télécharger en PDF.",
+  },
   naoEncontrada: {
     titulo: 'Cette page n’existe pas.',
     texto: 'L’œuvre a peut-être changé de nom. Toutes les peintures sont dans la galerie.',
@@ -711,6 +828,29 @@ const it: Textos = {
     certificado: 'Ogni opera è originale e accompagnata da un certificato di autenticità firmato dall’artista.',
     retratoAlt: 'Ritratto di Ana Quintanas sorridente, con gli occhiali, nello studio',
   },
+  livro: {
+    menu: "Portfolio",
+    titulo: "Portfolio",
+    descricao: "Il portfolio di Ana Quintanas in forma di libro: sfoglialo online o scarica il PDF per leggerlo e stamparlo.",
+    intro: "Il portfolio in forma di libro. Sfoglialo qui o scarica il PDF per leggerlo con calma e stamparlo.",
+    baixar: "Scarica il PDF",
+    folhear: "Sfoglia online",
+    pensamentos: "Pensieri",
+    anterior: "Pagina precedente",
+    proxima: "Pagina successiva",
+    paginaDe: "Pagina {a} di {t}",
+    paginasDe: "Pagine {a} e {b} di {t}",
+    capa: "Copertina",
+    contracapa: "Quarta di copertina",
+    animacao: "Animazione del cambio pagina",
+    ampliar: "Ingrandisci",
+    fechar: "Chiudi",
+    dica: "Fai clic sulla pagina, trascina l’angolo o usa le frecce della tastiera.",
+    site: "Sito",
+    naCapa: "In copertina",
+    chamadaTitulo: "Il portfolio in un libro",
+    chamadaTexto: "Tutte le opere, i testi e i pensieri di Ana, pagina dopo pagina. Da sfogliare qui o da scaricare in PDF.",
+  },
   naoEncontrada: {
     titulo: 'Questa pagina non esiste.',
     texto: 'Forse l’opera ha cambiato nome. Tutti i dipinti sono nella galleria.',
@@ -827,6 +967,29 @@ const zh: Textos = {
     texto: '想进一步了解可售作品？请直接联系安娜。',
     certificado: '每件作品均为原作，并附有艺术家亲笔签名的真品证书。',
     retratoAlt: '戴着眼镜、面带微笑的安娜·金塔纳斯在画室的肖像',
+  },
+  livro: {
+    menu: "作品集",
+    titulo: "作品集",
+    descricao: "书本形式的安娜·金塔纳斯作品集：在线翻阅，或下载 PDF 阅读和打印。",
+    intro: "书本形式的作品集。可在此翻阅，也可下载 PDF 慢慢阅读或打印。",
+    baixar: "下载 PDF",
+    folhear: "在线翻阅",
+    pensamentos: "随想",
+    anterior: "上一页",
+    proxima: "下一页",
+    paginaDe: "第 {a} 页，共 {t} 页",
+    paginasDe: "第 {a}–{b} 页，共 {t} 页",
+    capa: "封面",
+    contracapa: "封底",
+    animacao: "翻页动画",
+    ampliar: "放大",
+    fechar: "关闭",
+    dica: "点击页面、拖动页角或使用键盘方向键翻页。",
+    site: "网站",
+    naCapa: "封面作品",
+    chamadaTitulo: "书本形式的作品集",
+    chamadaTexto: "安娜的全部作品、文字与随想，一页一页呈现。可在此翻阅，或下载 PDF。",
   },
   naoEncontrada: {
     titulo: '此页面不存在。',
