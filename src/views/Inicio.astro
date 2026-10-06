@@ -3,7 +3,8 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FaixaObras from '../components/FaixaObras.astro';
 import Contato from '../components/Contato.astro';
-import { obraPorSlug } from '../content/obras';
+import { imagemDe, obraPorSlug } from '../content/obras';
+import { OBRA_DA_CAPA, pdfDoLivro } from '../content/livro';
 import { idiomaDe, rota } from '../i18n/idiomas';
 import { t } from '../i18n/ui';
 import fotoHero from '../assets/ana/sorriso-hibiscos.jpg';
@@ -12,6 +13,8 @@ import fotoAna from '../assets/ana/cavalete-luz.jpg';
 const lang = idiomaDe(Astro.url);
 const T = t(lang);
 const noAtelie = ['rua-de-pedra', 'hibiscos', 'retrato', 'janela-para-a-toscana'].map(obraPorSlug);
+const pdf = pdfDoLivro(lang);
+const capa = obraPorSlug(OBRA_DA_CAPA);
 const brasil = ['morro-colorido', 'cataratas-do-iguacu', 'casa-amarela', 'araras-azuis'].map(obraPorSlug);
 ---
 
@@ -89,6 +92,25 @@ const brasil = ['morro-colorido', 'cataratas-do-iguacu', 'casa-amarela', 'araras
         <p class="sobrancelha" id="titulo-sobre">{T.menu.sobre}</p>
         <p class="citacao">{T.inicio.chamadaSobre}</p>
         <a class="link-seta" href={rota(lang, '/sobre')}>{T.inicio.lerTexto}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="conteiner livro-chamada" aria-labelledby="titulo-livro">
+    <a class="mini-capa" href={rota(lang, '/portfolio')} aria-hidden="true" tabindex="-1">
+      <span class="mini-sobrancelha">{T.livro.titulo}</span>
+      <span class="mini-nome">Ana Quintanas</span>
+      <Image src={imagemDe(capa)} alt="" widths={[200, 400]} sizes="180px" quality={72} format="webp" loading="lazy" />
+    </a>
+    <div class="pilha">
+      <p class="sobrancelha">{T.livro.titulo}</p>
+      <h2 id="titulo-livro">{T.livro.chamadaTitulo}</h2>
+      <p class="texto-livro">{T.livro.chamadaTexto}</p>
+      <div class="acoes">
+        <a class="botao" href={rota(lang, '/portfolio')}>{T.livro.folhear}</a>
+        <a class="botao botao--contorno" href={pdf.href} download={pdf.arquivo} type="application/pdf">
+          {T.livro.baixar}{pdf.mb && ` · ${pdf.mb} MB`}
+        </a>
       </div>
     </div>
   </section>
@@ -303,6 +325,78 @@ const brasil = ['morro-colorido', 'cataratas-do-iguacu', 'casa-amarela', 'araras
   @media (max-width: 640px) {
     .acoes .botao {
       width: 100%;
+    }
+  }
+  .livro-chamada {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 40px clamp(40px, 6vw, 96px);
+    padding-block: clamp(72px, 9vw, 120px) 0;
+  }
+
+  .mini-capa {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 200px;
+    aspect-ratio: 210 / 270;
+    padding: 18px 16px 16px;
+    background: var(--mata);
+    color: var(--linho);
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(36, 30, 22, 0.18), 0 18px 36px rgba(36, 30, 22, 0.22);
+    transform: rotate(-2deg);
+    transition: transform 400ms var(--entrada);
+  }
+
+  .mini-capa:hover {
+    transform: rotate(0deg) translateY(-4px);
+    color: var(--linho);
+  }
+
+  .mini-sobrancelha {
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ocre);
+  }
+
+  .mini-nome {
+    font-family: var(--serif);
+    font-size: 21px;
+    line-height: 1;
+  }
+
+  .mini-capa :global(img) {
+    width: 62%;
+    margin: auto auto 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  }
+
+  .texto-livro {
+    max-width: 560px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--tinta-suave);
+  }
+
+  @media (max-width: 640px) {
+    .livro-chamada {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mini-capa {
+      width: 160px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mini-capa,
+    .mini-capa:hover {
+      transform: none;
+      transition: none;
     }
   }
 </style>

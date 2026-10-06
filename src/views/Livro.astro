@@ -1,0 +1,525 @@
+---
+/**
+ * Portfólio em livro, versão online: as páginas viram com animação
+ * (page-flip), por clique, arrastando o canto ou pelas setas do teclado.
+ * Duas páginas abertas no computador, uma por vez no celular.
+ *
+ * Sem JavaScript, as páginas aparecem uma embaixo da outra.
+ * Com "movimento reduzido" ligado no aparelho, a página troca sem animação
+ * (e a pessoa pode ligar/desligar a animação no botão).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PaginasLivro from '../components/livro/PaginasLivro.astro';
+import { pdfDoLivro, paginasDoLivro, OBRA_DA_CAPA } from '../content/livro';
+import { imagemDe, obraPorSlug } from '../content/obras';
+import { idiomaDe } from '../i18n/idiomas';
+import { t } from '../i18n/ui';
+
+const lang = idiomaDe(Astro.url);
+const T = t(lang);
+const pdf = pdfDoLivro(lang);
+const total = paginasDoLivro(lang).length;
+const textos = {
+  capa: T.livro.capa,
+  contracapa: T.livro.contracapa,
+  paginaDe: T.livro.paginaDe,
+  paginasDe: T.livro.paginasDe,
+};
+---
+
+<BaseLayout
+  titulo={T.livro.titulo}
+  descricao={T.livro.descricao}
+  imagem={imagemDe(obraPorSlug(OBRA_DA_CAPA))}
+  paginaAtual="portfolio"
+>
+  <div class="conteiner topo">
+    <div class="pilha">
+      <p class="sobrancelha">Ana Quintanas</p>
+      <h1>{T.livro.titulo}</h1>
+      <p class="intro">{T.livro.intro}</p>
+    </div>
+    <a class="botao" href={pdf.href} download={pdf.arquivo} type="application/pdf">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+        <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14"></path>
+      </svg>
+      {T.livro.baixar}
+      {pdf.mb && <span class="peso">· {pdf.mb} MB</span>}
+    </a>
+  </div>
+
+  <section class="palco" aria-label={`Ana Quintanas — ${T.livro.titulo}`}>
+    <div class="conteiner">
+      <div
+        class="livro"
+        id="livro"
+        data-total={total}
+        data-textos={JSON.stringify(textos)}
+      >
+        <PaginasLivro modo="tela" />
+      </div>
+    </div>
+
+    <div class="conteiner controles" hidden>
+      <button type="button" class="seta" data-acao="anterior" aria-label={T.livro.anterior}>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"></path></svg>
+      </button>
+      <p class="status" id="status" aria-live="polite">{T.livro.capa}</p>
+      <button type="button" class="seta" data-acao="proxima" aria-label={T.livro.proxima}>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+      </button>
+      <div class="extras">
+        <button type="button" class="opcao" data-acao="ampliar">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="1.8"></circle><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M15 15l5 5M10.5 8v5M8 10.5h5"></path></svg>
+          {T.livro.ampliar}
+        </button>
+        <button type="button" class="opcao" data-acao="animacao" aria-pressed="true">
+          <span class="chave" aria-hidden="true"></span>
+          {T.livro.animacao}
+        </button>
+      </div>
+    </div>
+    <p class="conteiner dica" hidden>{T.livro.dica}</p>
+  </section>
+
+  <dialog class="lupa" aria-label={T.livro.ampliar}>
+    <form method="dialog" class="lupa-topo">
+      <button class="botao botao--contorno" type="submit">{T.livro.fechar}</button>
+    </form>
+    <div class="lupa-paginas"></div>
+  </dialog>
+</BaseLayout>
+
+<script>
+  import { PageFlip } from 'page-flip/dist/js/page-flip.module.js';
+
+  const livro = document.getElementById('livro');
+  const controles = document.querySelector<HTMLElement>('.controles');
+  const dica = document.querySelector<HTMLElement>('.palco .dica');
+  const status = document.getElementById('status');
+  const lupa = document.querySelector<HTMLDialogElement>('dialog.lupa');
+
+  const ler = (chave: string) => {
+    try {
+      return localStorage.getItem(chave);
+    } catch {
+      return null;
+    }
+  };
+  const gravar = (chave: string, valor: string) => {
+    try {
+      localStorage.setItem(chave, valor);
+    } catch {
+      /* navegação privada: tudo bem */
+    }
+  };
+
+  if (livro && controles && status && lupa) {
+    const textos = JSON.parse(livro.dataset.textos || '{}') as Record<string, string>;
+    const paginas = Array.from(livro.querySelectorAll<HTMLElement>(':scope > .folha'));
+    const total = paginas.length;
+    const ultima = total - 1;
+    const tempoAnimacao = 800;
+
+    const reduzir = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const preferencia = ler('livro-animacao');
+    let animar = preferencia ? preferencia === 'sim' : !reduzir;
+
+    const flip = new PageFlip(livro, {
+      width: 420,
+      height: 540,
+      size: 'stretch' as never,
+      minWidth: 260,
+      maxWidth: 1000,
+      minHeight: 300,
+      maxHeight: 1286,
+      showCover: true,
+      usePortrait: true,
+      mobileScrollSupport: true,
+      maxShadowOpacity: 0.5,
+      flippingTime: animar ? tempoAnimacao : 1,
+      drawShadow: true,
+      showPageCorners: true,
+      autoSize: false,
+    });
+    flip.loadFromHTML(paginas);
+    livro.classList.add('ativo');
+    controles.hidden = false;
+    if (dica) dica.hidden = false;
+
+    /** Carrega as imagens das páginas vizinhas antes de a pessoa chegar nelas. */
+    const carregarPerto = (i: number) => {
+      for (let j = Math.max(0, i - 2); j <= Math.min(ultima, i + 5); j++) {
+        paginas[j].querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => (img.loading = 'eager'));
+      }
+    };
+
+    /** Índices das páginas à vista agora. */
+    const visiveis = (): number[] => {
+      const i = flip.getCurrentPageIndex();
+      if (flip.getOrientation() === 'portrait' || i === 0 || i === ultima) return [i];
+      const esquerda = i % 2 === 1 ? i : i - 1;
+      return [esquerda, esquerda + 1].filter((x) => x <= ultima);
+    };
+
+    const atualizar = () => {
+      const v = visiveis();
+      const n = total - 2;
+      let texto: string;
+      if (v.length === 1 && v[0] === 0) texto = textos.capa;
+      else if (v.length === 1 && v[0] === ultima) texto = textos.contracapa;
+      else if (v.length === 1) texto = textos.paginaDe.replace('{a}', String(v[0])).replace('{t}', String(n));
+      else
+        texto = textos.paginasDe
+          .replace('{a}', String(v[0]))
+          .replace('{b}', String(Math.min(v[1], n)))
+          .replace('{t}', String(n));
+      status.textContent = texto;
+      carregarPerto(v[0]);
+      const i = flip.getCurrentPageIndex();
+      controles.querySelector<HTMLButtonElement>('[data-acao="anterior"]')!.disabled = i === 0;
+      controles.querySelector<HTMLButtonElement>('[data-acao="proxima"]')!.disabled = v.includes(ultima);
+    };
+
+    const proxima = () => (animar ? flip.flipNext() : flip.turnToNextPage());
+    const anterior = () => (animar ? flip.flipPrev() : flip.turnToPrevPage());
+
+    flip.on('flip', () => atualizar());
+    flip.on('changeOrientation', () => atualizar());
+    atualizar();
+
+    const botaoAnimacao = controles.querySelector<HTMLButtonElement>('[data-acao="animacao"]')!;
+    const aplicarAnimacao = () => {
+      flip.getSettings().flippingTime = animar ? tempoAnimacao : 1;
+      botaoAnimacao.setAttribute('aria-pressed', String(animar));
+    };
+    aplicarAnimacao();
+
+    controles.addEventListener('click', (e) => {
+      const alvo = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-acao]');
+      if (!alvo) return;
+      const acao = alvo.dataset.acao;
+      if (acao === 'proxima') proxima();
+      if (acao === 'anterior') anterior();
+      if (acao === 'animacao') {
+        animar = !animar;
+        gravar('livro-animacao', animar ? 'sim' : 'nao');
+        aplicarAnimacao();
+      }
+      if (acao === 'ampliar') abrirLupa();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (lupa.open || e.altKey || e.ctrlKey || e.metaKey) return;
+      const alvo = e.target as HTMLElement;
+      if (alvo.closest('input, textarea, select, [contenteditable="true"], details')) return;
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+        e.preventDefault();
+        proxima();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        anterior();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        flip.turnToPage(0);
+        atualizar();
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        flip.turnToPage(ultima);
+        atualizar();
+      }
+    });
+
+    /** "Ampliar": abre as páginas à vista em tamanho grande, com rolagem. */
+    const destino = lupa.querySelector<HTMLElement>('.lupa-paginas')!;
+    function abrirLupa() {
+      destino.replaceChildren(
+        ...visiveis().map((i) => {
+          const copia = paginas[i].cloneNode(true) as HTMLElement;
+          copia.removeAttribute('style');
+          copia.className = copia.className.replace(/\bstf__\S+/g, '').trim();
+          copia.querySelectorAll('img').forEach((img) => (img.loading = 'eager'));
+          return copia;
+        }),
+      );
+      lupa.showModal();
+      lupa.scrollTop = 0;
+    }
+  }
+</script>
+
+<style>
+  .topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 24px 40px;
+    padding-block: clamp(36px, 5vw, 64px) clamp(24px, 3vw, 40px);
+  }
+
+  .pilha {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 720px;
+  }
+
+  h1 {
+    font-size: clamp(40px, 4.6vw, 60px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .intro {
+    font-family: var(--serif);
+    font-size: clamp(17px, 1.5vw, 20px);
+    line-height: 1.5;
+    color: var(--tinta-suave);
+  }
+
+  .peso {
+    font-weight: 400;
+    opacity: 0.85;
+  }
+
+  .palco {
+    padding-block: clamp(24px, 4vw, 48px) clamp(56px, 7vw, 96px);
+    background: var(--superficie);
+    border-top: 1px solid var(--linha);
+  }
+
+  /* Altura da mesa: o livro (duas páginas 210 × 270) cabe na tela. */
+  .livro {
+    width: 100%;
+    height: clamp(320px, min(calc(100svh - 230px), calc((100vw - 2 * var(--margem)) / 2 * 1.2857)), 980px);
+    margin-inline: auto;
+  }
+
+  /* Celular: uma página por vez, na largura toda. */
+  @media (max-width: 600px) {
+    .livro {
+      height: min(calc((100vw - 2 * var(--margem)) * 1.2857), calc(100svh - 150px));
+      min-height: 300px;
+    }
+  }
+
+  .livro.ativo :global(.stf__wrapper) {
+    height: 100%;
+  }
+
+  /* Sem JavaScript (ou antes de carregar): páginas empilhadas. */
+  .livro:not(.ativo) {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .livro:not(.ativo) :global(.folha) {
+    width: min(100%, 560px);
+    aspect-ratio: 210 / 270;
+    box-shadow: var(--sombra-obra);
+  }
+
+  .livro.ativo :global(.folha) {
+    box-shadow: inset 0 0 0 1px rgba(36, 30, 22, 0.05);
+  }
+
+  /* Sombra da lombada nas páginas abertas. */
+  .livro.ativo :global(.folha--esq)::after,
+  .livro.ativo :global(.folha--dir:not(.folha--capa))::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 7%;
+    pointer-events: none;
+  }
+
+  .livro.ativo :global(.folha--esq)::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(36, 30, 22, 0.14), rgba(36, 30, 22, 0));
+  }
+
+  .livro.ativo :global(.folha--dir:not(.folha--capa))::after {
+    left: 0;
+    background: linear-gradient(to right, rgba(36, 30, 22, 0.14), rgba(36, 30, 22, 0));
+  }
+
+  .controles {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px 16px;
+    margin-top: 24px;
+  }
+
+  .controles[hidden],
+  .dica[hidden] {
+    display: none;
+  }
+
+  .seta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid var(--mata);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--mata);
+    cursor: pointer;
+    transition: background-color var(--duracao) var(--entrada), color var(--duracao) var(--entrada);
+  }
+
+  .seta:hover:not(:disabled) {
+    background: var(--mata);
+    color: var(--superficie);
+  }
+
+  .seta:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .status {
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--tinta);
+  }
+
+  .extras {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+  }
+
+  .opcao {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 4px;
+    border: 0;
+    background: transparent;
+    color: var(--tinta-suave);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .opcao:hover {
+    color: var(--mata);
+  }
+
+  /* Interruptor da animação */
+  .chave {
+    position: relative;
+    width: 34px;
+    height: 20px;
+    border-radius: 999px;
+    background: rgba(36, 30, 22, 0.25);
+    transition: background-color var(--duracao) var(--entrada);
+  }
+
+  .chave::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform var(--duracao) var(--entrada);
+  }
+
+  [aria-pressed='true'] .chave {
+    background: var(--mata);
+  }
+
+  [aria-pressed='true'] .chave::after {
+    transform: translateX(14px);
+  }
+
+  .dica {
+    margin-top: 8px;
+    font-size: 13px;
+    text-align: center;
+    color: var(--tinta-suave);
+  }
+
+  /* Lupa */
+  .lupa {
+    width: min(100vw, 1000px);
+    max-width: 100vw;
+    max-height: 100svh;
+    height: 100svh;
+    margin: 0 auto;
+    padding: 0;
+    border: 0;
+    background: var(--linho);
+    overflow: auto;
+  }
+
+  .lupa::backdrop {
+    background: rgba(36, 30, 22, 0.6);
+  }
+
+  .lupa-topo {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 16px;
+    background: var(--linho);
+    border-bottom: 1px solid var(--linha);
+  }
+
+  .lupa-topo .botao {
+    min-height: 44px;
+    padding: 0 20px;
+  }
+
+  .lupa-paginas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 24px 16px 48px;
+    overflow-x: auto;
+  }
+
+  .lupa-paginas :global(.folha) {
+    flex-shrink: 0;
+    width: max(720px, 100%);
+    max-width: 900px;
+    aspect-ratio: 210 / 270;
+    box-shadow: var(--sombra-obra);
+  }
+
+  @media (max-width: 640px) {
+    .topo .botao {
+      width: 100%;
+    }
+
+    .lupa-paginas {
+      align-items: flex-start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chave,
+    .chave::after {
+      transition: none;
+    }
+  }
+</style>

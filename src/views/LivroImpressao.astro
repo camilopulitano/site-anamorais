@@ -1,0 +1,84 @@
+---
+/**
+ * O livro para PDF/impressão: as mesmas páginas da versão online, uma
+ * embaixo da outra, cada uma do tamanho exato da folha (210 × 270 mm).
+ * É desta página que `scripts/gerar-pdfs.mjs` gera os PDFs.
+ *
+ * As fontes vêm do próprio site (pacotes @fontsource), e não do Google,
+ * para o PDF sair igual em qualquer máquina.
+ */
+import '../styles/global.css';
+import '@fontsource-variable/piazzolla/opsz.css';
+import '@fontsource-variable/piazzolla/opsz-italic.css';
+import '@fontsource-variable/archivo/wght.css';
+import PaginasLivro from '../components/livro/PaginasLivro.astro';
+import { FORMATO } from '../content/livro';
+import { INFO, idiomaDe } from '../i18n/idiomas';
+import { t } from '../i18n/ui';
+
+const lang = idiomaDe(Astro.url);
+const T = t(lang);
+const tamanho = `${FORMATO.largura}mm ${FORMATO.altura}mm`;
+---
+
+<!doctype html>
+<html lang={INFO[lang].html}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Ana Quintanas — {T.livro.titulo}</title>
+    <meta name="author" content="Ana Quintanas" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style set:html={`@page { size: ${tamanho}; margin: 0; }`}></style>
+  </head>
+  <body class="impressao">
+    <main class="livro-impresso" style={`--largura: ${FORMATO.largura}mm; --altura: ${FORMATO.altura}mm`}>
+      <PaginasLivro modo="impressao" />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --serif: 'Piazzolla Variable', 'Piazzolla', Georgia, serif;
+    --sans: 'Archivo Variable', 'Archivo', system-ui, sans-serif;
+  }
+
+  :root:lang(zh) {
+    --serif: 'Piazzolla Variable', 'Noto Serif CJK SC', 'Songti SC', 'Source Han Serif SC', SimSun, serif;
+    --sans: 'Archivo Variable', 'Noto Sans CJK SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  }
+
+  html,
+  body.impressao {
+    margin: 0;
+    background: #ffffff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .livro-impresso .folha {
+    width: var(--largura);
+    height: var(--altura);
+    break-after: page;
+  }
+
+  .livro-impresso .folha:last-child {
+    break-after: auto;
+  }
+
+  @media screen {
+    body.impressao {
+      background: #ddd8cb;
+    }
+
+    .livro-impresso {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: 24px 0;
+    }
+  }
+</style>
