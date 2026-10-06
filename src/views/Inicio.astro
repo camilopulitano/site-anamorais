@@ -1,0 +1,308 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FaixaObras from '../components/FaixaObras.astro';
+import Contato from '../components/Contato.astro';
+import { obraPorSlug } from '../content/obras';
+import { idiomaDe, rota } from '../i18n/idiomas';
+import { t } from '../i18n/ui';
+import fotoHero from '../assets/ana/sorriso-hibiscos.jpg';
+import fotoAna from '../assets/ana/cavalete-luz.jpg';
+
+const lang = idiomaDe(Astro.url);
+const T = t(lang);
+const noAtelie = ['rua-de-pedra', 'hibiscos', 'retrato', 'janela-para-a-toscana'].map(obraPorSlug);
+const brasil = ['morro-colorido', 'cataratas-do-iguacu', 'casa-amarela', 'araras-azuis'].map(obraPorSlug);
+---
+
+<BaseLayout paginaAtual="inicio">
+  <section class="abertura conteiner">
+    <div class="manifesto">
+      <p class="sobrancelha">{T.profissao}</p>
+      <blockquote>
+        <p>
+          “{T.inicio.frase}{lang === 'zh' ? '' : ' '}<em>{T.inicio.fraseDestaque}</em>”
+        </p>
+        <footer>— Ana Quintanas</footer>
+      </blockquote>
+      <p class="posicionamento">{T.inicio.paragrafo}</p>
+      <div class="acoes">
+        <a class="botao" href={rota(lang, '/obras')}>{T.inicio.verObras}</a>
+        <a class="link-seta" href={rota(lang, '/sobre')}>{T.inicio.sobreAna}</a>
+      </div>
+    </div>
+    <figure class="obra-destaque">
+      <a class="quadro" href={rota(lang, '/sobre')}>
+        <Image
+          src={fotoHero}
+          alt={T.inicio.fotoAlt}
+          widths={[420, 640, 900, 1280]}
+          sizes="(max-width: 900px) 92vw, 560px"
+          quality={78}
+          format="webp"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </a>
+      <figcaption>
+        <span class="titulo-obra">{T.inicio.legendaAntes} <a href={rota(lang, '/obras/hibiscos')} lang="pt-BR">Hibiscos</a></span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="faixa-clara" aria-labelledby="titulo-disponiveis">
+    <div class="conteiner secao">
+      <div class="cabeca">
+        <div class="pilha">
+          <p class="sobrancelha">{T.inicio.dispSobrancelha}</p>
+          <h2 id="titulo-disponiveis">{T.inicio.dispTitulo}</h2>
+        </div>
+        <a class="link-seta" href={`${rota(lang, '/obras')}?situacao=disponivel`}>{T.inicio.verDisponiveis}</a>
+      </div>
+      <FaixaObras obras={noAtelie} />
+    </div>
+  </section>
+
+  <section class="conteiner secao" aria-labelledby="titulo-brasil">
+    <div class="pilha intro-brasil">
+      <p class="sobrancelha" id="titulo-brasil">{T.temas.brasil}</p>
+      <p class="citacao">{T.inicio.brasilCitacao}</p>
+    </div>
+    <FaixaObras obras={brasil} />
+    <a class="link-seta" href={`${rota(lang, '/obras')}?tema=brasil`}>{T.inicio.verBrasil}</a>
+  </section>
+
+  <section class="faixa-mata" aria-labelledby="titulo-sobre">
+    <div class="conteiner sobre">
+      <Image
+        src={fotoAna}
+        alt={T.inicio.fotoSobreAlt}
+        widths={[360, 560, 800]}
+        sizes="(max-width: 900px) 92vw, 380px"
+        quality={74}
+        format="webp"
+        loading="lazy"
+        class="foto-ana"
+        data-fade=""
+      />
+      <div class="pilha texto-sobre">
+        <p class="sobrancelha" id="titulo-sobre">{T.menu.sobre}</p>
+        <p class="citacao">{T.inicio.chamadaSobre}</p>
+        <a class="link-seta" href={rota(lang, '/sobre')}>{T.inicio.lerTexto}</a>
+      </div>
+    </div>
+  </section>
+
+  <Contato />
+</BaseLayout>
+
+<style>
+  .abertura {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(40px, 6vw, 80px);
+    align-items: center;
+    padding-block: clamp(40px, 5vw, 72px) clamp(72px, 9vw, 128px);
+  }
+
+  .manifesto {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  blockquote {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  blockquote p {
+    font-family: var(--serif);
+    font-size: clamp(32px, 3.6vw, 52px);
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+  }
+
+  blockquote em {
+    color: var(--mata);
+  }
+
+  blockquote footer {
+    font-size: 15px;
+    color: var(--tinta-suave);
+  }
+
+  .posicionamento {
+    max-width: 480px;
+    padding-top: 20px;
+    border-top: 1px solid var(--linha);
+    font-size: 17px;
+    line-height: 1.6;
+  }
+
+  .acoes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 32px;
+  }
+
+  .obra-destaque {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .obra-destaque :global(img) {
+    max-height: 760px;
+    width: auto;
+    box-shadow: 0 1px 2px rgba(36, 30, 22, 0.12), 0 18px 40px rgba(36, 30, 22, 0.16);
+  }
+
+  .quadro {
+    display: block;
+  }
+
+  .quadro > a {
+    display: block;
+  }
+
+  figcaption {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .titulo-obra {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--tinta);
+    text-decoration: none;
+  }
+
+  .titulo-obra a {
+    color: var(--mata);
+    text-underline-offset: 3px;
+  }
+
+  .faixa-clara {
+    background: var(--superficie);
+  }
+
+  .secao {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    padding-block: clamp(72px, 9vw, 128px);
+  }
+
+  .cabeca {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px 32px;
+  }
+
+  .pilha {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  h2 {
+    font-size: clamp(32px, 3.4vw, 44px);
+  }
+
+  .citacao {
+    font-family: var(--serif);
+    font-size: clamp(24px, 2.6vw, 36px);
+    line-height: 1.28;
+    letter-spacing: -0.01em;
+  }
+
+  .intro-brasil {
+    max-width: 920px;
+  }
+
+  .secao > .link-seta {
+    align-self: flex-start;
+    margin-top: -16px;
+  }
+
+  .faixa-mata {
+    background: var(--mata);
+    color: var(--linho);
+  }
+
+  .sobre {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(40px, 7vw, 96px);
+    align-items: center;
+    padding-block: clamp(72px, 9vw, 120px);
+  }
+
+  .sobre :global(.foto-ana) {
+    justify-self: end;
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .faixa-mata .sobrancelha,
+  .faixa-mata .link-seta {
+    color: var(--ocre);
+  }
+
+  .faixa-mata .link-seta:hover {
+    color: var(--linho);
+  }
+
+  .texto-sobre {
+    gap: 28px;
+    max-width: 620px;
+  }
+
+  @media (max-width: 900px) {
+    .abertura,
+    .sobre {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .obra-destaque .quadro {
+      width: 100%;
+    }
+
+    /* No celular a foto da Ana vem primeiro, antes do texto. */
+    .obra-destaque {
+      order: -1;
+    }
+
+    .obra-destaque :global(img) {
+      max-height: none;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      object-position: 50% 40%;
+    }
+
+    .sobre :global(.foto-ana) {
+      justify-self: start;
+      max-width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      object-position: 50% 25%;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .acoes .botao {
+      width: 100%;
+    }
+  }
+</style>
