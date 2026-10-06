@@ -224,3 +224,26 @@ img[data-fade].carregada {
   border-color: #145a2a;
   color: #fff;
 }
+
+/* Chinês: as fontes do site não têm ideogramas, então usa as do sistema.
+   Itálico não existe em chinês — os destaques ficam só na cor. */
+:root:lang(zh) {
+  --serif: 'Piazzolla', 'Songti SC', 'Noto Serif SC', 'Noto Serif CJK SC', 'Source Han Serif SC', SimSun, serif;
+  --sans: 'Archivo', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
+}
+
+:lang(zh) em,
+:lang(zh) i {
+  font-style: normal;
+}
+
+:lang(zh) body {
+  line-break: strict;
+}
+
+/* Classes com itálico nas páginas (legendas, citações) também ficam retas em chinês. */
+:lang(zh) .titulo-obra,
+:lang(zh) .legenda,
+:lang(zh) blockquote p {
+  font-style: normal !important;
+}
