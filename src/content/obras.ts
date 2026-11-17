@@ -1,10 +1,22 @@
 import type { ImageMetadata } from 'astro';
+import { validarVenda, type Venda } from '../config/venda';
 
 /**
  * Acervo de Ana Quintanas.
  *
- * Portfólio, não loja: nenhuma obra tem preço. Cada uma mostra apenas se
- * está disponível ou vendida.
+ * Por padrão, nenhuma obra tem preço: cada uma mostra apenas se está
+ * disponível ou vendida, e o valor sai pelo WhatsApp ("Consultar valor").
+ *
+ * Obras do lançamento têm o campo `venda` ({ preco, link }): a ficha mostra
+ * o preço e o botão "Comprar", que abre o link de pagamento do Mercado Pago.
+ * Ver src/config/venda.ts.
+ *
+ * Para cadastrar uma obra à venda:
+ *   1. foto em src/assets/obras/<slug>.jpg;
+ *   2. uma linha nesta lista, com `venda: { preco: 650, link: 'https://mpago.la/...' }`;
+ *   3. alt e sobre nos 5 outros idiomas, em src/i18n/obras.ts (o build falha sem eles).
+ * Quando a obra for vendida: troque `situacao` para 'vendida' (o botão
+ * Comprar some sozinho) e desative o link no painel do Mercado Pago.
  *
  * Os títulos atuais são provisórios (descritivos). Técnica, dimensões e ano
  * são opcionais: a ficha só mostra o que estiver preenchido aqui.
@@ -32,6 +44,11 @@ export interface Obra {
   ano?: number;
   /** Link de um post do Instagram sobre esta obra (aparece dentro da ficha). */
   instagram?: string;
+  /**
+   * Venda online pelo Mercado Pago. Só vale enquanto `situacao` for
+   * 'disponivel'; use `vendaDe(obra)` em vez de ler este campo direto.
+   */
+  venda?: Venda;
   /**
    * Fotos extras da obra (com a artista, na parede…), em
    * src/assets/obras/extras/<arquivo>.jpg. Aparecem abaixo da imagem na ficha.
@@ -83,6 +100,7 @@ function validar(): void {
   for (const obra of obras) {
     if (vistos.has(obra.slug)) throw new Error(`[obras] slug repetido: ${obra.slug}`);
     vistos.add(obra.slug);
+    if (obra.venda) validarVenda(obra.slug, obra.venda);
     if (!imagens[`../assets/obras/${obra.slug}.jpg`]) {
       throw new Error(`[obras] falta a imagem src/assets/obras/${obra.slug}.jpg`);
     }
@@ -106,6 +124,15 @@ export function fotosDe(obra: Obra): { arquivo: string; src: ImageMetadata; alt:
     alt: f.alt,
     legenda: f.legenda,
   }));
+}
+
+/**
+ * Dados de venda da obra, ou undefined se ela não está à venda online.
+ * Obra vendida nunca devolve venda, mesmo que o campo tenha ficado no cadastro:
+ * assim o botão Comprar não aparece numa obra que já saiu.
+ */
+export function vendaDe(obra: Obra): Venda | undefined {
+  return obra.situacao === 'disponivel' ? obra.venda : undefined;
 }
 
 export function obraPorSlug(slug: string): Obra {
