@@ -13,11 +13,11 @@ Leia também `claude/AGENTS.md` (regras de segurança) no projeto do claude.ai.
 ```
 Ficha da obra (estática)
   ├─ campo CEP → POST /api/frete      → Melhor Envio (cotação Correios) → opções e valores
-  └─ Comprar   → POST /api/checkout   → reserva no Redis (30 min) → Mercado Pago cria a preferência
+  └─ Comprar   → POST /api/checkout   → reserva no Supabase (30 min) → Mercado Pago cria a preferência
                                           item = obra, shipments = { cost: frete, mode: 'not_specified' }
                                           → devolve init_point → navegador vai para o checkout
 Mercado Pago → POST /api/webhook-mp   → valida x-signature → consulta o pagamento
-                                          approved → vendida no Redis + aviso para a Ana
+                                          approved → vendida no Supabase + aviso para a Ana
                                           rejected/cancelled → libera a reserva
 Ficha da obra ao carregar → GET /api/estado?slug= → esconde Comprar se vendida/reservada
 ```
@@ -26,8 +26,8 @@ Frete NUNCA vem do navegador: `/api/checkout` recalcula no servidor com o CEP e 
 ## Etapa 0 — Contas (sem Claude, zero tokens) — Ana e Camilo
 1. Mercado Pago (conta da Ana): Suas integrações → criar aplicação Checkout Pro → copiar **Access Token de teste**. Webhooks → URL `https://anaquintanas.com.br/api/webhook-mp`, evento Pagamentos → copiar **chave secreta**. Criar usuários de teste (comprador).
 2. Melhor Envio (conta da Ana, grátis): cadastro, endereço de origem (CEP do ateliê), gerar **token** (Área Dev / Integrações, permissão de cálculo de frete). Há sandbox (`sandbox.melhorenvio.com.br`) para testes.
-3. Vercel: projeto do site → Storage/Marketplace → **Upstash Redis** → ligar ao projeto (cria as variáveis sozinho).
-4. Vercel → Settings → Environment Variables: `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`, `MELHOR_ENVIO_TOKEN`, `MELHOR_ENVIO_URL`, `CEP_ORIGEM`. Valores **nunca** no chat nem no código.
+3. **Supabase** (decidido em 17/11, no lugar do Upstash): criar projeto (região São Paulo). Rodar a migração `supabase/migrations/0001_obras_venda.sql` (Etapa 3 cria). Copiar `SUPABASE_URL` e a chave **secret/service_role** (só no servidor).
+4. Vercel → Settings → Environment Variables: `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`, `MELHOR_ENVIO_TOKEN`, `MELHOR_ENVIO_URL`, `CEP_ORIGEM`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`. Valores **nunca** no chat nem no código.
 5. Por obra: preço, **peso embalada** e **caixa (A × L × C cm)** — sem isso não há frete.
 
 ## Etapa 1 — Obras novas (Claude Code, Sonnet)
@@ -41,7 +41,8 @@ Frete NUNCA vem do navegador: `/api/checkout` recalcula no servidor com o CEP e 
 - Testar com `curl` antes de qualquer tela.
 
 ## Etapa 3 — Checkout
-- `src/server/integrations/mercadoPago.ts`, `src/server/estado.ts` (Redis: `SET obra:<slug> reservada NX EX 1800`).
+- `src/server/integrations/mercadoPago.ts`, `src/server/estado.ts` (Supabase, só no servidor).
+- Migração `supabase/migrations/0001_obras_venda.sql`: tabela `obras_venda` (slug PK, status disponivel/reservada/vendida, reservada_ate, pagamento_id, atualizado_em) + tabela `pagamentos` (id do MP PK, para idempotência). **RLS ligada sem política pública** (só o servidor acessa). Funções SQL atômicas: `reservar_obra(slug, minutos)` = `UPDATE ... SET status='reservada' WHERE slug=$1 AND (status='disponivel' OR (status='reservada' AND reservada_ate < now())) RETURNING`; `marcar_vendida`; `liberar_obra`. Teste provando que a chave anon não lê nem escreve.
 - `src/pages/api/checkout.ts`: Zod (slug, CEP, serviço), obra disponível, recalcula frete, reserva, cria preferência com `items`, `shipments`, `external_reference`, `back_urls`, `auto_return`, `notification_url`, expiração 30 min, **boleto excluído**.
 
 ## Etapa 4 — Webhook
