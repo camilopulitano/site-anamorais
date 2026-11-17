@@ -73,6 +73,16 @@ export interface Textos {
     statusVendida: string;
   };
   consultar: { botao: string; leitor: (titulo: string) => string };
+  venda: {
+    botao: string;
+    leitor: (titulo: string) => string;
+    preco: string;
+    pagamento: string;
+    frete: string;
+    depois: string;
+    exterior: string;
+    duvidas: string;
+  };
   whatsapp: {
     ola: string;
     disponivel: (titulo: string) => string;
@@ -192,6 +202,16 @@ const pt: Textos = {
   consultar: {
     botao: 'Consultar valor',
     leitor: (t) => ` de “${t}” no WhatsApp da Ana (abre em nova aba)`,
+  },
+  venda: {
+    botao: 'Comprar',
+    leitor: (t) => ` “${t}” pelo Mercado Pago`,
+    preco: 'Preço',
+    pagamento: 'Pagamento seguro pelo Mercado Pago.',
+    frete: 'Frete incluso para todo o Brasil.',
+    depois: 'Depois do pagamento, a Ana confirma o endereço com você e combina o envio.',
+    exterior: 'Para enviar ao exterior ou tirar dúvidas, fale com a Ana pelo WhatsApp.',
+    duvidas: 'Tirar dúvidas no WhatsApp',
   },
   whatsapp: {
     ola: 'Olá, Ana! Vim pelo seu site.',
@@ -339,6 +359,16 @@ const en: Textos = {
   consultar: {
     botao: 'Ask for the price',
     leitor: (t) => ` for “${t}” on Ana’s WhatsApp (opens in a new tab)`,
+  },
+  venda: {
+    botao: 'Buy',
+    leitor: (t) => ` “${t}” through Mercado Pago`,
+    preco: 'Price',
+    pagamento: 'Secure payment through Mercado Pago.',
+    frete: 'Shipping included within Brazil.',
+    depois: 'After payment, Ana will confirm your address and arrange shipping with you.',
+    exterior: 'For shipping abroad or any questions, message Ana on WhatsApp.',
+    duvidas: 'Questions? Message on WhatsApp',
   },
   whatsapp: {
     ola: 'Hello, Ana! I found you through your website.',
@@ -488,6 +518,16 @@ const es: Textos = {
     botao: 'Consultar precio',
     leitor: (t) => ` de “${t}” en el WhatsApp de Ana (se abre en una pestaña nueva)`,
   },
+  venda: {
+    botao: 'Comprar',
+    leitor: (t) => ` “${t}” con Mercado Pago`,
+    preco: 'Precio',
+    pagamento: 'Pago seguro con Mercado Pago.',
+    frete: 'Envío incluido en todo Brasil.',
+    depois: 'Después del pago, Ana confirmará la dirección contigo y coordinará el envío.',
+    exterior: 'Para envíos al exterior o cualquier duda, escribe a Ana por WhatsApp.',
+    duvidas: 'Dudas por WhatsApp',
+  },
   whatsapp: {
     ola: '¡Hola, Ana! Llegué por tu sitio web.',
     disponivel: (t) => `¡Hola, Ana! Vi la obra "${t}" en tu sitio web y me gustaría saber el precio y más información.`,
@@ -635,6 +675,16 @@ const fr: Textos = {
   consultar: {
     botao: 'Demander le prix',
     leitor: (t) => ` de « ${t} » sur le WhatsApp d’Ana (s’ouvre dans un nouvel onglet)`,
+  },
+  venda: {
+    botao: 'Acheter',
+    leitor: (t) => ` « ${t} » via Mercado Pago`,
+    preco: 'Prix',
+    pagamento: 'Paiement sécurisé via Mercado Pago.',
+    frete: 'Livraison incluse dans tout le Brésil.',
+    depois: 'Après le paiement, Ana confirmera l’adresse avec vous et organisera l’envoi.',
+    exterior: 'Pour une expédition à l’étranger ou toute question, écrivez à Ana sur WhatsApp.',
+    duvidas: 'Une question ? WhatsApp',
   },
   whatsapp: {
     ola: 'Bonjour Ana ! Je viens de votre site.',
@@ -785,6 +835,16 @@ const it: Textos = {
     botao: 'Chiedi il prezzo',
     leitor: (t) => ` di “${t}” sul WhatsApp di Ana (si apre in una nuova scheda)`,
   },
+  venda: {
+    botao: 'Acquista',
+    leitor: (t) => ` “${t}” con Mercado Pago`,
+    preco: 'Prezzo',
+    pagamento: 'Pagamento sicuro tramite Mercado Pago.',
+    frete: 'Spedizione inclusa in tutto il Brasile.',
+    depois: 'Dopo il pagamento, Ana confermerà l’indirizzo con te e organizzerà la spedizione.',
+    exterior: 'Per spedizioni all’estero o per qualsiasi domanda, scrivi ad Ana su WhatsApp.',
+    duvidas: 'Domande? WhatsApp',
+  },
   whatsapp: {
     ola: 'Ciao Ana! Ti ho trovata tramite il tuo sito.',
     disponivel: (t) => `Ciao Ana! Ho visto l’opera "${t}" sul tuo sito e vorrei sapere il prezzo e avere più informazioni.`,
@@ -928,6 +988,16 @@ const zh: Textos = {
   consultar: {
     botao: '咨询价格',
     leitor: (t) => `：《${t}》，通过安娜的 WhatsApp（在新标签页打开）`,
+  },
+  venda: {
+    botao: '购买',
+    leitor: (t) => ` “${t}”，通过 Mercado Pago`,
+    preco: '价格',
+    pagamento: '通过 Mercado Pago 安全支付。',
+    frete: '巴西境内包邮。',
+    depois: '付款后，Ana 会与您确认地址并安排发货。',
+    exterior: '如需寄往国外或有任何疑问，请通过 WhatsApp 联系 Ana。',
+    duvidas: '有疑问？WhatsApp 咨询',
   },
   whatsapp: {
     ola: '你好，安娜！我是通过你的网站找到你的。',
